@@ -5,24 +5,22 @@ import logging
 import httpx
 
 from ..checks.base import CheckResult, Grade
-
-logger = logging.getLogger("checkyourhospital.scanner")
 from ..checks.canonical import check_canonical
+from ..checks.conversion_elements import check_conversion_elements
 from ..checks.errors import check_errors
 from ..checks.geo_aeo import check_ai_search_mention, check_content_clarity
-from ..checks.international_search import check_international_search
 from ..checks.headings import check_headings
 from ..checks.https_check import check_https
 from ..checks.images import check_images
+from ..checks.international_search import check_international_search
 from ..checks.links import check_links
 from ..checks.meta_tags import check_meta_tags
-from ..checks.conversion_elements import check_conversion_elements
+from ..checks.mobile import check_mobile
 from ..checks.multilingual import (
     check_hreflang,
     check_multilingual_pages,
     check_overseas_channels,
 )
-from ..checks.mobile import check_mobile
 from ..checks.performance import check_performance
 from ..checks.robots import check_robots
 from ..checks.sitemap import check_sitemap
@@ -33,22 +31,25 @@ from ..checks.structured_data import (
 )
 from ..checks.url_structure import check_url_structure
 from ..config import settings
-from .crawler import Crawler
+from .competitor_discovery import discover_competitors
 from .content_freshness_analyzer import analyze_content_freshness
+from .crawler import Crawler
+from .international_usability import analyze_international_usability
+from .keyword_engine import extract_and_generate_keywords
+from .medical_compliance import check_medical_compliance
 from .multilingual_analyzer import analyze_multilingual_readiness
 from .patient_journey_scorer import calculate_journey_scores
 from .portal_scorer import calculate_portal_scores
-from .international_usability import analyze_international_usability
-from .medical_compliance import check_medical_compliance
 from .procedure_completeness import analyze_procedure_completeness
-from .scorer import calculate_score
-from .tech_stack_detector import detect_tech_stack
 from .review_sentiment import analyze_review_sentiment
+from .scorer import calculate_score
 from .season_insight import get_season_insight
-from .video_presence import analyze_video_presence
-from .keyword_engine import extract_and_generate_keywords
 from .serp_checker import check_keyword_rankings
+from .tech_stack_detector import detect_tech_stack
+from .video_presence import analyze_video_presence
 from .voice_search_analyzer import analyze_voice_search_readiness
+
+logger = logging.getLogger("checkyourhospital.scanner")
 
 
 async def _safe_check(coro, name: str) -> CheckResult | None:
@@ -155,8 +156,14 @@ async def run_scan(
         # GEO/AEO: AI search mention (async, optional)
         if check_geo:
             for coro, name in [
-                (check_ai_search_mention(client, url, hospital_name, specialty, region), "ai_search_mention"),
-                (check_international_search(client, url, hospital_name, specialty, region), "international_search"),
+                (
+                    check_ai_search_mention(client, url, hospital_name, specialty, region),
+                    "ai_search_mention",
+                ),
+                (
+                    check_international_search(client, url, hospital_name, specialty, region),
+                    "international_search",
+                ),
             ]:
                 r = await _safe_check(coro, name)
                 if r:
@@ -197,6 +204,14 @@ async def run_scan(
     score_data = calculate_score(all_results)
 
     portal_scores = calculate_portal_scores(score_data.get("category_scores", {}))
+
+    # Regional competitor comparison. This depends on optional Supabase data and
+    # must not block the core scan when benchmark tables are unavailable.
+    competitor_analysis = None
+    try:
+        competitor_analysis = await discover_competitors(url, hospital_name=hospital_name)
+    except Exception as e:
+        logger.error("Competitor discovery crashed: %s", e)
 
     # Patient journey funnel scores
     patient_journey = calculate_journey_scores(score_data.get("category_scores", {}))
@@ -273,6 +288,7 @@ async def run_scan(
         "pages_crawled": len(pages),
         **score_data,
         "portal_scores": portal_scores,
+        "competitor_analysis": competitor_analysis,
         "multilingual_readiness": multilingual_readiness,
         "content_freshness": content_freshness,
         "patient_journey": patient_journey,
