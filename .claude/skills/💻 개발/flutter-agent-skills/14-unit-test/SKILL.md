@@ -51,6 +51,28 @@ test/
 
 ---
 
+## Assertion 스타일
+
+- 값/도메인 객체 검증은 `checks`를 선택적으로 사용해 타입 지향 assertion을 작성한다.
+- Flutter finder, widget matcher, 기존 테스트 유틸리티와의 호환성이 더 중요한 곳은 `expect`를 유지한다.
+- 한 파일 안에서 `checks`와 `expect`를 혼합할 수 있지만, 같은 assertion을 중복 작성하지 않는다.
+
+```dart
+import 'package:checks/checks.dart';
+
+check(result.isRight()).isTrue();
+
+result.match(
+  (failure) => fail('Should not return failure'),
+  (entity) {
+    check(entity.id).equals('1');
+    check(entity.name).isNotEmpty();
+  },
+);
+```
+
+---
+
 ## Test Templates
 
 ### UseCase Test
@@ -59,6 +81,7 @@ test/
 // test/unit/features/{feature}/domain/usecases/{action}_{feature}_usecase_test.dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:checks/checks.dart';
 import 'package:fpdart/fpdart.dart';
 
 class Mock{Feature}Repository extends Mock implements {Feature}Repository {}
@@ -84,7 +107,7 @@ void main() {
       final result = await sut('1');
 
       // Assert
-      expect(result, Right(testEntity));
+      check(result).equals(Right(testEntity));
       verify(() => mockRepository.get{Feature}('1')).called(1);
     });
 
@@ -98,7 +121,7 @@ void main() {
       final result = await sut('1');
 
       // Assert
-      expect(result, const Left(failure));
+      check(result).equals(const Left(failure));
     });
   });
 }
@@ -251,4 +274,6 @@ flutter test --coverage
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/TEST-PATTERN.md`

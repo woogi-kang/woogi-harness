@@ -37,7 +37,7 @@ dependencies:
 
 dev_dependencies:
   # 코드 생성 (선택)
-  easy_localization_generator: ^2.0.0
+  easy_localization_generator: ^0.3.5
 ```
 
 ### assets 선언

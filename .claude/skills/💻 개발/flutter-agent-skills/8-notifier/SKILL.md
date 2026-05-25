@@ -26,6 +26,18 @@ Riverpod 3 Notifier를 구현합니다.
 
 ---
 
+## ViewModel 역할
+
+Riverpod Notifier는 Flutter 공식 MVVM의 ViewModel 역할을 수행합니다.
+
+- UI가 바로 렌더링할 수 있는 상태를 만든다.
+- 사용자 액션을 메서드로 받고 Repository/UseCase 호출을 조율한다.
+- `BuildContext`, Navigator, SnackBar 같은 UI 세부 구현에 직접 의존하지 않는다.
+- API/DB/Platform Channel은 직접 호출하지 않고 Repository/UseCase를 통해 접근한다.
+- 하위 위젯에 넘길 command callback은 Page에서 `ref.read(provider.notifier).method` 형태로 연결한다.
+
+---
+
 ## Output Template
 
 ### AsyncNotifier (비동기 상태)
@@ -223,4 +235,6 @@ final {entity}DetailNotifierProvider = AsyncNotifierProvider.family<{Entity}Deta
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/RIVERPOD-PATTERN.md`

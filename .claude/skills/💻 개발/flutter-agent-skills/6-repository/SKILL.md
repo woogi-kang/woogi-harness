@@ -26,6 +26,18 @@ Repository 패턴을 구현합니다 (Interface + Implementation).
 
 ---
 
+## Repository 계약
+
+Repository는 앱 데이터의 단일 진실 공급원입니다.
+
+- ViewModel/Notifier는 DataSource, API client, DB, platform plugin을 직접 호출하지 않는다.
+- 캐싱, retry, polling, offline fallback, 에러 변환은 Repository 책임으로 둔다.
+- Repository끼리 직접 의존하지 않는다. 여러 Repository 조합은 UseCase 또는 ViewModel에서 수행한다.
+- DTO/Model과 Entity 변환은 Data layer 안에서 끝낸다.
+- 외부 데이터 소스가 바뀌어도 Domain Repository Interface와 UI State 계약은 유지한다.
+
+---
+
 ## Output Template
 
 ### Repository Interface (Domain Layer)
@@ -183,4 +195,6 @@ result.match(
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ARCHITECTURE-PATTERN.md`

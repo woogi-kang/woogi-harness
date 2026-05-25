@@ -45,10 +45,10 @@ metadata:
 ```yaml
 dependencies:
   # Deep Link handling
-  app_links: ^6.3.2
+  app_links: ^7.0.0
 
   # GoRouter (already included)
-  go_router: ^17.0.1
+  go_router: ^17.2.3
 ```
 
 ---
@@ -529,4 +529,5 @@ class FirebaseDynamicLinkHandler {
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
 - `10-routing/SKILL.md`

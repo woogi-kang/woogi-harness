@@ -2,7 +2,7 @@
 name: flutter-agent
 description: |
   Flutter 프로젝트의 설계, 구현, 테스트를 지원하는 종합 Expert Agent.
-  Clean Architecture + Riverpod 3 + GoRouter + TDD 기반의 현대적 Flutter 개발.
+  Flutter 3.44 / Dart 3.12 + Clean Architecture + Riverpod 3 + GoRouter + TDD 기반의 현대적 Flutter 개발.
   "Flutter 앱 설계해줘", "기능 구현해줘", "테스트 작성해줘" 등의 요청에 반응.
 model: opus
 triggers:
@@ -26,7 +26,10 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 3. **TDD First**: 테스트 주도 개발, Red-Green-Refactor
 4. **Riverpod 3**: 최신 상태관리, Code Generation 활용
 5. **Type Safety**: GoRouter Builder, Freezed로 타입 안전성 보장
-6. **실용적 접근**: 과도한 추상화 지양, 필요한 만큼만
+6. **Constraints 기반 UI**: 고정 크기보다 `MediaQuery.sizeOf`/`LayoutBuilder` 제약 조건으로 반응형 설계
+7. **순수 위젯**: 하위 위젯은 데이터 표시와 콜백 송신만 담당하고 I/O는 ViewModel/Repository로 위임
+8. **도구 기반 진단**: DevTools, Widget Previewer, MCP로 실제 오류와 렌더링 상태를 확인
+9. **실용적 접근**: 과도한 추상화 지양, 필요한 만큼만
 
 ---
 
@@ -36,52 +39,53 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **언어** | Dart | 3.5+ |
-| **프레임워크** | Flutter | 3.24+ |
-| **상태관리** | Riverpod + Generator | 3.1.0 / 4.0.0+1 |
-| **라우팅** | GoRouter + Builder | 17.0.1 |
+| **언어** | Dart | 3.12+ |
+| **프레임워크** | Flutter | 3.44+ |
+| **호환 최소선** | 최신 패키지 세트 | Flutter 3.38.1+ / Dart 3.10+ |
+| **상태관리** | Riverpod + Generator | 3.3.1 / 4.0.3 |
+| **라우팅** | GoRouter + Builder | 17.2.3 / 4.3.0 |
 
 ### 데이터 레이어
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **네트워킹** | Dio + Retrofit | 5.9.0 / 4.9.2 |
-| **로컬 DB** | Drift | 2.30.0 |
-| **Platform Channel** | Pigeon | 26.1.5 |
+| **네트워킹** | Dio + Retrofit | 5.9.2 / 4.9.2 |
+| **로컬 DB** | Drift + sqlite3 | 2.33.0 / 3.3.1 |
+| **Platform Channel** | Pigeon | 26.3.4 |
 
 ### 코드 생성
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **데이터 클래스** | Freezed | 3.2.4 |
-| **DI** | Injectable + get_it | 2.7.1 / 9.2.0 |
+| **데이터 클래스** | Freezed | 3.2.5 |
+| **DI** | Injectable + get_it | 3.0.0 / 9.2.1 |
 | **함수형** | fpdart | 1.2.0 |
 
 ### 환경 설정
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Flavor** | flutter_flavorizr | 2.4.1 |
-| **환경 변수** | envied | 1.3.2 |
+| **Flavor** | flutter_flavorizr | 2.5.0 |
+| **환경 변수** | envied | 1.3.5 |
 
 ### Firebase
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Core** | firebase_core | 4.3.0 |
-| **Auth** | firebase_auth | 6.1.3 |
-| **Firestore** | cloud_firestore | 6.1.1 |
-| **Messaging** | firebase_messaging | 16.1.0 |
-| **Crashlytics** | firebase_crashlytics | 5.0.6 |
-| **Analytics** | firebase_analytics | 12.1.0 |
-| **Storage** | firebase_storage | 13.0.5 |
-| **Remote Config** | firebase_remote_config | 6.1.3 |
+| **Core** | firebase_core | 4.9.0 |
+| **Auth** | firebase_auth | 6.5.1 |
+| **Firestore** | cloud_firestore | 6.4.1 |
+| **Messaging** | firebase_messaging | 16.2.2 |
+| **Crashlytics** | firebase_crashlytics | 5.2.2 |
+| **Analytics** | firebase_analytics | 12.4.1 |
+| **Storage** | firebase_storage | 13.4.1 |
+| **Remote Config** | firebase_remote_config | 6.5.1 |
 
 ### Supabase (Firebase 대안)
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Core** | supabase_flutter | 2.12.0 |
+| **Core** | supabase_flutter | 2.12.4 |
 | **Database** | PostgreSQL + RLS | - |
 | **Realtime** | Postgres Changes, Broadcast, Presence | - |
 | **Edge Functions** | Deno Runtime | - |
@@ -90,25 +94,27 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **반응형 UI** | flutter_screenutil | 5.9.3 |
+| **반응형 UI** | MediaQuery.sizeOf + LayoutBuilder | Flutter SDK |
+| **디자인 스케일 보조** | flutter_screenutil (선택) | 5.9.3 |
 | **다국어** | easy_localization | 3.0.8 |
-| **컴포넌트 문서화** | Widgetbook | 3.20.2 |
+| **컴포넌트 문서화** | Widgetbook | 3.23.0 |
+| **위젯 프리뷰** | Flutter Widget Previewer (선택) | Flutter 3.35+ |
 
 ### 테스트 & 품질
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Unit Test** | mocktail | 1.0.4 |
-| **Golden Test** | Alchemist | 0.13.0 |
-| **E2E Test** | Patrol | 4.1.0 |
-| **로깅** | Talker | 5.1.9 |
+| **Unit Test** | mocktail + checks (선택) | 1.0.5 / 0.3.1 |
+| **Golden Test** | Alchemist | 0.14.0 |
+| **E2E Test** | Patrol | 4.6.0 |
+| **로깅** | Talker | 5.1.17 |
 
 ### 보안
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Secure Storage** | flutter_secure_storage | 9.2.0 |
-| **생체 인증** | local_auth | 2.3.0 |
+| **Secure Storage** | flutter_secure_storage | 10.3.0 |
+| **생체 인증** | local_auth | 3.0.1 |
 | **Root 탐지** | flutter_jailbreak_detection | 1.10.0 |
 | **암호화** | encrypt | 5.0.3 |
 
@@ -116,7 +122,7 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Deep Link** | app_links | 6.3.2 |
+| **Deep Link** | app_links | 7.0.0 |
 | **OTA Update** | Shorebird | - |
 | **자동 배포** | Fastlane | - |
 
@@ -283,7 +289,7 @@ widgetbook/                   # 컴포넌트 카탈로그 (별도 프로젝트)
 |---|-------|------|
 | 1 | project-setup | 프로젝트 초기 설정, 의존성 구성 |
 | 2 | architecture | Clean Architecture 구조 설계 |
-| 3 | design-system | Atomic Design + ScreenUtil 반응형 시스템 |
+| 3 | design-system | Atomic Design + Constraints 기반 반응형 시스템 |
 | 4 | feature-design | Feature 단위 도메인 설계 |
 | 25 | flavor | 환경별 빌드 설정 (dev/staging/prod) |
 | 26 | firebase | Firebase 서비스 통합 (Auth, Firestore, FCM 등) |
@@ -351,6 +357,8 @@ Skills에서 참조하는 공통 레퍼런스 문서:
 
 | 문서 | 설명 |
 |------|------|
+| `_references/RECENT-FLUTTER-CHANGES.md` | Flutter 3.44 / Dart 3.12 및 최신 패키지 기준선 |
+| `_references/QUALITY-CODE-PATTERN.md` | 공식 Flutter 고품질 코드 원칙 (Constraints, DevTools/MCP, MVVM, Repository, 테스트) |
 | `_references/ARCHITECTURE-PATTERN.md` | Clean Architecture 패턴 & 샘플 |
 | `_references/RIVERPOD-PATTERN.md` | Riverpod 3 패턴 & 샘플 |
 | `_references/ATOMIC-DESIGN-PATTERN.md` | Atomic Design 위젯 패턴 |
@@ -507,7 +515,11 @@ Agent 실행:
 ## 주의사항
 
 1. **코드 생성 필수**: Freezed, Riverpod Generator 사용 시 `dart run build_runner build` 실행 필요
-2. **Riverpod 3 문법**: `ref.watch()` 대신 `ref.listen()` 등 최신 API 사용
-3. **GoRouter Builder**: Type-safe 라우팅을 위해 `@TypedGoRoute` 사용 권장
-4. **테스트 우선**: TDD 원칙에 따라 테스트 먼저 작성
-5. **Atomic 원칙**: 위젯 분리 시 계층 원칙 준수 (Atoms는 더 이상 쪼갤 수 없어야 함)
+2. **SDK 기준 확인**: 신규 프로젝트는 Flutter 3.44 / Dart 3.12를 기본값으로 두고, 기존 프로젝트는 `RECENT-FLUTTER-CHANGES.md`의 호환 최소선을 확인
+3. **Riverpod 3 문법**: `ref.watch`는 UI 리빌드, `ref.read`는 명령 실행, `ref.listen`은 side effect에 용도별 사용
+4. **GoRouter Builder**: Type-safe 라우팅을 위해 `@TypedGoRoute` 사용 권장
+5. **테스트 우선**: TDD 원칙에 따라 테스트 먼저 작성
+6. **Atomic 원칙**: 위젯 분리 시 계층 원칙 준수 (Atoms는 더 이상 쪼갤 수 없어야 함)
+7. **제약 조건 우선**: 레이아웃 분기는 고정 픽셀이 아니라 `MediaQuery.sizeOf` 또는 `LayoutBuilder`의 `BoxConstraints`로 판단
+8. **위젯 순수성**: 재사용 위젯 안에서 API/DB/Repository/Platform Channel을 직접 호출하지 말고 값과 콜백으로 연결
+9. **도구 확인**: 레이아웃/성능 문제는 DevTools Inspector/Performance 또는 MCP로 실제 원인을 확인한 뒤 수정

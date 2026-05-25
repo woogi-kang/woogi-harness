@@ -1,7 +1,7 @@
 ---
 name: design-system
 description: |
-  Atomic Design 기반 디자인 시스템을 구축합니다.
+  Atomic Design 기반 디자인 시스템과 Constraints 기반 반응형 UI를 구축합니다.
 metadata:
   category: "💻 개발"
   version: "1.0.0"
@@ -10,11 +10,12 @@ metadata:
 
 Extends: `../../../design-system/SKILL.md` (공통 디자인 시스템 토큰 아키텍처 참조)
 
-Atomic Design 기반 디자인 시스템을 구축합니다.
+Atomic Design 기반 디자인 시스템과 Constraints 기반 반응형 UI를 구축합니다.
 
 ## Triggers
 
 - "디자인 시스템", "atomic design", "design tokens", "위젯 구조"
+- "반응형 레이아웃", "responsive", "constraints", "LayoutBuilder"
 
 ---
 
@@ -107,6 +108,53 @@ lib/features/{feature}/presentation/
 | UserAvatar (특화) | - | ✅ (user) |
 
 **기준**: 2개 이상의 Feature에서 사용되면 Core로 승격
+
+---
+
+## 반응형 레이아웃 원칙
+
+디자인 시스템은 고정 화면 크기가 아니라 Flutter 제약 조건 모델을 기준으로 설계합니다.
+
+- 앱 전체 창 크기 기준 분기: `MediaQuery.sizeOf(context)`
+- 위젯이 배치된 로컬 영역 기준 분기: `LayoutBuilder`
+- 디자인 토큰은 간격/반경/타이포그래피의 일관성을 제공하고, 레이아웃 분기 자체는 `BoxConstraints`로 판단
+- `flutter_screenutil`은 기존 프로젝트가 채택한 경우 스케일 보조 도구로만 사용하며, 레이아웃 의사결정의 1차 기준으로 사용하지 않음
+
+```dart
+class ResponsiveShell extends StatelessWidget {
+  const ResponsiveShell({
+    super.key,
+    required this.navigation,
+    required this.content,
+  });
+
+  final Widget navigation;
+  final Widget content;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 840) {
+          return Row(
+            children: [
+              SizedBox(width: 280, child: navigation),
+              Expanded(child: content),
+            ],
+          );
+        }
+
+        return Column(
+          children: [
+            Expanded(child: content),
+            navigation,
+          ],
+        );
+      },
+    );
+  }
+}
+```
 
 ---
 
@@ -345,7 +393,9 @@ abstract final class AppRadius {
 }
 ```
 
-### ScreenUtil 초기화 (main.dart)
+### ScreenUtil 초기화 (선택, main.dart)
+
+`ScreenUtil`은 기존 프로젝트에서 이미 사용 중이거나 디자인 토큰 스케일 보정이 필요한 경우에만 추가합니다. 신규 반응형 레이아웃 분기는 `MediaQuery.sizeOf`와 `LayoutBuilder`를 우선합니다.
 
 ```dart
 // lib/main.dart
@@ -399,7 +449,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### ScreenUtil 사용법
+### ScreenUtil 사용법 (선택)
 
 ```dart
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -822,4 +872,6 @@ Feature 위젯을 Core로 승격할 때:
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ATOMIC-DESIGN-PATTERN.md`

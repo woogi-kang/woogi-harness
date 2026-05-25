@@ -1,14 +1,14 @@
 ---
 name: platform-channel
 description: |
-  Pigeon 기반 네이티브 플랫폼 통신을 구현합니다.
+  pub.dev 패키지 검토 후 필요한 경우 Pigeon 기반 네이티브 플랫폼 통신을 구현합니다.
 metadata:
   category: "💻 개발"
   version: "1.0.0"
 ---
 # Platform Channel Skill
 
-Pigeon 기반 네이티브 플랫폼 통신을 구현합니다.
+pub.dev 패키지 검토 후 필요한 경우 Pigeon 기반 네이티브 플랫폼 통신을 구현합니다.
 
 ## Triggers
 
@@ -23,6 +23,17 @@ Pigeon 기반 네이티브 플랫폼 통신을 구현합니다.
 | `apiName` | ✅ | API 이름 |
 | `methods` | ✅ | 메서드 목록 |
 | `platforms` | ❌ | 대상 플랫폼 (iOS, Android, Windows 등) |
+
+---
+
+## 의사결정 흐름
+
+1. pub.dev에서 공식/활성 패키지와 플랫폼 지원 범위를 먼저 확인한다.
+2. 패키지가 요구사항, 보안, 유지보수, 대상 플랫폼을 충족하면 Dart Service 인터페이스 뒤에 감싸 사용한다.
+3. 패키지가 없거나 native API 직접 제어가 필요할 때 Pigeon 기반 Platform Channel을 구현한다.
+4. Platform Channel 코드는 Service/DataSource 계층에 격리하고, UI/ViewModel에는 Repository/UseCase 인터페이스만 노출한다.
+5. iOS/macOS 네이티브 의존성은 Flutter 3.44+ 기준 Swift Package Manager를 우선 검토하고, 호환성 문제가 있을 때 CocoaPods를 fallback으로 둔다.
+6. AI/MCP를 사용할 수 있으면 현재 pub.dev 문서와 프로젝트 SDK 버전을 확인한 뒤 코드를 생성한다.
 
 ---
 
@@ -228,4 +239,6 @@ class AppDelegate: FlutterAppDelegate {
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ARCHITECTURE-PATTERN.md`

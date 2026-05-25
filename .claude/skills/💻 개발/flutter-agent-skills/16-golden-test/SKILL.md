@@ -228,7 +228,7 @@ flutter test --update-goldens test/golden/app_button_golden_test.dart
 
 - name: Upload golden failures
   if: failure()
-  uses: actions/upload-artifact@v3
+  uses: actions/upload-artifact@v4
   with:
     name: golden-failures
     path: test/golden/failures/
@@ -236,4 +236,5 @@ flutter test --update-goldens test/golden/app_button_golden_test.dart
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
 - `_references/TEST-PATTERN.md`

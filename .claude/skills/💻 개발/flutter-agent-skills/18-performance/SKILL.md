@@ -154,6 +154,15 @@ flutter run --profile
 # DevTools에서 Timeline 분석
 ```
 
+### Layout 진단
+
+레이아웃 오버플로우나 의도치 않은 리빌드는 추측으로 수치를 바꾸기 전에 DevTools에서 확인합니다.
+
+- Inspector에서 문제 위젯의 `constraints`, `size`, 부모/자식 관계를 확인
+- 노란색 overflow stripe가 나온 경우 정확한 Row/Column/Flex 지점을 먼저 식별
+- `LayoutBuilder`로 분기하는 위젯은 작은/큰 제약 조건을 widget test나 preview로 재현
+- Dart and Flutter MCP server가 연결되어 있으면 runtime errors, analyzer 결과, pub.dev 문서, running app introspection을 확인한 뒤 수정
+
 ### 프레임 분석
 
 ```dart
@@ -178,3 +187,9 @@ WidgetsBinding.instance.addTimingsCallback((timings) {
 - [ ] 무거운 연산 Isolate 분리
 - [ ] RepaintBoundary 적용
 - [ ] 프레임 드롭 확인 (16ms 이내)
+- [ ] DevTools Inspector/Performance 또는 MCP 기반으로 원인 확인 후 수정
+
+## References
+
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`

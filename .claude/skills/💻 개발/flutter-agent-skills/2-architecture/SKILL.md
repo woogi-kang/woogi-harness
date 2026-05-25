@@ -85,4 +85,6 @@ features/{feature}/
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ARCHITECTURE-PATTERN.md`

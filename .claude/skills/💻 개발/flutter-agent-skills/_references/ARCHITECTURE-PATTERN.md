@@ -2,6 +2,20 @@
 
 Flutter Clean Architecture 구현을 위한 패턴 및 샘플 코드 레퍼런스입니다.
 
+## 공식 Flutter MVVM 매핑
+
+Flutter 공식 아키텍처 가이드는 MVVM을 기준으로 UI layer와 Data layer를 나눈다. 이 하니스에서는 Clean Architecture를 유지하되 다음 이름으로 매핑한다.
+
+| 공식 Flutter 용어 | 하니스 구조 | 책임 |
+|------------------|-------------|------|
+| View | `presentation/pages`, `presentation/widgets` | UI 렌더링, 사용자 입력 수신, ViewModel 명령 호출 |
+| ViewModel | `presentation/notifiers` | UI 상태 생성, 사용자 액션 처리, Repository/UseCase 호출 |
+| Repository | `domain/repositories` + `data/repositories` | 앱 데이터의 단일 진실 공급원, 캐싱/에러/동기화 정책 |
+| Service | `data/datasources`, `core/network`, `core/database`, `core/platform` | 외부 API, DB, platform plugin/channel 접근 |
+| Domain layer | `domain/usecases` | 복잡하거나 재사용되는 비즈니스 로직 |
+
+UseCase는 선택적이다. 여러 Repository 조합, 복잡한 비즈니스 규칙, 여러 ViewModel에서 재사용되는 로직이 있을 때 추가한다.
+
 ## 레이어 구조
 
 ```
@@ -606,3 +620,5 @@ Presentation → Domain ← Data
 - Data Layer는 Domain Layer에 의존
 - Presentation Layer는 Domain Layer에 의존
 - Entity ↔ Model 변환은 Data Layer에서 수행
+- View는 데이터 표시와 이벤트 전달만 담당하고, 데이터 접근 로직은 ViewModel/UseCase/Repository로 이동
+- Repository는 DataSource/API/DB/Platform Service를 감추는 단일 진실 공급원

@@ -6,12 +6,12 @@ Riverpod 3.x 상태관리 패턴 및 샘플 코드 레퍼런스입니다.
 
 ```yaml
 dependencies:
-  flutter_riverpod: ^3.1.0
-  riverpod_annotation: ^4.0.0
+  flutter_riverpod: ^3.3.1
+  riverpod_annotation: ^4.0.2
 
 dev_dependencies:
-  riverpod_generator: ^4.0.0+1
-  build_runner: ^2.4.0
+  riverpod_generator: ^4.0.3
+  build_runner: ^2.15.0
 ```
 
 ---

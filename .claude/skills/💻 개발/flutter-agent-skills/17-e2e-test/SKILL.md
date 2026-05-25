@@ -29,11 +29,13 @@ Patrol을 사용한 E2E 통합 테스트를 작성합니다.
 
 ## 설정
 
+Flutter의 공식 `integration_test`는 widget test와 같은 finder/tester API로 앱 전체 사용자 흐름을 검증합니다. Patrol은 권한 다이얼로그, 알림, 네이티브 시스템 UI처럼 Flutter 바깥 상호작용이 필요한 경우 우선 사용합니다.
+
 ### pubspec.yaml
 
 ```yaml
 dev_dependencies:
-  patrol: ^4.1.0
+  patrol: ^4.6.0
 ```
 
 ### patrol.yaml
@@ -252,4 +254,6 @@ await $('Item').at(0).tap();
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/TEST-PATTERN.md`

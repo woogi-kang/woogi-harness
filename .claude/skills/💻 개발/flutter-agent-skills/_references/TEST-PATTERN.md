@@ -24,10 +24,13 @@ Flutter 테스트 패턴 및 샘플 코드 레퍼런스입니다.
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.4
-  patrol: ^4.1.0
-  alchemist: ^0.13.0
+  mocktail: ^1.0.5
+  checks: ^0.3.1
+  patrol: ^4.6.0
+  alchemist: ^0.14.0
 ```
+
+`checks`는 값과 도메인 객체를 타입 지향으로 검증할 때 선택적으로 사용한다. Flutter finder/matcher와 기존 테스트 헬퍼는 `expect`를 유지해도 된다.
 
 ---
 
@@ -39,6 +42,7 @@ dev_dependencies:
 // test/features/auth/domain/usecases/login_usecase_test.dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:checks/checks.dart';
 import 'package:fpdart/fpdart.dart';
 
 // Mock 클래스
@@ -74,7 +78,7 @@ void main() {
       ));
 
       // Assert
-      expect(result, Right(testUser));
+      check(result).equals(Right(testUser));
       verify(() => mockRepository.login(testEmail, testPassword)).called(1);
     });
 
@@ -91,7 +95,7 @@ void main() {
       ));
 
       // Assert
-      expect(result, const Left(failure));
+      check(result).equals(const Left(failure));
     });
   });
 }
@@ -694,7 +698,7 @@ flutter test test/golden
 ```yaml
 # pubspec.yaml
 dev_dependencies:
-  patrol: ^4.1.0
+  patrol: ^4.6.0
 ```
 
 ```dart
@@ -1000,7 +1004,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
 
       - name: Install dependencies
         run: flutter pub get

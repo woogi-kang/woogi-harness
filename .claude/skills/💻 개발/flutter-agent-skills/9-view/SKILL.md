@@ -26,6 +26,16 @@ Atomic Design 기반 UI Widget/Page를 구현합니다.
 
 ---
 
+## 구현 원칙
+
+- View/Page는 UI State를 구독하고 하위 위젯에 값과 콜백을 전달한다.
+- 재사용 위젯은 API, DB, Repository, Platform Channel을 직접 호출하지 않는다.
+- 하위 위젯은 생성자 파라미터로 데이터를 받고 `VoidCallback`, `ValueChanged<T>`, command callback으로 이벤트를 올린다.
+- 레이아웃 분기는 고정 기기 크기가 아니라 `MediaQuery.sizeOf` 또는 `LayoutBuilder`의 `BoxConstraints`로 판단한다.
+- 독립 위젯은 Widget Previewer, Widgetbook, widget test에서 앱 전체 실행 없이 렌더링 가능해야 한다.
+
+---
+
 ## Page Template
 
 ### 목록 Page
@@ -269,5 +279,7 @@ asyncState.when(
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ATOMIC-DESIGN-PATTERN.md`
 - `_references/RIVERPOD-PATTERN.md`

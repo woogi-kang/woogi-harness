@@ -16,6 +16,14 @@ Fastlane을 활용한 자동 배포 파이프라인을 구성합니다.
 
 ---
 
+## SDK 기준
+
+- 배포 워크플로우의 Flutter 버전은 앱 `pubspec.yaml`과 CI 설정에 맞춘다. 최신 신규 프로젝트 기본값은 Flutter `3.44.0`이다.
+- Android 배포는 Java 17 이상과 min SDK API 24 이상을 기본값으로 검토한다.
+- iOS/macOS 네이티브 의존성은 Swift Package Manager 우선, CocoaPods fallback 순서로 점검한다.
+
+---
+
 ## 배포 파이프라인
 
 ```
@@ -307,7 +315,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           channel: 'stable'
           cache: true
 
@@ -357,7 +365,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           channel: 'stable'
           cache: true
 
@@ -504,5 +512,6 @@ class VersionInfo {
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
 - `25-flavor/SKILL.md`
 - `22-cicd/SKILL.md`

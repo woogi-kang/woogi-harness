@@ -27,6 +27,14 @@ GitHub Actions 기반 Flutter CI/CD 파이프라인을 구성합니다.
 
 ---
 
+## SDK 기준
+
+- CI의 Flutter 버전은 `pubspec.yaml` SDK constraint와 맞춘다. 최신 신규 프로젝트 기본값은 Flutter `3.44.0`이다.
+- Android 빌드는 Java 17 이상을 기본값으로 둔다.
+- 최신 패키지 세트를 쓰는 경우 최소 Flutter `3.38.1`, Dart `3.10.0` 이상을 확인한다.
+
+---
+
 ## Output Templates
 
 ### 1. 기본 CI Workflow
@@ -55,7 +63,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           cache: true
 
       - name: Get dependencies
@@ -97,7 +105,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           cache: true
 
       - name: Get dependencies
@@ -144,7 +152,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           cache: true
 
       - name: Get dependencies
@@ -214,7 +222,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           cache: true
 
       - name: Get dependencies
@@ -286,7 +294,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
           cache: true
 
       - name: Get dependencies
@@ -384,4 +392,5 @@ end
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
 - `_references/TEST-PATTERN.md`

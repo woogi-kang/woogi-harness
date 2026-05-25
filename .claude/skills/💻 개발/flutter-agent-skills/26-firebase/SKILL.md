@@ -30,14 +30,14 @@ Flutter 프로젝트에 Firebase 서비스를 설정하고 통합합니다.
 
 | 서비스 | 패키지 | 버전 | 설명 |
 |--------|--------|------|------|
-| **Core** | firebase_core | ^4.3.0 | Firebase 초기화 (필수) |
-| **Auth** | firebase_auth | ^6.1.3 | 인증 (이메일, 소셜 로그인) |
-| **Firestore** | cloud_firestore | ^6.1.1 | NoSQL 데이터베이스 |
-| **Messaging** | firebase_messaging | ^16.1.0 | 푸시 알림 (FCM) |
-| **Crashlytics** | firebase_crashlytics | ^5.0.6 | 크래시 리포팅 |
-| **Analytics** | firebase_analytics | ^12.1.0 | 사용자 분석 |
-| **Storage** | firebase_storage | ^13.0.5 | 파일 저장소 |
-| **Remote Config** | firebase_remote_config | ^6.1.3 | 원격 설정 |
+| **Core** | firebase_core | ^4.9.0 | Firebase 초기화 (필수) |
+| **Auth** | firebase_auth | ^6.5.1 | 인증 (이메일, 소셜 로그인) |
+| **Firestore** | cloud_firestore | ^6.4.1 | NoSQL 데이터베이스 |
+| **Messaging** | firebase_messaging | ^16.2.2 | 푸시 알림 (FCM) |
+| **Crashlytics** | firebase_crashlytics | ^5.2.2 | 크래시 리포팅 |
+| **Analytics** | firebase_analytics | ^12.4.1 | 사용자 분석 |
+| **Storage** | firebase_storage | ^13.4.1 | 파일 저장소 |
+| **Remote Config** | firebase_remote_config | ^6.5.1 | 원격 설정 |
 
 ---
 
@@ -48,28 +48,28 @@ Flutter 프로젝트에 Firebase 서비스를 설정하고 통합합니다.
 ```yaml
 dependencies:
   # Firebase Core (필수)
-  firebase_core: ^4.3.0
+  firebase_core: ^4.9.0
 
   # Authentication
-  firebase_auth: ^6.1.3
+  firebase_auth: ^6.5.1
 
   # Database
-  cloud_firestore: ^6.1.1
+  cloud_firestore: ^6.4.1
 
   # Push Notifications
-  firebase_messaging: ^16.1.0
+  firebase_messaging: ^16.2.2
 
   # Crash Reporting
-  firebase_crashlytics: ^5.0.6
+  firebase_crashlytics: ^5.2.2
 
   # Analytics
-  firebase_analytics: ^12.1.0
+  firebase_analytics: ^12.4.1
 
   # File Storage
-  firebase_storage: ^13.0.5
+  firebase_storage: ^13.4.1
 
   # Remote Config
-  firebase_remote_config: ^6.1.3
+  firebase_remote_config: ^6.5.1
 ```
 
 ---
@@ -1097,5 +1097,6 @@ class CacheFailure extends Failure {
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
 - `_references/ARCHITECTURE-PATTERN.md`
 - `25-flavor/SKILL.md` (Flavor 통합)

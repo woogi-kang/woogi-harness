@@ -1,18 +1,18 @@
 ---
 name: widgetbook
 description: |
-  Widgetbook을 사용한 컴포넌트 카탈로그 및 디자인 시스템 문서화를 구성합니다.
+  Widget Previewer와 Widgetbook을 사용한 컴포넌트 프리뷰 및 디자인 시스템 문서화를 구성합니다.
 metadata:
   category: "💻 개발"
   version: "1.0.0"
 ---
 # Widgetbook Skill
 
-Widgetbook을 사용한 컴포넌트 카탈로그 및 디자인 시스템 문서화를 구성합니다.
+Widget Previewer와 Widgetbook을 사용한 컴포넌트 프리뷰 및 디자인 시스템 문서화를 구성합니다.
 
 ## Triggers
 
-- "widgetbook", "컴포넌트 카탈로그", "storybook", "디자인 문서화"
+- "widget preview", "widget previewer", "widgetbook", "컴포넌트 카탈로그", "storybook", "디자인 문서화"
 
 ---
 
@@ -27,13 +27,58 @@ Widgetbook을 사용한 컴포넌트 카탈로그 및 디자인 시스템 문서
 
 ## 설정
 
+### 도구 선택
+
+| 도구 | 사용 시점 |
+|------|-----------|
+| Widget Previewer | Flutter 3.35+에서 개별 위젯 상태를 빠르게 실험할 때 |
+| Widgetbook | Flutter 3.38+에서 디자인 시스템 카탈로그, 팀 공유, 다중 테마/디바이스/접근성 문서화가 필요할 때 |
+
+Widget Previewer와 Widgetbook 모두 위젯이 순수해야 효과가 큽니다. 위젯은 생성자로 데이터를 받고 콜백으로 이벤트를 올려야 하며, 내부에서 Repository/API/DB를 직접 호출하지 않습니다.
+
+### Widget Previewer 예시
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
+
+@Preview(name: 'Primary')
+Widget primaryButtonPreview() {
+  return MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: AppButton(
+          label: '확인',
+          onPressed: () {},
+        ),
+      ),
+    ),
+  );
+}
+
+@Preview(name: 'Loading')
+Widget loadingButtonPreview() {
+  return MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: AppButton(
+          label: '저장 중',
+          isLoading: true,
+          onPressed: () {},
+        ),
+      ),
+    ),
+  );
+}
+```
+
 ### pubspec.yaml
 
 ```yaml
 dev_dependencies:
-  widgetbook: ^3.20.2
-  widgetbook_annotation: ^3.2.0
-  widgetbook_generator: ^3.20.2
+  widgetbook: ^3.23.0
+  widgetbook_annotation: ^3.11.0
+  widgetbook_generator: ^3.23.0
 ```
 
 ### 디렉토리 구조
@@ -59,8 +104,8 @@ name: widgetbook_app
 description: Component catalog for {project_name}
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
-  flutter: '>=3.24.0'
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: '>=3.44.0'
 
 dependencies:
   flutter:
@@ -69,7 +114,9 @@ dependencies:
     path: ../
 
 dev_dependencies:
-  widgetbook: ^3.10.0
+  widgetbook: ^3.23.0
+  widgetbook_annotation: ^3.11.0
+  widgetbook_generator: ^3.23.0
 ```
 
 ### 2. Widgetbook Main
@@ -515,7 +562,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
 
       - name: Build Widgetbook
         run: |
@@ -544,4 +591,6 @@ jobs:
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/ATOMIC-DESIGN-PATTERN.md`

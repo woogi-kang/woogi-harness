@@ -18,11 +18,17 @@ metadata:
 
 ## 리뷰 체크리스트
 
+최신 SDK/패키지 기준은 `_references/RECENT-FLUTTER-CHANGES.md`를 먼저 확인한다.
+
 ### 1. 아키텍처
 
 - [ ] Clean Architecture 레이어 준수
   - Domain Layer에 외부 의존성 없음
   - Data → Domain ← Presentation 의존성 방향
+- [ ] 공식 Flutter MVVM 매핑 준수
+  - View는 렌더링과 이벤트 전달만 담당
+  - ViewModel/Notifier는 UI 상태와 사용자 액션 처리
+  - Repository는 데이터의 단일 진실 공급원
 - [ ] Feature 단위 모듈화
 - [ ] 단일 책임 원칙 (SRP) 준수
 - [ ] 의존성 주입 (DI) 사용
@@ -37,6 +43,10 @@ metadata:
   - Pages: 데이터 연동
 - [ ] 네이밍 규칙 준수
 - [ ] 재사용 가능성
+- [ ] 위젯 순수성
+  - 재사용 위젯 내부 API/DB/Repository/Platform Channel 호출 없음
+  - 하위 위젯은 값과 콜백으로 연결
+  - Preview/Widget Test에서 독립 렌더링 가능
 
 ### 3. 상태 관리 (Riverpod)
 
@@ -65,6 +75,10 @@ metadata:
 - [ ] const 위젯 활용
 - [ ] 이미지 최적화
 - [ ] 불필요한 리빌드 제거
+- [ ] Constraints 기반 반응형 레이아웃
+  - 앱 전체 분기는 `MediaQuery.sizeOf`
+  - 로컬 영역 분기는 `LayoutBuilder`
+  - 기기 기준 고정 width/height 남용 없음
 
 ### 7. 코드 품질
 
@@ -72,6 +86,7 @@ metadata:
 - [ ] 중복 코드 없음
 - [ ] 명확한 네이밍
 - [ ] 적절한 주석 (필요한 경우만)
+- [ ] DevTools Inspector/Performance 또는 MCP 기반으로 레이아웃/성능 문제 원인 확인
 
 ### 8. 보안
 
@@ -165,7 +180,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.44.0'
 
       - name: Install dependencies
         run: flutter pub get
@@ -187,3 +202,9 @@ jobs:
             exit 1
           fi
 ```
+
+## References
+
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
+- `_references/TEST-PATTERN.md`

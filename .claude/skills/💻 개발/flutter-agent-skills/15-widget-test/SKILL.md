@@ -27,12 +27,19 @@ Widget Test를 작성합니다.
 
 ## Test Templates
 
+Widget test는 위젯을 앱 전체 실행 없이 메모리에서 렌더링해 검증합니다. 독립 위젯은 상태별 렌더링, 사용자 이벤트, 작은/큰 제약 조건 분기를 함께 테스트합니다.
+
+- Finder 검증은 `expect(find..., finds...)`를 유지한다.
+- 콜백 호출 여부, ViewModel 입력값, 계산 결과처럼 일반 Dart 값은 `checks`를 선택적으로 사용한다.
+- 반응형 위젯은 `SizedBox` 또는 `MediaQuery`로 작은/큰 제약 조건을 만들어 각각 검증한다.
+
 ### Atom Widget Test
 
 ```dart
 // test/widget/core/design_system/atoms/app_button_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:checks/checks.dart';
 
 void main() {
   group('AppButton', () {
@@ -68,7 +75,7 @@ void main() {
       await tester.tap(find.byType(AppButton));
       await tester.pump();
 
-      expect(pressed, true);
+      check(pressed).isTrue();
     });
 
     testWidgets('shows loading indicator when isLoading', (tester) async {
@@ -105,10 +112,48 @@ void main() {
       await tester.tap(find.byType(AppButton));
       await tester.pump();
 
-      expect(pressed, false);
+      check(pressed).isFalse();
     });
   });
 }
+```
+
+### Constraints 분기 Widget Test
+
+```dart
+testWidgets('uses compact layout under 720px', (tester) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      home: SizedBox(
+        width: 360,
+        child: ProductPane(
+          products: const [],
+          onProductTap: (_) {},
+        ),
+      ),
+    ),
+  );
+
+  expect(find.byType(ProductList), findsOneWidget);
+  expect(find.byType(ProductGrid), findsNothing);
+});
+
+testWidgets('uses grid layout at 720px and wider', (tester) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      home: SizedBox(
+        width: 840,
+        child: ProductPane(
+          products: const [],
+          onProductTap: (_) {},
+        ),
+      ),
+    ),
+  );
+
+  expect(find.byType(ProductGrid), findsOneWidget);
+  expect(find.byType(ProductList), findsNothing);
+});
 ```
 
 ### Page Widget Test
@@ -259,4 +304,6 @@ flutter test test/widget/
 
 ## References
 
+- `_references/RECENT-FLUTTER-CHANGES.md`
+- `_references/QUALITY-CODE-PATTERN.md`
 - `_references/TEST-PATTERN.md`
