@@ -8,11 +8,19 @@ metadata:
 ---
 # Schema Skill
 
-Zod를 사용하여 타입 안전한 스키마를 정의합니다.
+Zod 4를 사용하여 타입 안전한 스키마를 정의합니다.
 
 ## Triggers
 
 - "스키마 정의", "zod 스키마", "유효성 검증", "validation"
+
+---
+
+## 버전 기준
+
+- 기본 기준은 `zod@4.x`입니다.
+- `ZodError`의 상세 오류는 `error.issues`를 사용합니다.
+- 스키마는 클라이언트 폼, Server Action, Route Handler, 환경 변수 검증에서 공유합니다.
 
 ---
 

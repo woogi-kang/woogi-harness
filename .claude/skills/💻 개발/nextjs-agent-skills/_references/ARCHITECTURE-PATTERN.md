@@ -64,7 +64,7 @@ src/
 ├── stores/                        # 글로벌 스토어
 ├── types/                         # 글로벌 타입
 ├── env.ts                         # T3 Env
-└── middleware.ts                  # Edge Middleware
+└── proxy.ts                  # Next.js Proxy (기존 Middleware)
 ```
 
 ---

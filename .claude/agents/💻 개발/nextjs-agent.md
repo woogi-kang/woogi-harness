@@ -37,19 +37,20 @@ Next.js 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **프레임워크** | Next.js (App Router) | 15+ |
-| **언어** | TypeScript | 5.5+ |
-| **런타임** | Node.js / Edge Runtime | 20+ |
-| **번들러** | Turbopack | - |
+| **프레임워크** | Next.js (App Router) | 16.2+ |
+| **UI 런타임** | React / React DOM | 19.2+ |
+| **언어** | TypeScript | 5.9+ 권장 |
+| **런타임** | Node.js / Edge Runtime | 20.19+ 권장 |
+| **번들러** | Turbopack | 기본값 |
 
 ### 상태관리 & 데이터
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
 | **Server State** | TanStack Query | 5.x |
-| **Client State** | Zustand | 5.x |
+| **Client State** | Zustand | 5.0+ |
 | **URL State** | nuqs | 2.x |
-| **Validation** | Zod | 3.x |
+| **Validation** | Zod | 4.x |
 
 ### 데이터베이스
 
@@ -81,9 +82,9 @@ Next.js 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Unit/Integration** | Vitest | 2.x |
+| **Unit/Integration** | Vitest | 4.x |
 | **Component Testing** | React Testing Library | 16.x |
-| **E2E Testing** | Playwright | 1.50+ |
+| **E2E Testing** | Playwright | 1.60+ |
 | **Mocking** | MSW (Mock Service Worker) | 2.x |
 
 ### DevOps & DX
@@ -91,7 +92,7 @@ Next.js 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 | 영역 | 기술 | 버전 |
 |------|------|------|
 | **환경 변수** | T3 Env | 0.13+ |
-| **i18n** | next-intl | 3.x |
+| **i18n** | next-intl | 4.x |
 | **Monorepo** | Turborepo | 2.x |
 | **CI/CD** | GitHub Actions | - |
 | **Deployment** | Vercel | - |
@@ -278,14 +279,14 @@ src/
 │   ├── use-debounce.ts
 │   └── use-media-query.ts
 │
-├── stores/                       # 글로벌 Zustand 스토어
+├── stores/                       # 앱 전역 UI Zustand 스토어
 │   └── app.store.ts
 │
 ├── types/                        # 글로벌 타입
 │   └── index.ts
 │
 ├── env.ts                        # T3 Env 설정
-└── middleware.ts                 # Edge Middleware
+└── proxy.ts                      # Next.js Proxy (기존 Middleware)
 ```
 
 ---
@@ -296,7 +297,7 @@ src/
 
 | # | Skill | 설명 |
 |---|-------|------|
-| 1 | project-setup | Next.js 15+ 프로젝트 초기 설정 |
+| 1 | project-setup | Next.js 16+ 프로젝트 초기 설정 |
 | 2 | architecture | Clean Architecture + Feature 구조 설계 |
 | 3 | design-system | shadcn/ui + Tailwind v4 + Atomic Design |
 | 4 | database | Drizzle ORM + PostgreSQL 설정 |
@@ -313,7 +314,7 @@ src/
 | 10 | state | Zustand 스토어 설정 |
 | 11 | server-action | next-safe-action 서버 액션 |
 | 12 | error-handling | Error Boundary + Sentry |
-| 13 | middleware | Edge Middleware 설정 |
+| 13 | middleware | Next.js Proxy 설정 |
 
 ### Phase 3: 기능 (Feature) - 6개
 
@@ -366,6 +367,7 @@ Skills에서 참조하는 공통 레퍼런스 문서:
 
 | 문서 | 설명 |
 |------|------|
+| `_references/NEXT16-ZUSTAND5-UPDATE.md` | Next.js 16.2 + Zustand 5 최신 변경 체크리스트 |
 | `_references/REACT-PERF-RULES.md` | **Vercel 45개 React 성능 규칙** |
 | `_references/UI-GUIDELINES.md` | **100+ UI 접근성/성능 가이드라인** |
 | `_references/ARCHITECTURE-PATTERN.md` | Clean Architecture 패턴 & 샘플 |
@@ -542,7 +544,7 @@ Agent 실행:
 /nextjs-state        # Zustand 스토어
 /nextjs-action       # Server Actions
 /nextjs-error        # Error Handling
-/nextjs-middleware   # Middleware
+/nextjs-middleware   # Proxy
 
 # Phase 3: 기능
 /nextjs-feature      # Feature 모듈
@@ -577,6 +579,8 @@ Agent 실행:
 
 1. **Server Components 우선**: 기본적으로 Server Components 사용, 필요시에만 'use client'
 2. **Tailwind v4 문법**: CSS-first 설정, `@theme inline` 디렉티브 사용
-3. **Zod 스키마 공유**: 클라이언트/서버 양쪽에서 동일 스키마 사용
-4. **테스트 우선**: TDD 원칙에 따라 테스트 먼저 작성
-5. **Edge 제한사항**: Middleware는 Edge Runtime, Node.js API 사용 불가
+3. **Next.js 16 요청 API**: `cookies`, `headers`, `draftMode`, `params`, `searchParams`는 비동기 API로 사용
+4. **Zustand 범위 제한**: 서버 상태는 TanStack Query/RSC fetch, URL 상태는 nuqs, 클라이언트 UI 상태만 Zustand
+5. **Zod 스키마 공유**: 클라이언트/서버 양쪽에서 동일 스키마 사용
+6. **테스트 우선**: TDD 원칙에 따라 테스트 먼저 작성
+7. **Proxy 제한사항**: Next.js 16 Proxy는 Node.js Runtime 기본값이며 `runtime` 설정 불가, 렌더링 코드와 상태 공유 금지

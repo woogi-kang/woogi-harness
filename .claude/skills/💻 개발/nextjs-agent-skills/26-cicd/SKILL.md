@@ -429,12 +429,13 @@ volumes:
 ```json
 {
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
+    "dev:webpack": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
@@ -778,4 +779,3 @@ steps:
 
 - `_references/ARCHITECTURE-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

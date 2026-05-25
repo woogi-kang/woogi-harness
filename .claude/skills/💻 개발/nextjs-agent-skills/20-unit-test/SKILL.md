@@ -30,14 +30,14 @@ Vitest를 사용하여 단위 테스트를 작성합니다.
 ## 설치
 
 ```bash
-# 테스트 프레임워크 (2024.12 기준 권장 버전)
-npm install -D vitest@^2.1.8 @vitejs/plugin-react@^4.3.4
+# 테스트 프레임워크 (Next.js 16 / React 19 기준)
+npm install -D vitest@^4.1.7 @vitejs/plugin-react@^6.0.2
 
 # Testing Library
-npm install -D @testing-library/react@^16.1.0 @testing-library/dom@^10.4.0 @testing-library/jest-dom@^6.6.3
+npm install -D @testing-library/react@^16.3.2 @testing-library/dom@^10.4.1 @testing-library/jest-dom@^6.9.1
 
 # 환경
-npm install -D jsdom@^25.0.1
+npm install -D jsdom@^29.1.1
 ```
 
 ---
@@ -730,4 +730,3 @@ afterAll(async () => {
 
 - `_references/TEST-PATTERN.md`
 - `_references/ARCHITECTURE-PATTERN.md`
-

@@ -528,9 +528,10 @@ export const {feature}sService = {
 // app/api/{feature}s/[id]/route.ts
 import { AppError } from '@/lib/errors/app-error';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const item = await {feature}sService.get{Feature}(params.id);
+    const { id } = await params;
+    const item = await {feature}sService.get{Feature}(id);
     return Response.json(item);
   } catch (error) {
     if (error instanceof AppError) {

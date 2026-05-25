@@ -29,6 +29,85 @@ Zustand를 사용하여 클라이언트 상태를 관리합니다.
 
 ```bash
 npm install zustand
+# createWithEqualityFn/useStoreWithEqualityFn을 쓸 때만 필요
+npm install use-sync-external-store
+```
+
+---
+
+## 사용 범위
+
+- **Zustand**: 모달, 사이드바, 선택 상태, 사용자 선호도 같은 클라이언트 UI 상태
+- **TanStack Query/RSC fetch**: API 응답, DB 조회 결과, 백그라운드 동기화가 필요한 서버 상태
+- **nuqs**: 검색어, 필터, 정렬, 페이지처럼 URL로 공유되어야 하는 상태
+
+React Server Components는 Zustand hook/context를 사용할 수 없습니다. RSC에서 store를 읽거나 쓰지 말고, 필요한 값은 Server Component props 또는 Client Component 경계로 전달합니다.
+
+---
+
+## Next.js App Router Store Provider
+
+요청별 초기값이 있는 store는 전역 singleton으로 만들지 말고 store factory와 Provider로 생성합니다.
+
+```typescript
+// stores/dashboard.store.ts
+import { createStore } from 'zustand/vanilla';
+
+export interface DashboardState {
+  selectedTeamId: string | null;
+}
+
+export interface DashboardActions {
+  setSelectedTeamId: (teamId: string | null) => void;
+}
+
+export type DashboardStore = DashboardState & DashboardActions;
+
+export function createDashboardStore(initState: DashboardState) {
+  return createStore<DashboardStore>()((set) => ({
+    ...initState,
+    setSelectedTeamId: (teamId) => set({ selectedTeamId: teamId }),
+  }));
+}
+```
+
+```tsx
+// providers/dashboard-store-provider.tsx
+'use client';
+
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import { useStore } from 'zustand';
+import {
+  createDashboardStore,
+  type DashboardState,
+  type DashboardStore,
+} from '@/stores/dashboard.store';
+
+type DashboardStoreApi = ReturnType<typeof createDashboardStore>;
+
+const DashboardStoreContext = createContext<DashboardStoreApi | null>(null);
+
+export function DashboardStoreProvider({
+  children,
+  initialState,
+}: {
+  children: ReactNode;
+  initialState: DashboardState;
+}) {
+  const [store] = useState(() => createDashboardStore(initialState));
+
+  return (
+    <DashboardStoreContext.Provider value={store}>
+      {children}
+    </DashboardStoreContext.Provider>
+  );
+}
+
+export function useDashboardStore<T>(selector: (state: DashboardStore) => T) {
+  const store = useContext(DashboardStoreContext);
+  if (!store) throw new Error('useDashboardStore must be used within provider');
+  return useStore(store, selector);
+}
 ```
 
 ---
@@ -134,26 +213,27 @@ export const useCartStore = create<CartState>()(
 // stores/selectors.ts
 import { useAppStore } from './app.store';
 import { useCartStore } from '@/features/cart/stores/cart.store';
-import { shallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 export const useSidebarOpen = () => useAppStore((s) => s.sidebarOpen);
 export const useTheme = () => useAppStore((s) => s.theme);
 
 export const useCartSummary = () =>
   useCartStore(
-    (s) => ({ totalItems: s.totalItems(), totalPrice: s.totalPrice() }),
-    shallow
+    useShallow((s) => ({
+      totalItems: s.totalItems(),
+      totalPrice: s.totalPrice(),
+    }))
   );
 
 export const useCartActions = () =>
   useCartStore(
-    (s) => ({
+    useShallow((s) => ({
       addItem: s.addItem,
       removeItem: s.removeItem,
       updateQuantity: s.updateQuantity,
       clearCart: s.clearCart,
-    }),
-    shallow
+    }))
   );
 ```
 
@@ -319,13 +399,12 @@ function CartActions() {
   }));  // 매 렌더마다 새 객체!
 }
 
-// ✅ Good: shallow 비교 사용
-import { shallow } from 'zustand/shallow';
+// ✅ Good: useShallow로 안정적인 selector 출력 보장
+import { useShallow } from 'zustand/react/shallow';
 
 function CartActions() {
   const { addItem, removeItem } = useCartStore(
-    (s) => ({ addItem: s.addItem, removeItem: s.removeItem }),
-    shallow
+    useShallow((s) => ({ addItem: s.addItem, removeItem: s.removeItem }))
   );
 }
 ```
@@ -348,7 +427,25 @@ interface UIState {
 }
 ```
 
-### 4. persist 남용
+### 4. RSC에서 Zustand 접근
+
+```tsx
+// ❌ Bad: Server Component에서 client store 접근
+export default function Page() {
+  const sidebarOpen = useAppStore((s) => s.sidebarOpen);
+  return <main>{sidebarOpen}</main>;
+}
+
+// ✅ Good: Client Component 경계 안에서만 접근
+'use client';
+
+export function SidebarState() {
+  const sidebarOpen = useAppStore((s) => s.sidebarOpen);
+  return <main>{sidebarOpen}</main>;
+}
+```
+
+### 5. persist 남용
 
 ```typescript
 // ❌ Bad: 모든 상태 persist
@@ -362,10 +459,12 @@ persist(
   (set) => ({ ... }),
   {
     name: 'app-storage',
+    version: 1,
     partialize: (state) => ({
       theme: state.theme,
       // isLoading 같은 임시 상태는 제외
     }),
+    // SSR hydration이 민감한 화면에서는 skipHydration + 수동 rehydrate 고려
   }
 )
 ```
@@ -462,4 +561,5 @@ export const useAuthStore = create<AuthState>((set) => ({
 ## References
 
 - `_references/STATE-PATTERN.md` - TanStack Query + Zustand 패턴
+- `_references/NEXT16-ZUSTAND5-UPDATE.md` - Next.js 16 + Zustand 5 변경 체크리스트
 - `_references/TEST-PATTERN.md` - 테스트 피라미드

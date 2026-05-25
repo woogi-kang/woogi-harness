@@ -208,8 +208,13 @@ export const preloadUser = (id: string) => {
 }
 
 // 사용처 - 레이아웃에서 일찍 시작
-export default function Layout({ params }: { params: { id: string } }) {
-  preloadUser(params.id)  // 여기서 시작
+export default async function Layout({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  preloadUser(id)  // 여기서 시작
   return <div>{/* children */}</div>
 }
 
@@ -478,9 +483,18 @@ async function Dashboard() {
 요청 간 데이터 캐싱으로 DB 부하를 줄입니다.
 
 ```typescript
-import { unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag, unstable_cache } from 'next/cache'
 
-// ✅ unstable_cache로 요청 간 캐싱
+// ✅ Next.js 16 Cache Components
+export async function getFeaturedProducts() {
+  'use cache'
+  cacheLife('minutes')
+  cacheTag('products')
+
+  return db.product.findMany({ where: { featured: true } })
+}
+
+// ✅ 기존 cache wrapper가 필요할 때 unstable_cache 사용
 export const getProducts = unstable_cache(
   async (category: string) => {
     return await db.product.findMany({
@@ -496,11 +510,12 @@ export const getProducts = unstable_cache(
 )
 
 // 재검증
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, updateTag } from 'next/cache'
 
 export async function createProduct(data: ProductInput) {
   await db.product.create({ data })
-  revalidateTag('products')  // 캐시 무효화
+  updateTag('products')              // Server Action 내 즉시 갱신
+  revalidateTag('products', 'max')   // stale-while-revalidate
 }
 ```
 
@@ -1514,7 +1529,7 @@ function InfiniteList() {
 ### 🟠 HIGH (강력 권고)
 
 - [ ] 동일 요청 내 중복 호출 → `React.cache()`
-- [ ] 요청 간 캐싱 → `unstable_cache()`
+- [ ] 요청 간 캐싱 → `"use cache"` + `cacheTag`/`cacheLife`, 필요시 `unstable_cache()`
 - [ ] RSC 경계 → 필요한 데이터만 전달
 - [ ] 긴 리스트 → `content-visibility` 또는 가상화
 - [ ] hover 시 → 다음 경로/컴포넌트 프리로드

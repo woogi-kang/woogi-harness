@@ -700,7 +700,8 @@ export async function POST(request: Request) {
 // ✅ Good: 서명 검증
 export async function POST(request: Request) {
   const body = await request.text();
-  const signature = headers().get('stripe-signature')!;
+  const headersList = await headers();
+  const signature = headersList.get('stripe-signature')!;
 
   const event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
 }
@@ -855,8 +856,8 @@ if (existingSession.data[0]?.url) {
 ### 1. Webhook 엔드포인트 보호
 
 ```typescript
-// middleware.ts
-export function middleware(request: NextRequest) {
+// proxy.ts
+export function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/api/webhooks/stripe')) {
     // Stripe IP만 허용 (선택적)
     const stripeIps = ['3.18.12.63', ...]; // Stripe 공식 IP 목록
@@ -920,4 +921,3 @@ if (process.env.NODE_ENV === 'production' && isTestMode) {
 - `_references/SERVER-ACTION-PATTERN.md`
 - `_references/DATABASE-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

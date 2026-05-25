@@ -75,7 +75,7 @@ export const actionClient = createSafeActionClient({
 
     // Zod 에러
     if (e instanceof z.ZodError) {
-      return e.errors.map((err) => err.message).join(', ');
+      return e.issues.map((err) => err.message).join(', ');
     }
 
     // 개발 환경에서만 상세 에러 표시
@@ -405,7 +405,7 @@ export const loginAction = createRateLimitedClient('auth')  // 분당 5회
   .action(async ({ parsedInput }) => { ... });
 ```
 
-### 4. revalidate 누락
+### 4. revalidate/updateTag 누락
 
 ```typescript
 // ❌ Bad: 캐시 갱신 안 함
@@ -415,15 +415,18 @@ export const createPostAction = actionClient.action(async ({ parsedInput }) => {
   // 목록 페이지에 새 데이터 안 보임!
 });
 
-// ✅ Good: revalidatePath/revalidateTag 호출
-import { revalidatePath } from 'next/cache';
+// ✅ Good: revalidatePath/updateTag 호출
+import { revalidatePath, updateTag } from 'next/cache';
 
 export const createPostAction = actionClient.action(async ({ parsedInput }) => {
   const post = await db.insert(posts).values(parsedInput);
   revalidatePath('/posts');  // 캐시 갱신
+  updateTag('posts');        // Server Action 내 즉시 태그 갱신
   return { success: true, data: post };
 });
 ```
+
+Next.js 16에서 `revalidateTag`는 profile 인자가 필요합니다. Server Action에서 즉시 일관성이 필요하면 `updateTag`, stale-while-revalidate가 필요하면 `revalidateTag(tag, 'max')`를 사용합니다.
 
 ---
 

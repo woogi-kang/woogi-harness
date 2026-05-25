@@ -1,18 +1,18 @@
 ---
 name: middleware
 description: |
-  Next.js Edge Middleware를 설정합니다.
+  Next.js Proxy(기존 Middleware)를 설정합니다.
 metadata:
   category: "💻 개발"
   version: "1.0.0"
 ---
-# Middleware Skill
+# Proxy / Middleware Skill
 
-Next.js Edge Middleware를 설정합니다.
+Next.js 16 기준 Proxy를 설정합니다. 기존 `proxy.ts` 관례는 `proxy.ts`로 이전합니다.
 
 ## Triggers
 
-- "미들웨어", "middleware", "인증 미들웨어", "edge"
+- "미들웨어", "middleware", "proxy", "인증 미들웨어", "edge"
 
 ---
 
@@ -25,14 +25,14 @@ Next.js Edge Middleware를 설정합니다.
 
 ---
 
-## 기본 Middleware
+## 기본 Proxy
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // 보안 헤더 (OWASP 권장)
@@ -64,11 +64,11 @@ export const config = {
 
 ---
 
-## Auth.js Middleware
+## Auth.js Proxy
 
 ```typescript
-// middleware.ts
-export { auth as middleware } from '@/lib/auth';
+// proxy.ts
+export { auth as proxy } from '@/lib/auth';
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -77,10 +77,10 @@ export const config = {
 
 ---
 
-## 조합 Middleware
+## 조합 Proxy
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
@@ -88,7 +88,7 @@ import { auth } from '@/lib/auth';
 const protectedPaths = ['/dashboard', '/settings', '/profile'];
 const publicPaths = ['/login', '/register'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const session = await auth();
 
@@ -114,31 +114,29 @@ export const config = {
 
 ---
 
-## Edge Runtime 제약사항
+## Proxy Runtime 제약사항
+
+Next.js 16 Proxy는 Node.js Runtime이 기본값이며, `runtime` config를 Proxy 파일에 설정할 수 없습니다. 다만 렌더링 코드와 분리된 요청 전 처리 계층이므로 공유 module state에 의존하지 말고 짧고 예측 가능한 작업만 수행합니다.
 
 ### 사용 불가 API
 
 ```typescript
-// ❌ Edge에서 사용 불가
-import fs from 'fs';           // 파일 시스템
-import path from 'path';       // 경로 처리 (일부만 가능)
-import crypto from 'crypto';   // Node.js crypto (Web Crypto API 사용)
-import { Pool } from 'pg';     // 데이터베이스 직접 연결
-import bcrypt from 'bcrypt';   // Native 모듈
+// ❌ Proxy에서 피할 패턴
+import fs from 'fs';           // 요청마다 파일 시스템 접근
+import { Pool } from 'pg';     // Proxy에서 DB 직접 연결
+import bcrypt from 'bcrypt';   // 무거운 CPU 작업
 
-// ✅ Edge에서 사용 가능한 대안
+// ✅ 가벼운 대안
 crypto.subtle.digest('SHA-256', data);  // Web Crypto API
-fetch('https://api.db.com/...');        // HTTP 기반 DB (Planetscale, Neon)
+fetch('https://api.example.com/...');   // 짧은 HTTP 검증
 ```
 
 ### 실행 시간 제한
 
 ```typescript
-// ⚠️ Edge Middleware는 최대 실행 시간 제한이 있음
-// Vercel: 30초 (Hobby), 무제한 (Pro)
-// Cloudflare: 50ms CPU time
+// ⚠️ Proxy는 요청 렌더링 전 실행되므로 빠르게 반환해야 함
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // ❌ 긴 작업 금지
   // await heavyComputation();
 
@@ -155,8 +153,7 @@ export function middleware(request: NextRequest) {
 ### 번들 크기 제한
 
 ```typescript
-// Vercel Edge: 4MB 제한
-// 큰 라이브러리 사용 시 dynamic import 고려
+// 큰 라이브러리는 Proxy 경계 밖으로 이동
 
 // ❌ 피해야 할 패턴
 import { format } from 'date-fns';  // 전체 번들 포함
@@ -167,10 +164,10 @@ const formatted = new Intl.DateTimeFormat('ko-KR').format(date);
 
 ---
 
-## i18n Middleware
+## i18n Proxy
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { match } from '@formatjs/intl-localematcher';
@@ -190,7 +187,7 @@ function getLocale(request: NextRequest): string {
   }
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 정적 파일 및 API 제외
@@ -227,15 +224,20 @@ export const config = {
 ### next-intl 통합 (권장)
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import createMiddleware from 'next-intl/middleware';
+import type { NextRequest } from 'next/server';
 import { locales, defaultLocale } from './i18n.config';
 
-export default createMiddleware({
+const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: 'as-needed', // 기본 locale은 prefix 생략
 });
+
+export function proxy(request: NextRequest) {
+  return intlMiddleware(request);
+}
 
 export const config = {
   matcher: ['/((?!api|_next|.*\\..*).*)'],
@@ -249,7 +251,7 @@ export const config = {
 ### 1. 조기 반환 패턴
 
 ```typescript
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1️⃣ 가장 먼저: 정적 리소스 바이패스
@@ -293,7 +295,7 @@ export const config = {
 // 인증 토큰 검증 결과 캐싱 (메모리 내)
 const tokenCache = new Map<string, { valid: boolean; expires: number }>();
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   if (!token) return NextResponse.redirect('/login');
 
@@ -304,7 +306,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 토큰 검증 (Edge-compatible)
+  // 토큰 검증 (Proxy-compatible)
   const isValid = await verifyToken(token);
   tokenCache.set(token, { valid: isValid, expires: Date.now() + 60000 });
 
@@ -317,12 +319,12 @@ export async function middleware(request: NextRequest) {
 
 ## 테스트 예제
 
-### Middleware Unit Test
+### Proxy Unit Test
 
 ```typescript
-// __tests__/middleware.test.ts
+// __tests__/proxy.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { middleware } from '@/middleware';
+import { proxy } from '@/proxy';
 import { NextRequest } from 'next/server';
 
 function createMockRequest(url: string, options: {
@@ -340,11 +342,11 @@ function createMockRequest(url: string, options: {
   return request;
 }
 
-describe('middleware', () => {
+describe('proxy', () => {
   describe('보안 헤더', () => {
     it('보안 헤더가 설정되어야 한다', async () => {
       const request = createMockRequest('/');
-      const response = await middleware(request);
+      const response = await proxy(request);
 
       expect(response.headers.get('X-Frame-Options')).toBe('DENY');
       expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
@@ -354,7 +356,7 @@ describe('middleware', () => {
 
     it('CSP 헤더가 설정되어야 한다', async () => {
       const request = createMockRequest('/');
-      const response = await middleware(request);
+      const response = await proxy(request);
 
       const csp = response.headers.get('Content-Security-Policy');
       expect(csp).toContain("default-src 'self'");
@@ -365,7 +367,7 @@ describe('middleware', () => {
   describe('인증 라우팅', () => {
     it('비인증 사용자가 보호 경로 접근 시 로그인으로 리다이렉트', async () => {
       const request = createMockRequest('/dashboard');
-      const response = await middleware(request);
+      const response = await proxy(request);
 
       expect(response.status).toBe(307);
       expect(response.headers.get('location')).toContain('/login');
@@ -375,14 +377,14 @@ describe('middleware', () => {
       const request = createMockRequest('/dashboard', {
         cookies: { 'auth-token': 'valid-token' },
       });
-      const response = await middleware(request);
+      const response = await proxy(request);
 
       expect(response.status).toBe(200);
     });
 
     it('정적 리소스는 인증 체크 바이패스', async () => {
       const request = createMockRequest('/_next/static/chunk.js');
-      const response = await middleware(request);
+      const response = await proxy(request);
 
       expect(response.status).toBe(200);
     });
@@ -390,18 +392,18 @@ describe('middleware', () => {
 });
 ```
 
-### i18n Middleware Test
+### i18n Proxy Test
 
 ```typescript
-// __tests__/i18n-middleware.test.ts
+// __tests__/i18n-proxy.test.ts
 import { describe, it, expect } from 'vitest';
-import { middleware } from '@/middleware';
+import { proxy } from '@/proxy';
 import { NextRequest } from 'next/server';
 
-describe('i18n middleware', () => {
+describe('i18n proxy', () => {
   it('locale 없는 경로는 기본 locale로 리다이렉트', async () => {
     const request = new NextRequest('http://localhost:3000/about');
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toContain('/ko/about');
@@ -411,14 +413,14 @@ describe('i18n middleware', () => {
     const request = new NextRequest('http://localhost:3000/about', {
       headers: { 'accept-language': 'en-US,en;q=0.9' },
     });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(response.headers.get('location')).toContain('/en/about');
   });
 
   it('이미 locale prefix가 있는 경로는 바이패스', async () => {
     const request = new NextRequest('http://localhost:3000/ko/about');
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(response.status).toBe(200);
   });
@@ -432,8 +434,8 @@ describe('i18n middleware', () => {
 ### 1. 무거운 연산 수행
 
 ```typescript
-// ❌ Bad: Edge에서 무거운 연산
-export async function middleware(request: NextRequest) {
+// ❌ Bad: Proxy에서 무거운 연산
+export async function proxy(request: NextRequest) {
   const users = await db.query('SELECT * FROM users'); // DB 직접 쿼리
   const token = jwt.verify(request.cookies.get('token'), secret); // 동기 검증
 
@@ -441,13 +443,13 @@ export async function middleware(request: NextRequest) {
 }
 
 // ✅ Good: 경량 검증만 수행
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   if (!token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // JWT 서명만 빠르게 검증 (jose 라이브러리 - Edge 호환)
+  // JWT 서명만 빠르게 검증
   try {
     await jwtVerify(token, new TextEncoder().encode(secret));
   } catch {
@@ -458,7 +460,7 @@ export async function middleware(request: NextRequest) {
 }
 ```
 
-### 2. 모든 경로에 Middleware 적용
+### 2. 모든 경로에 Proxy 적용
 
 ```typescript
 // ❌ Bad: 전체 경로에 적용
@@ -480,7 +482,7 @@ export const config = {
 
 ```typescript
 // ❌ Bad: 복잡한 리다이렉트 로직
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.redirect('/login');
   if (!session.verified) return NextResponse.redirect('/verify');
@@ -490,7 +492,7 @@ export async function middleware(request: NextRequest) {
 }
 
 // ✅ Good: 단일 책임, 리다이렉트 루프 방지
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 리다이렉트 루프 방지
@@ -514,13 +516,13 @@ export async function middleware(request: NextRequest) {
 import fs from 'fs';
 import crypto from 'crypto';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const data = fs.readFileSync('./config.json'); // 불가
   const hash = crypto.createHash('sha256'); // 불가
 }
 
 // ✅ Good: Web API 사용
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Web Crypto API
   const encoder = new TextEncoder();
   const data = encoder.encode('secret');
@@ -535,14 +537,14 @@ export async function middleware(request: NextRequest) {
 
 ## 에러 처리
 
-### Middleware Error Handling
+### Proxy Error Handling
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   try {
     // 인증 검증
     const token = request.cookies.get('token')?.value;
@@ -560,8 +562,8 @@ export async function middleware(request: NextRequest) {
 
     return NextResponse.next();
   } catch (error) {
-    // Edge 환경에서는 console.error 사용
-    console.error('[Middleware Error]', error instanceof Error ? error.message : error);
+    // Proxy 계층에서는 가벼운 로깅만 수행
+    console.error('[Proxy Error]', error instanceof Error ? error.message : error);
 
     // 에러 시 안전하게 처리 - 서비스 중단 방지
     // 옵션 1: 로그인 페이지로 리다이렉트
@@ -576,25 +578,25 @@ export async function middleware(request: NextRequest) {
 ### 에러 유형별 처리
 
 ```typescript
-// lib/middleware/errors.ts
-export class MiddlewareError extends Error {
+// lib/proxy/errors.ts
+export class ProxyError extends Error {
   constructor(
     message: string,
     public code: 'AUTH_FAILED' | 'TOKEN_EXPIRED' | 'RATE_LIMITED' | 'INVALID_REQUEST',
     public statusCode: number = 401
   ) {
     super(message);
-    this.name = 'MiddlewareError';
+    this.name = 'ProxyError';
   }
 }
 
-// middleware.ts
-export async function middleware(request: NextRequest) {
+// proxy.ts
+export async function proxy(request: NextRequest) {
   try {
     await authenticateRequest(request);
     return NextResponse.next();
   } catch (error) {
-    if (error instanceof MiddlewareError) {
+    if (error instanceof ProxyError) {
       switch (error.code) {
         case 'TOKEN_EXPIRED':
           // 토큰 갱신 시도 가능한 페이지로
@@ -608,7 +610,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // 예상치 못한 에러 - 서비스 연속성 유지
-    console.error('[Middleware] Unexpected error:', error);
+    console.error('[Proxy] Unexpected error:', error);
     return NextResponse.next();
   }
 }
@@ -636,7 +638,7 @@ export const config = {
 ### 2. 조기 반환 패턴
 
 ```typescript
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. 가장 빈번한 케이스 먼저 체크
@@ -658,12 +660,12 @@ export function middleware(request: NextRequest) {
 ### 3. 인메모리 캐싱 (주의 필요)
 
 ```typescript
-// ⚠️ Edge Functions는 stateless - 캐시가 인스턴스 간 공유 안됨
+// ⚠️ Proxy의 인메모리 캐시는 인스턴스 간 공유되지 않음
 // 짧은 TTL로만 사용
 const tokenCache = new Map<string, { valid: boolean; expires: number }>();
 const CACHE_TTL = 30_000; // 30초
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   if (!token) return redirectToLogin(request);
 
@@ -683,14 +685,14 @@ export async function middleware(request: NextRequest) {
 
 ```typescript
 // ❌ Bad: 매 요청마다 외부 API 호출
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const user = await fetch('https://api.example.com/me', {
     headers: { Authorization: request.cookies.get('token')?.value || '' },
   }).then(r => r.json());
 }
 
 // ✅ Good: JWT 페이로드에서 필요한 정보 추출
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   if (!token) return redirectToLogin(request);
 
@@ -715,7 +717,7 @@ export async function middleware(request: NextRequest) {
 ### 1. 보안 헤더 설정
 
 ```typescript
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // OWASP 권장 보안 헤더
@@ -738,8 +740,8 @@ export function middleware(request: NextRequest) {
 ### 2. CSP with Nonce
 
 ```typescript
-// middleware.ts
-export function middleware(request: NextRequest) {
+// proxy.ts
+export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
   const cspHeader = [
@@ -766,7 +768,7 @@ export function middleware(request: NextRequest) {
 ### 3. Rate Limiting
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -776,7 +778,7 @@ const ratelimit = new Ratelimit({
   analytics: true,
 });
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // API 경로에만 Rate Limiting 적용
   if (request.nextUrl.pathname.startsWith('/api')) {
     const ip = request.headers.get('x-forwarded-for') ?? 'anonymous';
@@ -802,7 +804,7 @@ export async function middleware(request: NextRequest) {
 ### 4. CSRF 보호 (Double Submit Cookie)
 
 ```typescript
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // State-changing 요청에만 CSRF 검증
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
     const cookieToken = request.cookies.get('csrf-token')?.value;

@@ -442,14 +442,16 @@ function Dashboard({ data }: { data: Data[] }) {
 }
 ```
 
-### React Compiler (Next.js 15+)
+### React Compiler (Next.js 16+)
+
+```bash
+npm install -D babel-plugin-react-compiler
+```
 
 ```typescript
 // next.config.ts
 const nextConfig: NextConfig = {
-  experimental: {
-    reactCompiler: true,
-  },
+  reactCompiler: true,
 };
 ```
 
@@ -514,7 +516,33 @@ async function StatsSection() {
 }
 ```
 
-### Caching 전략
+### Cache Components 전략
+
+Next.js 16에서는 `cacheComponents: true`와 `"use cache"` 지시어를 우선 검토합니다.
+
+```typescript
+// next.config.ts
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+};
+
+export default nextConfig;
+```
+
+```typescript
+// lib/api.ts
+import { cacheLife, cacheTag } from 'next/cache';
+
+export async function getStats() {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag('stats');
+
+  return db.query.stats.findMany();
+}
+```
+
+### unstable_cache 전략
 
 ```typescript
 // lib/api.ts
@@ -522,9 +550,8 @@ import { unstable_cache } from 'next/cache';
 
 /**
  * unstable_cache 주의사항:
- * - Next.js 15+에서 실험적 API (이름에 unstable_ 접두사)
- * - 향후 API 변경 가능성 있음
- * - 대안: React의 cache() + revalidate 조합
+ * - Cache Components로 표현하기 어려운 기존 캐시 래핑에 제한적으로 사용
+ * - 신규 App Router 코드는 "use cache" + cacheTag/cacheLife를 우선 검토
  */
 export const getStats = unstable_cache(
   async () => {
@@ -539,8 +566,9 @@ export const getStats = unstable_cache(
 );
 
 // 수동 재검증 (Server Action 또는 Route Handler에서)
-// revalidateTag('stats');      // 태그 기반 - 해당 태그 모든 캐시 무효화
-// revalidatePath('/dashboard'); // 경로 기반 - 해당 페이지 캐시 무효화
+// revalidateTag('stats', 'max'); // stale-while-revalidate
+// updateTag('stats');            // Server Action 내 즉시 갱신
+// revalidatePath('/dashboard');  // 경로 기반 - 해당 페이지 캐시 무효화
 ```
 
 ### React cache() 대안
@@ -1007,9 +1035,7 @@ async function getPublicPosts() {
 // next.config.ts
 const nextConfig: NextConfig = {
   // 서버 전용 모듈이 클라이언트 번들에 포함되지 않도록
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'bcrypt'],
-  },
+  serverExternalPackages: ['@prisma/client', 'bcrypt'],
 
   // 환경 변수 노출 방지
   env: {
@@ -1087,7 +1113,7 @@ module.exports = {
 ### 🟠 HIGH (강력 권고)
 
 - [ ] 동일 요청 내 중복 호출 → `React.cache()`
-- [ ] 요청 간 캐싱 → `unstable_cache()`
+- [ ] 요청 간 캐싱 → `"use cache"` + `cacheTag`/`cacheLife`, 필요시 `unstable_cache()`
 - [ ] RSC 경계 → 필요한 데이터만 전달
 - [ ] 긴 리스트 → `content-visibility` 또는 가상화
 - [ ] hover 시 → 다음 경로/컴포넌트 프리로드
@@ -1107,4 +1133,3 @@ module.exports = {
 - `_references/UI-GUIDELINES.md` - **UI 성능/접근성 가이드라인**
 - `_references/ARCHITECTURE-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

@@ -189,11 +189,11 @@ export { hashPassword, verifyPassword } from './password';
 export { getUserByEmail, getUserById } from './user';
 ```
 
-### Middleware
+### Proxy
 
 ```typescript
-// middleware.ts
-export { auth as middleware } from '@/lib/auth';
+// proxy.ts
+export { auth as proxy } from '@/lib/auth';
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -325,10 +325,10 @@ export default function RootLayout({
 }
 ```
 
-### Middleware
+### Proxy
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
@@ -590,9 +590,9 @@ export default async function DashboardPage() {
   // ...
 }
 
-// ✅ Good: Middleware에서 일괄 처리
-// middleware.ts
-export { auth as middleware } from '@/lib/auth';
+// ✅ Good: Proxy에서 일괄 처리
+// proxy.ts
+export { auth as proxy } from '@/lib/auth';
 
 export const config = {
   matcher: ['/dashboard/:path*', '/settings/:path*'],
@@ -779,7 +779,7 @@ Google({
 ### Rate Limiting
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -788,7 +788,7 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(5, '1 m'),  // 분당 5회
 });
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 로그인 엔드포인트 rate limiting
   if (request.nextUrl.pathname === '/api/auth/callback/credentials') {
     const ip = request.ip ?? '127.0.0.1';

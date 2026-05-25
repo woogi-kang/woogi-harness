@@ -294,7 +294,7 @@ export * from './posts';
     "noEmit": true,
     "verbatimModuleSyntax": true
   },
-  "$note": "Node.js 18+ 필수. moduleResolution: Bundler는 Next.js 13.4+ 권장 설정"
+  "$note": "Node.js 20.19+ 권장. moduleResolution: Bundler는 Next.js 16 App Router 권장 설정"
 }
 ```
 
@@ -324,14 +324,14 @@ export * from './posts';
     "./nextjs": "./nextjs.js"
   },
   "dependencies": {
-    "eslint": "^9.17.0",
-    "@eslint/js": "^9.17.0",
-    "typescript-eslint": "^8.18.2",
-    "eslint-config-next": "^15.1.0"
+    "eslint": "^10.4.0",
+    "@eslint/js": "^10.0.1",
+    "typescript-eslint": "^8.59.4",
+    "eslint-config-next": "^16.2.6"
   },
   "peerDependencies": {
-    "eslint": "^9.0.0",
-    "typescript": "^5.0.0"
+    "eslint": ">=9.0.0",
+    "typescript": ">=5.9.3"
   }
 }
 ```
@@ -365,7 +365,8 @@ export default tseslint.config(
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo --port 3000",
+    "dev": "next dev --port 3000",
+    "dev:webpack": "next dev --webpack --port 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -374,16 +375,16 @@ export default tseslint.config(
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/ui": "workspace:*",
-    "next": "^15.1.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
-    "typescript": "^5.7.2"
+    "@types/node": "^20.19.41",
+    "@types/react": "^19.2.15",
+    "typescript": "^5.9.3"
   }
 }
 ```
@@ -697,4 +698,3 @@ pnpm audit --audit-level=high
 
 - `_references/ARCHITECTURE-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

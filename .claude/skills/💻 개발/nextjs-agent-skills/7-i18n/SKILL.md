@@ -29,10 +29,10 @@ next-intl을 사용하여 다국어 지원을 설정합니다.
 ## 설치
 
 ```bash
-npm install next-intl@^3.26.3
+npm install next-intl@^4.12.0
 ```
 
-> **Note**: next-intl ^3.26.3은 Next.js 15+ App Router 완벽 지원. 주요 변경사항은 [Migration Guide](https://next-intl-docs.vercel.app/docs/getting-started/app-router) 참조.
+> **Note**: next-intl 4.x는 Next.js 16 App Router와 React 19 기준으로 사용합니다. Proxy 파일은 `proxy.ts`로 작성합니다.
 
 ---
 
@@ -121,14 +121,19 @@ export const { Link, redirect, usePathname, useRouter } =
 
 ---
 
-## Middleware
+## Proxy
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import createMiddleware from 'next-intl/middleware';
+import type { NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export function proxy(request: NextRequest) {
+  return intlMiddleware(request);
+}
 
 export const config = {
   matcher: ['/', '/(ko|en)/:path*'],

@@ -66,15 +66,15 @@ export const apiRatelimit = new Ratelimit({
 });
 ```
 
-### Middleware에서 사용
+### Proxy에서 사용
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ratelimit } from '@/lib/rate-limit';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // API 라우트에만 적용
   if (request.nextUrl.pathname.startsWith('/api')) {
     const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1';
@@ -186,11 +186,11 @@ export default nextConfig;
 ### Content Security Policy (CSP)
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // 암호학적으로 안전한 nonce 생성 (32바이트)
   const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString('base64');
 
@@ -668,18 +668,18 @@ describe('passwordSchema', () => {
 });
 ```
 
-### CSP Middleware 테스트
+### CSP Proxy 테스트
 
 ```typescript
-// middleware/__tests__/csp.test.ts
+// proxy/__tests__/csp.test.ts
 import { describe, it, expect } from 'vitest';
-import { middleware } from '../middleware';
+import { proxy } from '../proxy';
 import { NextRequest } from 'next/server';
 
-describe('CSP Middleware', () => {
+describe('CSP Proxy', () => {
   it('CSP 헤더를 설정한다', async () => {
     const request = new NextRequest('http://localhost:3000/');
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     const csp = response.headers.get('Content-Security-Policy');
     expect(csp).toContain("default-src 'self'");
@@ -688,7 +688,7 @@ describe('CSP Middleware', () => {
 
   it('nonce를 생성한다', async () => {
     const request = new NextRequest('http://localhost:3000/');
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     const nonce = response.headers.get('x-nonce');
     expect(nonce).toBeTruthy();
@@ -840,7 +840,7 @@ export function getRedis(): Redis {
 
 ```typescript
 // 정적 CSP 헤더는 next.config.ts에서 설정
-// 동적 nonce가 필요한 경우만 middleware 사용
+// 동적 nonce가 필요한 경우만 proxy 사용
 ```
 
 ### 3. 검증 캐싱
@@ -933,4 +933,3 @@ async function checkHeaders(url: string) {
 - `_references/ARCHITECTURE-PATTERN.md`
 - `_references/SERVER-ACTION-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

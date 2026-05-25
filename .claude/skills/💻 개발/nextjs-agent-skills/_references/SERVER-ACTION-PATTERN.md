@@ -338,6 +338,7 @@ export function useToggleTask(task: Task) {
 import { createSafeActionClient } from 'next-safe-action';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
+import { headers } from 'next/headers';
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -346,7 +347,8 @@ const ratelimit = new Ratelimit({
 
 export const rateLimitedActionClient = actionClient
   .use(async ({ next, clientInput }) => {
-    const ip = headers().get('x-forwarded-for') ?? 'unknown';
+    const headersList = await headers();
+    const ip = headersList.get('x-forwarded-for') ?? 'unknown';
     const { success, limit, reset, remaining } = await ratelimit.limit(ip);
 
     if (!success) {
@@ -625,6 +627,8 @@ doSomething
 ### 3. revalidate 전략
 
 ```typescript
+import { revalidatePath, revalidateTag, updateTag } from 'next/cache';
+
 // 단일 경로 무효화
 revalidatePath('/users');
 
@@ -634,8 +638,11 @@ revalidatePath(`/users/${id}`);
 // 레이아웃 무효화
 revalidatePath('/users', 'layout');
 
-// 태그 기반 무효화
-revalidateTag('users');
+// 태그 기반 stale-while-revalidate
+revalidateTag('users', 'max');
+
+// Server Action 안에서 즉시 읽기 일관성이 필요할 때
+updateTag('users');
 ```
 
 ### 4. 응답 구조 표준화

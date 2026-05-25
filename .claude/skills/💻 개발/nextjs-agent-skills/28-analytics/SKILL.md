@@ -451,12 +451,12 @@ export async function purchaseAction(data: PurchaseData) {
 ## A/B 테스트 (Vercel Edge Config)
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { get } from '@vercel/edge-config';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const variant = await get<'control' | 'variant'>('homepage_experiment');
 
   const response = NextResponse.next();
@@ -757,7 +757,7 @@ export async function trackServerEvent(userId: string, eventName: string, params
 ### 3. CSP 설정
 
 ```typescript
-// middleware.ts - Analytics 도메인 허용
+// proxy.ts - Analytics 도메인 허용
 const csp = `
   script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;
   connect-src 'self' https://www.google-analytics.com https://analytics.google.com;
