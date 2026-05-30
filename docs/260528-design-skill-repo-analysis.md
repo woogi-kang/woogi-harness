@@ -1,6 +1,6 @@
 # 디자인 스킬 리서치 분석
 
-분석 기준일: 2026-05-28 KST  
+분석 기준일: 2026-05-28 KST
 상태: 2026-05-29에 `design-harness`로 superseded. 이 문서는 `design-craft` 1차 초안의 배경 분석으로 보존한다. 최신 마이그레이션 기준은 `docs/260529-design-harness-migration.md`를 따른다.
 
 분석 대상:

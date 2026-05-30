@@ -1,7 +1,7 @@
 # Design Harness Migration
 
-Date: 2026-05-29  
-Status: active migration applied  
+Date: 2026-05-29
+Status: active migration applied
 Goal: replace legacy design skills that produce template-like UI with a single modern design harness.
 
 ## New Primary Skill
