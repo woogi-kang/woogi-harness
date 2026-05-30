@@ -1,5 +1,7 @@
 # Claude Craft 내실 점검 감사 리포트
 
+> 상태: 2026-05-29 디자인 스킬 정리로 ISS-005의 `ui-ux-pro-max`/`design-craft`/`ui-design-agent-skills` 문제는 `design-harness` 중심 구조로 superseded. 최신 디자인 라우팅 기준은 `docs/260529-design-harness-migration.md`를 따른다.
+
 **일자:** 2026-03-24
 **범위:** 전체 프로젝트 (342 스킬, 30+ 에이전트, 18 커맨드, 3 훅, 11 스크립트)
 **종합 점수:** 8.2 / 10
