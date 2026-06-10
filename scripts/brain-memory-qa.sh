@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# brain-memory-qa.sh - Phase 1 routing and memory-engine smoke checks.
+# brain-memory-qa.sh - Routing and memory-engine smoke checks.
 
 set -euo pipefail
 
@@ -74,6 +74,33 @@ assert_search_contains() {
   fi
 }
 
+assert_context_pack() {
+  local query="$1"
+  local output
+  local words
+
+  if ! output="$(BRAIN_TIMEOUT_SECONDS="${BRAIN_QA_CONTEXT_TIMEOUT:-45}" "$BRAIN_MEMORY" context "$query")"; then
+    fail "context pack [$query]"
+    printf '%s\n' "$output" >&2
+    return
+  fi
+
+  words="$(printf '%s\n' "$output" | wc -w | tr -d ' ')"
+  if [ "$words" -gt 1500 ]; then
+    fail "context pack word limit [$query]: $words words"
+    return
+  fi
+
+  for required in "## Retrieved Context" "### Citations" "### Stale And Gap Notes" "Gap:"; do
+    if ! printf '%s\n' "$output" | rg -q "$required"; then
+      fail "context pack [$query] missing [$required]"
+      return
+    fi
+  done
+
+  pass "context pack [$query] ${words} words"
+}
+
 main() {
   [ -x "$BRAIN_MEMORY" ] || {
     printf 'error: brain wrapper is not executable: %s\n' "$BRAIN_MEMORY" >&2
@@ -93,8 +120,10 @@ main() {
 
   assert_command "wrapper status" "$BRAIN_MEMORY" status
   assert_command "secret scan" "$BRAIN_MEMORY" secret-scan
+  assert_command "quality report" "$BRAIN_MEMORY" quality-report
   assert_search_contains "GBrain 도입" "260610-gbrain-memory-engine-prd"
   assert_search_contains "Phase 0 도입" "260610-gbrain-phase0-implementation"
+  assert_context_pack "Phase 1 complete"
 
   printf '\nSummary: %s passed, %s failed\n' "$pass_count" "$fail_count"
   [ "$fail_count" -eq 0 ]

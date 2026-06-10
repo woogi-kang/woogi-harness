@@ -11,6 +11,7 @@ GBrain memory engine 상태를 점검합니다.
 ```bash
 scripts/brain-memory.sh status
 scripts/brain-memory-qa.sh
+scripts/brain-memory.sh quality-report
 codex mcp list
 claude mcp get gbrain
 ```

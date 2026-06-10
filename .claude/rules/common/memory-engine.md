@@ -109,10 +109,12 @@ GBrain에서 가져온 내용을 답변에 사용할 때는 page slug를 함께 
 ```bash
 scripts/brain-memory.sh status
 scripts/brain-memory.sh search "<query>"
+scripts/brain-memory.sh context "<query>"
 scripts/brain-memory.sh get "<slug>"
 scripts/brain-memory.sh capture decision "YYMMDD-kebab-title" "Title" < body.md
 scripts/brain-memory.sh sync
 scripts/brain-memory.sh secret-scan
+scripts/brain-memory.sh quality-report
 scripts/brain-memory-qa.sh
 ```
 

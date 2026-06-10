@@ -197,9 +197,11 @@
 ### 기억 엔진
 ```
 /brain-search "검색어" → GBrain에서 프로젝트/결정/과거 맥락 조회
+/brain-context "검색어" → cited context pack 생성
 /brain-capture        → 결정, 가정, 실패 접근, 반복 패턴 저장
 /brain-sync           → brain-craft repo와 GBrain index 동기화
 /brain-status         → GBrain 설치/MCP/source/search mode 상태 확인
+/brain-quality        → 월간 memory quality review 체크리스트 생성
 ```
 
 운영 wrapper는 `scripts/brain-memory.sh`이며, secret scan과 clean repo 확인은 wrapper 경로를 우선 사용한다.

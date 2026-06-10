@@ -17,15 +17,19 @@ GBrain memory engine에서 관련 맥락을 검색합니다.
 ## 절차
 
 1. 검색어를 `$ARGUMENTS`에서 추출합니다.
-2. 아래 명령으로 검색합니다.
+2. 검색 결과만 필요하면 아래 명령으로 검색합니다.
    ```bash
    scripts/brain-memory.sh search "$QUERY"
    ```
-3. 상위 3-5개 slug가 관련 있으면 필요한 page만 읽습니다.
+3. 작업에 바로 넣을 맥락이 필요하면 context pack을 생성합니다.
+   ```bash
+   scripts/brain-memory.sh context "$QUERY"
+   ```
+4. 상위 slug의 전문이 필요하면 page를 읽습니다.
    ```bash
    scripts/brain-memory.sh get "$SLUG"
    ```
-4. 다음 형식으로 context pack을 만듭니다.
+5. context pack은 다음 형식을 유지합니다.
 
 ```markdown
 ## Retrieved Context

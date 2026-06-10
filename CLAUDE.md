@@ -12,7 +12,7 @@ Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬
 │   ├── {카테고리}/_shared/  # 공유 스킬 (에이전트 간 중복 제거)
 │   │                        # 💻 개발: project-setup, architecture, unit-test, e2e-test, cicd, performance
 │   │                        # 📝 콘텐츠: research, validation
-├── commands/    # 슬래시 커맨드 (22개)
+├── commands/    # 슬래시 커맨드 (24개)
 ├── hooks/       # 라이프사이클 훅 (3개)
 ├── rules/       # 모듈형 규칙 (common, python, typescript)
 ├── templates/   # 팀 오케스트레이션 TOML 템플릿 (5개)
