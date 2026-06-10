@@ -30,7 +30,24 @@ The job is not to generate a style from a database. The job is to read the produ
 
    Ask one short question only when two plausible reads would materially change the design. Otherwise state assumptions and proceed.
 
-3. **Set three dials**
+3. **Choose reference stance when useful**
+
+   Read `references/design-reference-index.md` when the user asks for "proven", "best-in-class", big-company, or broad reference options. Read `references/design-references.md` when the user names a company/product/site as inspiration, has already chosen a reference, wants a more mature visual direction, or needs a full-screen/page/app design where reference choice will materially change the output.
+
+   Output:
+
+   ```text
+   Reference stance:
+   - Primary reference: <brand/product>
+   - Secondary reference: <brand/product or none>
+   - Anti-reference: <style to avoid>
+   - Borrow: <transferable design grammar>
+   - Do not borrow: <brand-specific traits>
+   ```
+
+   Borrow design grammar, not identity. Do not copy logos, marks, exact brand palettes, proprietary imagery, recognizable page compositions, or trademarked UI chrome.
+
+4. **Set three dials**
 
    | Dial | 1-3 | 4-7 | 8-10 |
    |---|---|---|---|
@@ -40,11 +57,12 @@ The job is not to generate a style from a database. The job is to read the produ
 
    Product UI usually sits at `3-5 / 2-4 / 6-9`. Brand surfaces usually sit at `6-9 / 4-8 / 2-5`. Regulated or public-sector surfaces bias lower distinction and motion.
 
-4. **Pick a mode**
+5. **Pick a mode**
 
    | Mode | Use when | Required reference |
    |---|---|---|
    | `shape` | UX/UI plan before code | `references/workflows.md` |
+   | `reference` | named brand/product/site inspiration, best-in-class reference selection, or DESIGN.md translation | `references/design-reference-index.md`, `references/design-references.md`, `references/anti-slop.md` |
    | `craft` | implement a new UI surface end-to-end | `references/registers.md`, `references/anti-slop.md` |
    | `audit` | review UX, a11y, responsive, visual quality | `references/workflows.md`, `references/anti-slop.md` |
    | `polish` | improve an existing surface before ship | `references/anti-slop.md`, `references/motion-interaction.md` |
@@ -54,7 +72,7 @@ The job is not to generate a style from a database. The job is to read the produ
    | `animate` | purposeful motion/interactions | `references/motion-interaction.md` |
    | `harden` | states, edge cases, i18n, text overflow | `references/anti-slop.md`, `references/korean-ui.md` when Korean applies |
 
-5. **Use the right downstream skill**
+6. **Use the right downstream skill**
    - Component implementation: `ui-styling`.
    - Token architecture: `design-system`.
    - Logos, banners, CIP, social images: `design`, `logo-creator`, `banner-design`.

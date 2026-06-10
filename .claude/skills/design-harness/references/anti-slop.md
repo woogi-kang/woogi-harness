@@ -20,6 +20,34 @@ Run both checks:
 
 Pick the scene, audience, and brand truth. Do not pick from training-data reflex.
 
+## Reference Translation
+
+When using a known company, product, or site as inspiration, translate the design grammar instead of copying the identity.
+
+Borrow:
+
+- Color roles, not exact brand palettes.
+- Type hierarchy and rhythm, not proprietary font identity unless the project already has a license.
+- Density, spacing, radius, shadow discipline, and component affordances.
+- Product evidence strategy: real screenshots, charts, photos, maps, command surfaces, or data views.
+- Motion posture: causal feedback, editorial pacing, or gallery-like transitions.
+
+Do not borrow:
+
+- Logos, marks, icon silhouettes, mascot characters, proprietary illustrations, or brand photography.
+- Exact page compositions, navigation structures, hero layouts, or recognizable product screenshots.
+- Trademarked product names, slogans, copied value propositions, or testimonial copy.
+- Brand colors in the same roles and proportions when they would read as imitation.
+- Trust signals, metrics, compliance claims, or enterprise scale cues the product cannot substantiate.
+
+Before implementation, write:
+
+```text
+Borrowed principles:
+Forbidden traits:
+Local translation:
+```
+
 ## Hard Bans By Default
 
 - Gradient text for emphasis.

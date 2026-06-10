@@ -9,6 +9,7 @@ Use before code when direction or scope is unclear.
 Output:
 
 - Design read.
+- Reference stance when a brand, product, site, or proven design direction is relevant.
 - Register and dial values.
 - Surface map: sections/screens/components.
 - Visual stance and anti-goals.
@@ -25,12 +26,13 @@ Use when building a page/screen/component.
 Steps:
 
 1. Inspect existing stack, tokens, components, and package dependencies.
-2. Decide register and dials.
-3. Identify the one visual idea or product usability goal.
-4. Implement with existing primitives where they fit.
-5. Add necessary states and responsive behavior.
-6. Run mechanical preflight.
-7. Run browser/screenshot QA when possible.
+2. Decide register, reference stance, and dials.
+3. Translate borrowed reference grammar into local tokens, components, and layout rules.
+4. Identify the one visual idea or product usability goal.
+5. Implement with existing primitives where they fit.
+6. Add necessary states and responsive behavior.
+7. Run mechanical preflight.
+8. Run browser/screenshot QA when possible.
 
 ## Audit
 
@@ -68,9 +70,10 @@ Use for existing projects.
 
 1. Detect mode: preserve, evolve, or overhaul.
 2. Inventory current font, palette, radius, shadows, spacing, icon set, section patterns.
-3. List top 5 slop signatures and top 5 trust/usability issues.
-4. Fix in low-risk order: typography, color tokens, interaction states, spacing, layout, assets, motion.
-5. Preserve URL structure, form field names, legal copy, analytics hooks, and product behavior unless requested.
+3. Pick primary, secondary, and anti-reference if the redesign needs outside direction.
+4. List top 5 slop signatures and top 5 trust/usability issues.
+5. Fix in low-risk order: typography, color tokens, interaction states, spacing, layout, assets, motion.
+6. Preserve URL structure, form field names, legal copy, analytics hooks, and product behavior unless requested.
 
 ## Harden
 
