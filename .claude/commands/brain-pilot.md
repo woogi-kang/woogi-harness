@@ -11,6 +11,7 @@ GBrain memory engine의 Phase 3 파일럿 지표를 기록하고 리뷰합니다
 ```bash
 scripts/brain-pilot.sh init
 scripts/brain-pilot.sh log lookup useful 10 decisions/260610-gbrain-phase1-harness-wiring "Recovered Phase 1 decision"
+scripts/brain-pilot.sh tasks
 scripts/brain-pilot.sh report
 ```
 

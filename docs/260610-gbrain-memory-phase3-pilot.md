@@ -15,6 +15,7 @@ This document starts the pilot by defining the event schema, report command, and
 ```bash
 scripts/brain-pilot.sh init
 scripts/brain-pilot.sh log <event_type> <outcome> <minutes_saved> <citations> <note>
+scripts/brain-pilot.sh tasks
 scripts/brain-pilot.sh report
 ```
 
@@ -53,6 +54,18 @@ Metrics are stored in:
 ## Initial Readout
 
 The pilot starts with Phase 0-2 implementation events, not a full 30-day outcome. The report should remain `collecting data` until enough real follow-up tasks are logged.
+
+Current task backlog:
+
+```bash
+scripts/brain-pilot.sh tasks
+```
+
+Static task plan:
+
+```text
+docs/260611-gbrain-memory-task-backlog.md
+```
 
 ## Phase 3 Review Questions
 

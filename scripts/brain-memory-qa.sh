@@ -123,6 +123,7 @@ main() {
   assert_command "secret scan" "$BRAIN_MEMORY" secret-scan
   assert_command "quality report" "$BRAIN_MEMORY" quality-report
   assert_command "pilot report" "$BRAIN_PILOT" report
+  assert_command "pilot tasks" "$BRAIN_PILOT" tasks
   assert_search_contains "GBrain 도입" "260610-gbrain-memory-engine-prd"
   assert_search_contains "Phase 0 도입" "260610-gbrain-phase0-implementation"
   assert_context_pack "Phase 1 complete"

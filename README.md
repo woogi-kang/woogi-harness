@@ -177,6 +177,7 @@ scripts/brain-memory.sh context "검색어"
 scripts/brain-memory.sh sync
 scripts/brain-memory.sh quality-report
 scripts/brain-memory-qa.sh
+scripts/brain-pilot.sh tasks
 scripts/brain-pilot.sh report
 ```
 
