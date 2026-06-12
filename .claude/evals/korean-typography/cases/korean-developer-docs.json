@@ -1,0 +1,9 @@
+{
+  "id": "korean-developer-docs",
+  "prompt": "한국어 개발자 문서 페이지를 코드 블록과 CLI 예시 포함해 생성하라.",
+  "expected": [
+    "code font fallback",
+    "overflow-wrap: anywhere for code",
+    "Korean body wrapping"
+  ]
+}

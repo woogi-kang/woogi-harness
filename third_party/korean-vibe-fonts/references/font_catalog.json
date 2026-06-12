@@ -1,0 +1,597 @@
+{
+  "verified_on": "2026-04-28",
+  "license_policy": {
+    "naver": "Naver says its fonts are free for all users including companies and can be used commercially except selling the font itself for a fee.",
+    "google_fonts": "Google Fonts FAQ says all Google Fonts are open source, free to use, and can be used commercially.",
+    "sil_ofl": "SIL OFL allows commercial use, modification, and redistribution, but not selling the font by itself."
+  },
+  "fonts": [
+    {
+      "id": "pretendard-variable",
+      "name": "Pretendard Variable",
+      "provider": "orioncactus",
+      "license": "SIL OFL 1.1",
+      "source_page": "https://raw.githubusercontent.com/orioncactus/pretendard/main/packages/pretendard/README.md",
+      "license_page": "https://github.com/orioncactus/pretendard/blob/main/LICENSE",
+      "stylesheet_url": "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css",
+      "integration": {
+        "html_link": "<link rel=\"stylesheet\" as=\"style\" crossorigin href=\"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css\" />",
+        "css_import": "@import url(\"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css\");"
+      },
+      "application": {
+        "body_family": "\"Pretendard Variable\", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, \"Helvetica Neue\", \"Apple SD Gothic Neo\", \"Noto Sans KR\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"Pretendard Variable\", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, \"Helvetica Neue\", \"Apple SD Gothic Neo\", \"Noto Sans KR\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["modern", "clean", "ui", "product", "startup", "saas", "ai", "portfolio", "tech", "minimal", "neutral", "versatile"],
+      "tone_note": "가장 무난한 현대적 기본값. 제품형 UI, 랜딩, 포트폴리오에 잘 맞는다.",
+      "best_for_ko": ["AI SaaS", "스타트업 랜딩", "프로덕트 사이트", "포트폴리오", "문서형 UI"],
+      "avoid_for_ko": ["강한 손맛이 필요한 브랜딩", "복고 포스터 메인 타이틀"],
+      "stability_bonus": 4
+    },
+    {
+      "id": "nanum-square-neo",
+      "name": "NanumSquare Neo",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css\");"
+      },
+      "application": {
+        "body_family": "\"NanumSquareNeoVariable\", \"NanumSquareNeo\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 450,
+        "heading_family": "\"NanumSquareNeoVariable\", \"NanumSquareNeoHeavy\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 800
+      },
+      "roles": ["body", "heading"],
+      "tags": ["modern", "geometric", "brand", "hero", "landing", "startup", "tech", "bold", "confident"],
+      "tone_note": "직선적이고 브랜드 힘이 강하다. 메인 헤드라인과 카드 UI에 특히 강하다.",
+      "best_for_ko": ["히어로 섹션", "AI 제품 소개", "핀테크", "브랜드 랜딩", "테크 포트폴리오"],
+      "avoid_for_ko": ["아주 차분한 장문 읽기", "손글씨 감성"],
+      "stability_bonus": 3
+    },
+    {
+      "id": "nanum-square",
+      "name": "NanumSquare",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css\");"
+      },
+      "application": {
+        "body_family": "\"NanumSquare\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"NanumSquareExtraBold\", \"NanumSquare\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 800
+      },
+      "roles": ["body", "heading"],
+      "tags": ["clean", "geometric", "friendly", "startup", "community", "onboarding", "campaign", "mobile"],
+      "tone_note": "반듯하고 친근한 스타트업 계열. 모바일 화면에서도 인상이 또렷하다.",
+      "best_for_ko": ["온보딩", "커뮤니티 앱", "교육 서비스", "캠페인 페이지"],
+      "avoid_for_ko": ["럭셔리 에디토리얼", "문학적 브랜딩"],
+      "stability_bonus": 2
+    },
+    {
+      "id": "nanum-gothic",
+      "name": "NanumGothic",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css\");"
+      },
+      "application": {
+        "body_family": "\"NanumGothic\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"NanumGothicBold\", \"NanumGothic\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["neutral", "readable", "docs", "support", "portal", "conventional", "safe", "trustworthy"],
+      "tone_note": "익숙하고 안정적인 본문용. 공지, 고객지원, 문서형 페이지에서 특히 안전하다.",
+      "best_for_ko": ["고객센터", "헬프 문서", "포털형 서비스", "공지 페이지"],
+      "avoid_for_ko": ["강한 브랜드 차별화가 필요한 히어로", "트렌디한 감성 브랜딩"],
+      "stability_bonus": 3
+    },
+    {
+      "id": "gmarket-sans",
+      "name": "Gmarket Sans",
+      "provider": "Gmarket",
+      "license": "SIL OFL 1.1",
+      "source_page": "https://corp.gmarket.com/fonts/",
+      "license_page": "https://corp.gmarket.com/fonts/",
+      "stylesheet_url": null,
+      "integration": {
+        "style_tag": "<style>\n@font-face {\n  font-family: \"Gmarket Sans\";\n  font-style: normal;\n  font-weight: 300;\n  src: url(\"https://script.gmarket.com/fonts/GmarketSansLight.woff2\") format(\"woff2\");\n}\n@font-face {\n  font-family: \"Gmarket Sans\";\n  font-style: normal;\n  font-weight: 500;\n  src: url(\"https://script.gmarket.com/fonts/GmarketSansMedium.woff2\") format(\"woff2\");\n}\n@font-face {\n  font-family: \"Gmarket Sans\";\n  font-style: normal;\n  font-weight: 700;\n  src: url(\"https://script.gmarket.com/fonts/GmarketSansBold.woff2\") format(\"woff2\");\n}\n</style>",
+        "css_import": "/* Gmarket Sans uses official @font-face declarations. See style_tag for a paste-ready snippet. */"
+      },
+      "application": {
+        "body_family": "\"Gmarket Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 500,
+        "heading_family": "\"Gmarket Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["modern", "clean", "brand", "ecommerce", "friendly", "mobile", "startup", "hero"],
+      "tone_note": "세련되고 깔끔한 브랜드 인상. 이커머스, 스타트업, 모바일 랜딩에 특히 잘 맞는다.",
+      "best_for_ko": ["이커머스 랜딩", "브랜드 소개 페이지", "모바일 프로모션", "스타트업 히어로"],
+      "avoid_for_ko": ["문학형 에디토리얼", "아주 진지한 정책 문서"],
+      "stability_bonus": 2
+    },
+    {
+      "id": "spoqa-han-sans-neo",
+      "name": "Spoqa Han Sans Neo",
+      "provider": "Spoqa",
+      "license": "Open font license",
+      "source_page": "https://spoqa.github.io/spoqa-han-sans/",
+      "license_page": "https://spoqa.github.io/spoqa-han-sans/",
+      "stylesheet_url": "https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css",
+      "integration": {
+        "html_link": "<link href=\"https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css\" rel=\"stylesheet\" type=\"text/css\">",
+        "css_import": "@import url(\"https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css\");"
+      },
+      "application": {
+        "body_family": "\"Spoqa Han Sans Neo\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"Spoqa Han Sans Neo\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["ui", "ux", "product", "dashboard", "readable", "neutral", "data", "startup", "modern", "developer"],
+      "tone_note": "UI와 숫자 가독성에 강한 정돈된 고딕체. 제품형 서비스와 운영 화면에 안정적이다.",
+      "best_for_ko": ["UI/UX 중심 서비스", "대시보드", "개발자 제품", "스타트업 웹앱"],
+      "avoid_for_ko": ["강한 손맛의 브랜딩", "개성 과한 포스터 타이틀"],
+      "stability_bonus": 4
+    },
+    {
+      "id": "goorm-sans",
+      "name": "Goorm Sans",
+      "provider": "goorm",
+      "license": "SIL OFL 1.1",
+      "source_page": "https://goorm-sans.goorm.io/",
+      "license_page": "https://goorm-sans.goorm.io/",
+      "stylesheet_url": "https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.min.css",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://statics.goorm.io\" crossorigin=\"anonymous\" />\n<link rel=\"preload\" as=\"style\" crossorigin href=\"https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.min.css\" />\n<link rel=\"stylesheet\" href=\"https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.min.css\" />",
+        "css_import": "@import url(\"https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.min.css\");"
+      },
+      "application": {
+        "body_family": "\"Goorm Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"Goorm Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["modern", "clean", "developer", "tech", "ui", "product", "readable", "startup", "brand"],
+      "tone_note": "한글과 영문 균형이 좋아 개발자 감성과 제품형 UI를 함께 잡기 좋다.",
+      "best_for_ko": ["개발자 제품", "테크 랜딩", "제품 소개 페이지", "깔끔한 서비스 UI"],
+      "avoid_for_ko": ["손글씨 중심 캠페인", "문학형 에세이 페이지"],
+      "stability_bonus": 3
+    },
+    {
+      "id": "s-core-dream",
+      "name": "S-Core Dream",
+      "provider": "S-Core",
+      "license": "S-Core font license (commercial use allowed; font file modification restricted)",
+      "commercial_use_verified": true,
+      "automatic_webfont_recommendation": false,
+      "source_page": "https://s-core.co.kr/company/font/",
+      "license_page": "https://s-core.co.kr/company/font/",
+      "stylesheet_url": null,
+      "integration": {
+        "setup_note": "Commercial use is allowed on the official license page, but the same page also says the font files must be used as distributed and not modified. Because the official site does not provide a hosted webfont stylesheet, this package should treat S-Core Dream as not yet verified for automatic webfont embedding.",
+        "download_url": "https://s-core.co.kr/wp-content/uploads/2020/03/S-Core_Dream_OTF.zip"
+      },
+      "application": {
+        "body_family": "\"S-Core Dream\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"S-Core Dream\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["clean", "modern", "versatile", "brand", "presentation", "startup", "bold"],
+      "tone_note": "9가지 굵기를 갖춘 깔끔한 고딕체. 발표 자료, 브랜드 소개, 굵기 대비가 중요한 화면에 유용하다.",
+      "best_for_ko": ["슬라이드 제목 시스템", "브랜드 소개", "굵기 대비가 필요한 랜딩", "발표형 페이지"],
+      "avoid_for_ko": ["웹폰트를 바로 붙여야 하는 초간단 프로토타입", "자동 웹폰트 임베딩이 필요한 프로젝트"],
+      "stability_bonus": 1
+    },
+    {
+      "id": "ibm-plex-sans-kr",
+      "name": "IBM Plex Sans KR",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/IBM+Plex+Sans+KR",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"IBM Plex Sans KR\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", system-ui, sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"IBM Plex Sans KR\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", system-ui, sans-serif",
+        "heading_weight": 600
+      },
+      "roles": ["body", "heading"],
+      "tags": ["technical", "b2b", "dashboard", "data", "developer", "enterprise", "orderly", "clean", "modern"],
+      "tone_note": "공학적이고 차분하다. B2B, 개발자 도구, 데이터 제품에 특히 잘 맞는다.",
+      "best_for_ko": ["대시보드", "B2B SaaS", "분석 툴", "개발자 제품", "운영툴"],
+      "avoid_for_ko": ["귀엽고 감성적인 브랜딩", "손글씨 중심 마이크로사이트"],
+      "stability_bonus": 3
+    },
+    {
+      "id": "noto-sans-kr",
+      "name": "Noto Sans KR",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Noto+Sans+KR",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"Noto Sans KR\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", system-ui, sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"Noto Sans KR\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", system-ui, sans-serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["safe", "neutral", "multilingual", "corporate", "product", "docs", "readable", "international"],
+      "tone_note": "글로벌 서비스에 쓰기 좋은 무채색 기본값. 언어 혼용 환경에서도 안정적이다.",
+      "best_for_ko": ["다국어 제품", "범용 웹앱", "기업 사이트", "문서형 UI"],
+      "avoid_for_ko": ["개성 강한 브랜드 메인 타이틀"],
+      "stability_bonus": 4
+    },
+    {
+      "id": "maruburi",
+      "name": "MaruBuri",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css\");"
+      },
+      "application": {
+        "body_family": "\"MaruBuri\", \"Noto Serif KR\", serif",
+        "body_weight": 400,
+        "heading_family": "\"MaruBuriBold\", \"MaruBuri\", \"Noto Serif KR\", serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["editorial", "warm", "premium", "story", "culture", "essay", "brand", "serif", "calm"],
+      "tone_note": "부드럽고 온기 있는 화면용 부리. 브랜드 스토리와 장문 콘텐츠에 힘을 준다.",
+      "best_for_ko": ["브랜드 스토리", "에세이", "문화예술 사이트", "프리미엄 소개 페이지"],
+      "avoid_for_ko": ["기술 대시보드", "속도감 있는 프로모션 배너"],
+      "stability_bonus": 2
+    },
+    {
+      "id": "hahmlet",
+      "name": "Hahmlet",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Hahmlet",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Hahmlet:wght@100..900&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Hahmlet:wght@100..900&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Hahmlet:wght@100..900&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"Hahmlet\", \"Noto Serif KR\", serif",
+        "body_weight": 400,
+        "heading_family": "\"Hahmlet\", \"Noto Serif KR\", serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["editorial", "literary", "premium", "expressive", "serif", "culture", "art", "luxury"],
+      "tone_note": "문학적이고 우아하다. 조금 더 개성이 있는 프리미엄 에디토리얼에 좋다.",
+      "best_for_ko": ["문학형 포트폴리오", "전시 사이트", "브랜드 저널", "아트 디렉션 페이지"],
+      "avoid_for_ko": ["빽빽한 운영툴 UI", "가벼운 유스 캐릭터 서비스"],
+      "stability_bonus": 1
+    },
+    {
+      "id": "noto-serif-kr",
+      "name": "Noto Serif KR",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Noto+Serif+KR",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"Noto Serif KR\", serif",
+        "body_weight": 400,
+        "heading_family": "\"Noto Serif KR\", serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["serif", "formal", "trust", "editorial", "legal", "institution", "premium", "calm"],
+      "tone_note": "정갈하고 공신력 있는 부리. 기관형, 법률형, 신뢰형 페이지에 안전하다.",
+      "best_for_ko": ["리서치 페이지", "법률/정책 소개", "브랜드 아카이브", "장문 읽기"],
+      "avoid_for_ko": ["발랄한 커뮤니티 앱", "스포티한 프로모션"],
+      "stability_bonus": 2
+    },
+    {
+      "id": "gowun-dodum",
+      "name": "Gowun Dodum",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Gowun+Dodum",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"Gowun Dodum\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"Gowun Dodum\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 400
+      },
+      "roles": ["body", "heading"],
+      "tags": ["cozy", "soft", "friendly", "wellness", "lifestyle", "cafe", "community", "gentle"],
+      "tone_note": "부드럽고 잔잔하다. 웰니스, 라이프스타일, 커뮤니티류 화면에 온기를 준다.",
+      "best_for_ko": ["웰니스 서비스", "라이프스타일 블로그", "카페/소품 브랜드", "잔잔한 소개 페이지"],
+      "avoid_for_ko": ["공격적인 프로모션", "강한 산업형 대시보드"],
+      "stability_bonus": 1
+    },
+    {
+      "id": "gowun-batang",
+      "name": "Gowun Batang",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Gowun+Batang",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap\");"
+      },
+      "application": {
+        "body_family": "\"Gowun Batang\", \"Noto Serif KR\", serif",
+        "body_weight": 400,
+        "heading_family": "\"Gowun Batang\", \"Noto Serif KR\", serif",
+        "heading_weight": 700
+      },
+      "roles": ["body", "heading"],
+      "tags": ["poetic", "cozy", "editorial", "essay", "serene", "serif", "culture", "warm"],
+      "tone_note": "시적인 여백감이 있다. 잔잔한 에세이, 감성 브랜드 저널과 잘 어울린다.",
+      "best_for_ko": ["에세이 블로그", "브랜드 노트", "감성 포트폴리오", "문화 소개 페이지"],
+      "avoid_for_ko": ["데이터 밀도 높은 UI", "게임/이커머스 특가"],
+      "stability_bonus": 1
+    },
+    {
+      "id": "nanum-square-round",
+      "name": "NanumSquareRound",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css\");"
+      },
+      "application": {
+        "body_family": "\"NanumSquareRound\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "body_weight": 400,
+        "heading_family": "\"NanumSquareRoundEB\", \"NanumSquareRound\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 800
+      },
+      "roles": ["body", "heading"],
+      "tags": ["playful", "youth", "friendly", "education", "onboarding", "community", "startup", "soft"],
+      "tone_note": "동글고 경쾌하다. 교육, 가족형, 캐주얼 커뮤니티 서비스에 잘 맞는다.",
+      "best_for_ko": ["교육 앱", "가족형 서비스", "캐주얼 커뮤니티", "온보딩 페이지"],
+      "avoid_for_ko": ["엄숙한 기관 페이지", "프리미엄 럭셔리 브랜딩"],
+      "stability_bonus": 1
+    },
+    {
+      "id": "black-han-sans",
+      "name": "Black Han Sans",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Black+Han+Sans",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap\");"
+      },
+      "application": {
+        "heading_family": "\"Black Han Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 400
+      },
+      "roles": ["heading"],
+      "tags": ["display", "poster", "campaign", "bold", "music", "street", "promo", "impact"],
+      "tone_note": "타이틀 존재감이 강하다. 포스터, 이벤트, 캠페인 히어로에 좋다.",
+      "best_for_ko": ["캠페인 랜딩", "이벤트 페이지", "뮤직/스트리트 감성", "강한 헤드라인"],
+      "avoid_for_ko": ["장문 본문", "차분한 제품 문서"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "do-hyeon",
+      "name": "Do Hyeon",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Do+Hyeon",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap\");"
+      },
+      "application": {
+        "heading_family": "\"Do Hyeon\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 400
+      },
+      "roles": ["heading"],
+      "tags": ["display", "condensed", "sporty", "gaming", "ecommerce", "promo", "energetic", "impact"],
+      "tone_note": "좁고 단단하게 밀어붙이는 느낌. 이커머스 배너나 게임 감성에 강하다.",
+      "best_for_ko": ["특가 배너", "게임 소개", "액션성 있는 캠페인", "스포츠형 타이틀"],
+      "avoid_for_ko": ["장문 본문", "부드러운 웰니스 서비스"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "yg-jalnan",
+      "name": "여기어때 잘난체",
+      "provider": "여기어때",
+      "license": "여기어때 잘난체 license",
+      "source_page": "https://www.goodchoice.kr/font/mobile",
+      "license_page": "https://image.goodchoice.kr/images/jalnan_font/jalnan-font-190124ver.pdf",
+      "stylesheet_url": "https://static.goodchoice.kr/fonts/jalnan/font.css",
+      "integration": {
+        "html_link": "<link rel=\"stylesheet\" href=\"https://static.goodchoice.kr/fonts/jalnan/font.css\">",
+        "css_import": "@import url(\"https://static.goodchoice.kr/fonts/jalnan/font.css\");"
+      },
+      "application": {
+        "heading_family": "\"yg-jalnan\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 400
+      },
+      "roles": ["heading"],
+      "tags": ["display", "impact", "promo", "travel", "playful", "brand", "friendly", "poster"],
+      "tone_note": "주목도가 높은 제목용 폰트. 여행, 숙박, 이벤트, 생활형 프로모션 타이틀에 잘 붙는다.",
+      "best_for_ko": ["이벤트 배너", "프로모션 랜딩", "여행/숙박 카피", "생활형 브랜드 헤드라인"],
+      "avoid_for_ko": ["장문 본문", "아주 차분한 B2B 문서"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "nanum-gothic-coding",
+      "name": "NanumGothicCoding (D2Coding)",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic-coding.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic-coding.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic-coding.css\");"
+      },
+      "application": {
+        "code_family": "\"NanumGothicCoding\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
+        "code_weight": 400,
+        "code_family_ligature": "\"NanumGothicCodingLigature\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace"
+      },
+      "roles": ["code"],
+      "tags": ["code", "technical", "developer", "terminal", "docs", "hackathon", "monospace"],
+      "tone_note": "코드 블록과 터미널에 가장 안정적이다. 한글/영문/기호의 구분이 좋다.",
+      "best_for_ko": ["개발자 포트폴리오", "코드 예제가 있는 랜딩", "문서 사이트", "터미널 UI"],
+      "avoid_for_ko": ["일반 본문", "브랜드 헤드라인"],
+      "stability_bonus": 4
+    },
+    {
+      "id": "nanum-pen",
+      "name": "NanumPen",
+      "provider": "NAVER",
+      "license": "NAVER font open license",
+      "source_page": "https://hangeul.naver.com/font",
+      "license_page": "https://hangeul.naver.com/font",
+      "stylesheet_url": "https://hangeul.pstatic.net/hangeul_static/css/nanum-pen.css",
+      "integration": {
+        "html_link": "<link href=\"https://hangeul.pstatic.net/hangeul_static/css/nanum-pen.css\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://hangeul.pstatic.net/hangeul_static/css/nanum-pen.css\");"
+      },
+      "application": {
+        "heading_family": "\"NanumPen\", cursive",
+        "heading_weight": 400
+      },
+      "roles": ["heading", "accent"],
+      "tags": ["handwritten", "casual", "diary", "cozy", "personal", "accent", "warm"],
+      "tone_note": "메모, 후기, 강조 한 줄 같은 작은 포인트에 좋다.",
+      "best_for_ko": ["리뷰 강조", "다이어리형 섹션", "감성 메모", "포인트 카피"],
+      "avoid_for_ko": ["본문 전체", "전문 서비스 메인 타이틀"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "jua",
+      "name": "Jua",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Jua",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Jua&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Jua&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Jua&display=swap\");"
+      },
+      "application": {
+        "heading_family": "\"Jua\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif",
+        "heading_weight": 400
+      },
+      "roles": ["heading"],
+      "tags": ["playful", "cheerful", "youth", "food", "casual", "family", "display"],
+      "tone_note": "명랑하고 친근하다. 음식, 가족형, 밝은 커뮤니티에 잘 맞는다.",
+      "best_for_ko": ["푸드/리빙", "밝은 커뮤니티", "아이템 소개", "가족형 서비스"],
+      "avoid_for_ko": ["법률/기관", "고급 에디토리얼"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "gaegu",
+      "name": "Gaegu",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Gaegu",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap\");"
+      },
+      "application": {
+        "heading_family": "\"Gaegu\", cursive",
+        "heading_weight": 700
+      },
+      "roles": ["heading", "accent"],
+      "tags": ["handwritten", "playful", "experimental", "doodle", "kids", "casual", "accent"],
+      "tone_note": "낙서 같은 자유로움이 있다. 실험적이고 장난스러운 포인트용으로 좋다.",
+      "best_for_ko": ["캐주얼 이벤트", "취향형 서비스", "실험적 캠페인", "아기자기한 포인트"],
+      "avoid_for_ko": ["정돈된 기업 페이지", "장문 본문"],
+      "stability_bonus": 0
+    },
+    {
+      "id": "single-day",
+      "name": "Single Day",
+      "provider": "Google Fonts",
+      "license": "Google Fonts open-source license",
+      "source_page": "https://fonts.google.com/specimen/Single+Day",
+      "license_page": "https://developers.google.com/fonts/faq",
+      "stylesheet_url": "https://fonts.googleapis.com/css2?family=Single+Day&display=swap",
+      "integration": {
+        "html_link": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Single+Day&display=swap\" rel=\"stylesheet\">",
+        "css_import": "@import url(\"https://fonts.googleapis.com/css2?family=Single+Day&display=swap\");"
+      },
+      "application": {
+        "heading_family": "\"Single Day\", cursive",
+        "heading_weight": 400
+      },
+      "roles": ["heading", "accent"],
+      "tags": ["handwritten", "personal", "warm", "diary", "lifestyle", "accent", "cute"],
+      "tone_note": "정돈된 손글씨 느낌. 일기, 후기, 작은 브랜드 메모 섹션에 잘 맞는다.",
+      "best_for_ko": ["다이어리형 섹션", "리뷰 인용문", "소규모 라이프스타일 브랜드", "따뜻한 CTA"],
+      "avoid_for_ko": ["강한 프로모션", "운영툴 UI"],
+      "stability_bonus": 0
+    }
+  ]
+}

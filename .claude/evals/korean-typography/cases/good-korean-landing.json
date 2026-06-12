@@ -1,0 +1,10 @@
+{
+  "id": "good-korean-landing",
+  "prompt": "한국어 AI SaaS 랜딩 페이지 HTML/CSS를 생성하라.",
+  "expected": [
+    "word-break: keep-all",
+    "overflow-wrap",
+    "Korean-capable font stack",
+    "stable body/heading/code role mapping"
+  ]
+}

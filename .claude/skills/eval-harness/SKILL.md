@@ -114,6 +114,7 @@ echo '{"timestamp":"...","pass":true,"notes":"..."}' >> .claude/evals/auth-login
 |--------|------|------|
 | Evaluation Result Schema | `.claude/evals/presets/evaluation-result-schema.md` | evidence packet, excluded signals, adjustments, hard failures 표준 결과 형식 |
 | UI/Design | `.claude/evals/presets/ui-design.md` | 4축 평가 (Design Quality, Originality, Craft, Functionality) |
+| Korean Typography | `.claude/evals/presets/korean-typography.md` | 4축 평가 (Korean Readability/Wrapping, Font Fit, Role Consistency, Craft) |
 | API Backend | `.claude/evals/presets/api-backend.md` | 4축 평가 (Correctness, Robustness, Security, Performance) |
 | Content | `.claude/evals/presets/content-quality.md` | 4축 평가 (Clarity, Completeness, Accuracy, Engagement) |
 
