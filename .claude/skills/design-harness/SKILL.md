@@ -4,8 +4,8 @@ description: "차세대 프론트엔드 디자인 하네스. UI/UX 디자인, �
 license: MIT
 metadata:
   category: "🎨 디자인"
-  version: "0.1.0"
-  tags: "frontend-design, ui-ux, anti-slop, visual-qa, redesign, design-system"
+  version: "0.1.1"
+  tags: "frontend-design, ui-ux, anti-slop, visual-qa, redesign, design-system, interface-polish"
 ---
 
 # Design Harness
@@ -63,15 +63,15 @@ The job is not to generate a style from a database. The job is to read the produ
    |---|---|---|
    | `shape` | UX/UI plan before code | `references/workflows.md` |
    | `reference` | named brand/product/site inspiration, best-in-class reference selection, or DESIGN.md translation | `references/design-reference-index.md`, `references/design-references.md`, `references/anti-slop.md` |
-   | `craft` | implement a new UI surface end-to-end | `references/registers.md`, `references/anti-slop.md` |
-   | `audit` | review UX, a11y, responsive, visual quality | `references/workflows.md`, `references/anti-slop.md` |
-   | `polish` | improve an existing surface before ship | `references/anti-slop.md`, `references/motion-interaction.md` |
+   | `craft` | implement a new UI surface end-to-end | `references/registers.md`, `references/anti-slop.md`, `references/interface-polish.md` |
+   | `audit` | review UX, a11y, responsive, visual quality | `references/workflows.md`, `references/anti-slop.md`, `references/interface-polish.md` |
+   | `polish` | improve an existing surface before ship | `references/anti-slop.md`, `references/interface-polish.md`, `references/motion-interaction.md` |
    | `redesign` | modernize existing UI | `references/workflows.md` |
    | `typeset` | typography hierarchy/font work | `references/registers.md`, then `korean-typography` when Korean fonts apply |
    | `colorize` | palette/theme work | `references/registers.md`, `references/anti-slop.md` |
-   | `animate` | purposeful motion/interactions | `references/motion-interaction.md` |
+   | `animate` | purposeful motion/interactions | `references/motion-interaction.md`, `references/interface-polish.md` |
    | `lottie` | Lottie/Bodymovin JSON motion asset creation or repair | `references/motion-interaction.md`, then `text-to-lottie` |
-   | `harden` | states, edge cases, i18n, text overflow | `references/anti-slop.md`, `references/korean-ui.md` when Korean applies |
+   | `harden` | states, edge cases, i18n, text overflow | `references/anti-slop.md`, `references/interface-polish.md`, `references/korean-ui.md` when Korean applies |
 
 6. **Use the right downstream skill**
    - Component implementation: `ui-styling`.
@@ -98,6 +98,7 @@ Read `references/anti-slop.md` for implementation or review. The short version:
 - Avoid repeated centered heroes, pill badges, equal card grids, gradient text, decorative glass, fake screenshots, generic logo walls, and cliche copy.
 - Use actual images, screenshots, generated raster assets, real component previews, charts, maps, or canvas/WebGL scenes when the surface needs visual proof.
 - Every interactive flow needs loading, empty, error, disabled, focus, mobile, and reduced-motion behavior when relevant.
+- Use `references/interface-polish.md` for micro-details: text wrapping, tabular numbers, optical alignment, concentric radius, subtle press feedback, hit areas, and transition hygiene.
 
 ## Mechanical Preflight
 

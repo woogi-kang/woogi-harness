@@ -48,11 +48,14 @@ Useful CSS curves:
 
 ## Component Craft
 
-- Pressable elements need active feedback: `scale(0.97)` or `translateY(1px)`.
+- Pressable elements need subtle active feedback: `scale(0.96)` to `scale(0.98)` or `translateY(1px)`.
+- Avoid press scales below `0.95` unless the product is intentionally playful.
 - Never animate from `scale(0)`. Start from `scale(0.95)` plus opacity.
 - Popovers scale from their trigger. Modals stay centered.
 - Tooltips should delay initially, then open instantly when moving across adjacent tools.
 - Use transitions for interruptible UI. Keyframes are fine for predetermined decorative loops.
+- For contextual icon swaps, animate opacity, scale, and light blur when the motion posture supports it. Reuse Motion/Framer Motion only when the project already has it; otherwise use CSS transitions.
+- Skip first-render animation for default-state controls when using React presence utilities, but keep intentional page entrance sequences intact.
 - Use blur sparingly to soften crossfades. Heavy blur is expensive, especially in Safari.
 
 ## Gestures
@@ -66,6 +69,8 @@ Useful CSS curves:
 
 - Animate `transform` and `opacity`.
 - Avoid animating width, height, margin, padding, top, left.
+- Avoid `transition: all` and `transition-all`; specify the properties that change.
+- Use `will-change` only for observed first-frame stutter, and never as `will-change: all`.
 - Avoid scroll listeners that set React state every frame.
 - Use Motion values, IntersectionObserver, CSS scroll timelines, WAAPI, or GSAP ScrollTrigger when the dependency exists.
 - Check `package.json` before importing Motion, GSAP, Lenis, Three.js, or any animation library.

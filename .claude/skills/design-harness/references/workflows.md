@@ -61,8 +61,9 @@ Order of operations:
 2. Fix spacing rhythm and hierarchy.
 3. Remove generic filler elements.
 4. Add or correct interaction states.
-5. Improve assets and copy.
-6. Tune motion only where it communicates.
+5. Apply interface polish: text wrapping, dynamic numerals, optical alignment, radius math, image edges, hit areas, and transition specificity.
+6. Improve assets and copy.
+7. Tune motion only where it communicates.
 
 ## Redesign
 
@@ -85,4 +86,6 @@ Use before ship.
 - Reduced motion.
 - Mobile nav and touch targets.
 - Image dimensions and CLS.
+- Transition hygiene and `will-change` usage.
+- Dynamic numeric alignment.
 - i18n and Korean line breaking where relevant.
