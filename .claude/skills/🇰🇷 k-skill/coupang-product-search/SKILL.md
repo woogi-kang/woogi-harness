@@ -55,6 +55,22 @@ https://yuju777-coupang-mcp.hf.space/mcp
 
 - 로그인, 장바구니, 결제 자동화가 필요한 경우
 - 쿠팡 계정/session 접근이 필요한 경우
+- Patchright, anti-detect browser, 프록시 회전, CAPTCHA 회피 등 봇 차단 우회가 필요한 경우
+
+## Operational boundary
+
+- 이 스킬은 로컬 브라우저를 실행하지 않는다. 실패가 발생해도 곧바로 "로컬 Playwright/브라우저가 쿠팡에 차단됐다"고 판단하지 않는다.
+- 먼저 MCP 세션 초기화, 도구 목록, 정적 추천 도구, live data 도구를 분리해서 본다.
+- live data 도구만 실패하면 원격 `coupang-mcp` 백엔드, 다나와 조회, 쿠팡 API 폴백, upstream 점검 상태를 먼저 의심한다.
+- 대량 요청, 로그인 세션 자동화, 장바구니/결제 조작, 차단 우회 튜닝은 하지 않는다.
+- 공식/파트너 API 권한이 있으면 해당 경로를 우선한다.
+
+## Data source priority
+
+1. `coupang-mcp` live data: 가격, 배송, 추천 후보가 필요한 일반 응답 경로.
+2. 공식/파트너 API: 권한과 키가 있는 경우에만 사용한다. 시크릿은 출력하거나 커밋하지 않는다.
+3. 로컬 캐시: `intro_tip_links.csv` 기반 링크 후보 fallback. 가격, 재고, 리뷰, 랭킹, 배송 상태는 검증하지 않는다.
+4. 사용 불가 보고: 위 경로가 모두 실패하면 장애/권한/coverage gap을 짧게 보고한다.
 
 ## Workflow
 
@@ -63,6 +79,35 @@ https://yuju777-coupang-mcp.hf.space/mcp
 검색어가 너무 넓으면 먼저 의도를 좁힌다.
 
 - 권장 질문: `어떤 용도/예산/브랜드/용량을 우선할까요?`
+
+### 1.5. Diagnose service health when results fail
+
+상품 검색이 `API 오류: 알 수 없는 오류`처럼 실패하면 먼저 진단 스크립트를 실행한다.
+
+```bash
+bash scripts/diagnose-coupang-mcp.sh "생수"
+```
+
+판단 기준:
+
+- `initialize`, `tools/list`, `get_coupang_recommendations`가 성공하고 live data 도구만 실패하면 원격 데이터 경로 장애로 본다.
+- MCP 세션 ID가 발급되지 않으면 endpoint, 네트워크, HF Space 상태를 확인한다.
+- upstream 저장소가 maintenance 상태이면 사용자에게 점검 중이라고 설명하고 재시도 또는 다른 공식 데이터 경로를 제안한다.
+- 이 진단 결과만으로 anti-detect/우회 브라우저 작업을 시작하지 않는다.
+
+### 1.6. Use local cache only as a stale fallback
+
+live data 도구가 실패했고 사용자가 링크 후보만으로도 충분하다고 판단되면 로컬 캐시를 조회한다.
+
+```bash
+python3 scripts/search-coupang-cache.py "버터" --limit 5
+```
+
+응답에는 반드시 다음 제한을 함께 말한다.
+
+- 로컬 정적 스냅샷이라 가격/재고/배송/리뷰/랭킹을 검증하지 않는다.
+- 링크 후보 탐색용이며 실시간 상품 추천이나 최저가 비교로 쓰지 않는다.
+- 검색 결과가 없으면 쿼리를 넓히거나 공식/파트너 API 권한 확보를 제안한다.
 
 ### 2. Initialize MCP session
 
@@ -128,9 +173,13 @@ curl -s -X POST "https://yuju777-coupang-mcp.hf.space/mcp" \
 - 로켓배송/일반배송 구분을 명시한다.
 - 가격은 참고용임을 안내한다 (다나와 실패 시 쿠팡 API 추정가).
 - MCP 서버가 응답하지 않으면 서버 상태를 알리고 나중에 재시도를 권한다.
+- live data 도구만 실패하면 `docs/260625-coupang-access-diagnostics.md`와 진단 스크립트 결과를 근거로 원격 데이터 경로 장애 가능성을 설명한다.
+- 로컬 캐시 fallback 결과는 freshness/confidence 제한을 함께 표기한다.
 
 ## Done when
 
 - 검색 결과가 로켓배송/일반배송으로 구분되어 정리되었다.
 - 사용자 니즈에 맞는 추천 TOP 3이 제시되었다.
 - 가격/배송 정보가 포함되었다.
+- 실패 시 MCP 계층과 live data 계층 중 어디가 실패했는지 분리해 보고했다.
+- fallback 사용 시 live data인지, 공식/파트너 API인지, 로컬 캐시인지 출처를 명시했다.
