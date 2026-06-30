@@ -50,6 +50,15 @@ node ".claude/skills/📝 콘텐츠/future-slide-skills/future-slide-qa/scripts/
 - 인포그래픽/이미지 slot의 목적이 장식이 아니라 메시지 이해에 필요한지
 - PDF 동시 생성 여부와 PDF 페이지 수 일치 여부
 
+자동 검사 후 수동 확대 검수:
+
+- contact sheet는 문제 후보를 찾는 용도이며 PASS 근거가 아닙니다.
+- 각 slide/page PNG를 읽을 수 있는 크기로 열어 제목-부제-본문-카드-캡션-하단 문장 위계를 확인합니다.
+- 카드 간 gap, 표 row/column padding, 이미지-텍스트 간격, 하단 safe area를 확인합니다.
+- 한글 제목/본문에 negative letter spacing이나 과한 압축 자간이 들어가지 않았는지 확인합니다.
+- 사용자가 레이아웃 깨짐을 지적한 경우 기존 QA report를 폐기하고 새 렌더 기준으로 다시 작성합니다.
+- 문제 슬라이드와 같은 layout family를 쓰는 슬라이드도 함께 재검수합니다.
+
 ## 산출물
 
 ```text

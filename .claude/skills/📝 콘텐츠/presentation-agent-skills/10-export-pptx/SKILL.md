@@ -264,6 +264,27 @@ function validateSlide(slideData) {
 }
 ```
 
+## 최종 레이아웃 QA 체크리스트
+
+PPTX/PDF를 사용자에게 전달하기 전에 아래 항목을 모두 확인합니다.
+
+- `slide/page`별 PNG를 모두 렌더링한다.
+- contact sheet는 문제 후보를 찾는 보조 자료로만 사용한다.
+- 각 PNG를 읽을 수 있는 크기로 개별 확대 확인하고, contact sheet만으로 통과 처리하지 않는다.
+- 제목, 부제, 본문, 카드 제목, 캡션, 하단 핵심 문장의 위계가 서로 구분되는지 확인한다.
+- 제목-부제, 부제-본문, 카드 간격, 표 row/column padding, 이미지-텍스트 간격, 하단 safe area를 확인한다.
+- 한국어 제목과 본문에 negative letter spacing이나 과한 압축 자간을 적용하지 않는다.
+- 조사, 어미, 단위가 줄 첫머리에 홀로 남으면 문장을 줄이거나 명시적 줄바꿈으로 조정한다.
+- 실패한 슬라이드는 수정 후 다시 렌더링하고 마지막 렌더 결과 기준으로만 PASS를 기록한다.
+
+사용자가 레이아웃 문제를 지적한 뒤에는 더 엄격하게 재검수합니다.
+
+- 기존 QA 결과는 폐기하고 새 PPTX/PDF 렌더를 만든다.
+- 문제 슬라이드와 같은 layout family를 쓰는 슬라이드를 함께 확인한다.
+- overflow 없음만으로 PASS 처리하지 않고, 읽히는 순서와 시각 비중을 확인한다.
+- 큰 한글 제목이 답답하면 negative tracking을 쓰지 말고 제목 길이, 줄바꿈, font size, box width를 조정한다.
+- QA report에 슬라이드별로 `간격`, `텍스트 위계`, `자간`, `word breaking`, `이미지-텍스트 충돌` 확인 결과를 남긴다.
+
 ### 4. addElements (PPTX 요소 추가)
 
 ```javascript
@@ -410,9 +431,9 @@ def apply_background(slide, color_key='bg_primary'):
 
 ```python
 TYPOGRAPHY = {
-    'hero': {'size': 84, 'weight': 'bold', 'spacing': -0.02},
-    'section': {'size': 54, 'weight': 'bold', 'spacing': -0.02},
-    'title': {'size': 36, 'weight': 'semibold', 'spacing': -0.01},
+    'hero': {'size': 84, 'weight': 'bold', 'spacing': 0},
+    'section': {'size': 54, 'weight': 'bold', 'spacing': 0},
+    'title': {'size': 36, 'weight': 'semibold', 'spacing': 0},
     'subtitle': {'size': 22, 'weight': 'medium', 'spacing': 0},
     'body': {'size': 18, 'weight': 'regular', 'spacing': 0},
     'caption': {'size': 13, 'weight': 'regular', 'spacing': 0.02},
@@ -538,9 +559,20 @@ def create_statistics_slide(prs, title, metrics):
 □ 슬라이드 크기 (720pt × 405pt)
 □ 콘텐츠 오버플로우 없음
 □ 텍스트 하단 여백 (0.5인치 이상)
+□ contact sheet만이 아니라 각 slide/page PNG를 확대 검수
+□ 제목-부제-본문-카드-캡션-하단 문장의 텍스트 위계 확인
+□ 카드/표/이미지 간격과 하단 safe area 확인
+□ 한글 제목/본문 negative letter spacing 미사용
 □ CSS 그라데이션 → 이미지 변환 완료
 □ 폰트 임베딩 또는 시스템 폰트 사용
+□ 각 슬라이드의 slide_intent와 layout_family가 manifest에 기록됐는지 확인
+□ 10장 이상 덱에서 최소 5개 layout family를 사용했는지 확인
+□ 같은 layout family가 연속 반복되면 pattern_repeat_reason이 있는지 확인
+□ 챕터별 실제 예시, 전후 비교, 진단표, 실습 중 하나 이상이 포함됐는지 확인
+□ 인포그래픽은 imagegen 생성 asset인지 확인
 □ 인포그래픽/이미지 사용 목적과 asset manifest 확인
+□ imagegen asset prompt에 텍스트 금지와 한국어 텍스트용 여백 조건이 포함됐는지 확인
+□ 정확한 표, 수치, 단계명, 한국어 라벨은 이미지가 아니라 편집 가능한 PPTX 요소인지 확인
 □ 한국어 word breaking 확인 (`break-all`, 조사/어미 고립, 어색한 직역투 없음)
 □ 색상 코드 '#' 제거
 □ 이미지 절대 경로 확인
@@ -625,9 +657,10 @@ apt-get install poppler-utils
 
 - [x] 슬라이드 크기 검증 통과
 - [x] 오버플로우 검증 통과
+- [x] 인포그래픽 imagegen asset 검토 완료
 - [x] 인포그래픽/이미지 적합성 검토 완료
 - [x] 한국어 word breaking 검증 통과
-- [x] PPTX/PDF contact sheet 전수 확인 완료
+- [x] PPTX/PDF slide/page PNG 확대 검수 완료
 - [x] PDF 페이지 수 일치
 - [x] 폰트 임베딩 완료
 - [x] 색상 코드 검증 통과

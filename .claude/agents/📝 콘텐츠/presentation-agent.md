@@ -82,8 +82,8 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
 | 3 | **ppt-structure** | 구조 설계 & 스토리라인 | "구조 잡아", "스토리라인", "아웃라인" |
 | 4 | **ppt-content** | 콘텐츠 작성 | "내용 작성", "헤드라인", "스크립트" |
 | 5 | **ppt-design-system** | 디자인 시스템 | "디자인", "템플릿", "스타일" |
-| 6 | **ppt-visual** | 시각 자료 생성 (차트/다이어그램) | "차트", "다이어그램", "인포그래픽" |
-| 7 | **ppt-image-gen** | AI 이미지 생성 (Gemini 3) | "이미지 생성", "비주얼", "일러스트" |
+| 6 | **ppt-visual** | 차트/표/라벨/연결선 등 native 보조 시각화 | "차트", "다이어그램" |
+| 7 | **ppt-image-gen** | imagegen 기반 인포그래픽/hero/concept visual 생성 | "인포그래픽", "이미지 생성", "비주얼", "일러스트" |
 | 8 | **ppt-review** | 검토 & QA | "검토", "품질 체크", "리뷰" |
 | 9 | **ppt-refinement** | 피드백 반영 & 개선 | "피드백 반영", "수정", "대안" |
 | 10 | **export-pptx** | PPTX 출력 | "PPT 만들어", "PPTX 생성", "파워포인트" |
@@ -121,14 +121,23 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
 ```
 3. Structure Skill
    └─ 청중 분석, 프레임워크 선택, 아웃라인 생성
+      slide_intent / layout_family 초안 작성
          │
          ▼
 4. Content Skill
-   └─ 헤드라인, 불릿 포인트, 발표자 노트 작성
+   └─ 헤드라인, 예시, 전후 비교, 실습, 발표자 노트 작성
          │
          ▼
    콘텐츠 초안 완성
 ```
+
+**Slide Intent 설계 기준:**
+- 각 슬라이드는 `hook`, `problem`, `definition`, `misconception`, `worked-example`, `before-after`, `workflow`, `diagnostic`, `decision-rule`, `practice`, `summary`, `closing` 중 하나를 가진다.
+- intent에 맞는 layout family를 고른다. 예: `worked-example`은 입력/출력/판단 기준, `before-after`는 나쁜 예와 좋은 예, `diagnostic`은 증상/원인/확인/수정 구조를 사용한다.
+- 연속 2장 이상 같은 layout family를 쓰지 않는다. 의도적 반복이면 `pattern_repeat_reason`을 기록한다.
+- 10장 이상 덱은 최소 5개 layout family를 사용한다.
+- 대학생 대상 강의 자료는 LMS 공지, 과제 마감, 팀플, 미니프로젝트, FAQ, 출결, 제출물, 튜터 피드백처럼 바로 이해되는 예시를 우선한다.
+- 각 챕터에는 최소 1개 이상의 실제 예시, 전후 비교, 진단표, 실습 슬라이드가 들어가야 한다.
 
 ### Phase 3: Design & Visualization (시각화)
 
@@ -140,8 +149,8 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
          │                   │
          ▼                   ▼
 6. Visual Skill         7. Image Gen Skill
-   └─ 차트, 다이어그램     └─ AI 이미지 생성 (Gemini 3)
-      인포그래픽 생성         테마 연동 비주얼 자동 생성
+   └─ 차트, 표, 라벨        └─ imagegen 인포그래픽 생성
+      연결선/overlay          테마 연동 비주얼 자동 생성
          │                   │
          └─────────┬─────────┘
                    │
@@ -151,11 +160,13 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
 ```
 
 **Image Gen Skill 특징:**
-- Gemini 3 Flash/Pro를 활용한 고품질 이미지 생성
+- PPT 인포그래픽은 기본적으로 `imagegen` 스킬의 built-in `image_gen`으로 생성
 - 테마별 자동 스타일 매핑 (색상, 분위기 연동)
-- 6가지 이미지 유형: background, concept, icon, isometric, abstract, product
-- 모든 슬라이드에 자동 이미지 생성 및 저장
-- 접근성용 alt text 자동 생성
+- 이미지 유형: hero/section opener, concept metaphor, scenario visual, process visual, service-flow visual, risk visual, product/service mockup, icon set
+- 한국어 라벨과 읽어야 하는 설명은 이미지 안이 아니라 PPT/HTML 텍스트 레이어로 분리
+- 숫자, 표, 정확한 단계명, 한국어 문장, 실제 로고/스크린샷은 imagegen으로 만들지 않고 native chart/table/text 또는 실제 source asset으로 처리
+- 기본 prompt에는 `No text, no letters, no numbers, no UI labels, no watermark`와 `Leave clean negative space for Korean PPT text`를 포함
+- 생성 asset은 `images/`에 저장하고 manifest에 prompt, generator, visual contract, alt text를 기록
 
 ### Phase 4: Review & Refinement (품질 관리)
 
@@ -350,16 +361,23 @@ automation_level:
 ├── 데이터 검증 (Validation Skill)
 ├── 스토리라인 흐름 (Structure Skill)
 ├── 콘텐츠 일관성 (Content Skill)
+│   ├── slide_intent와 layout_family 일치
+│   ├── 챕터별 실제 예시/전후 비교/실습 포함
+│   └── 같은 카드형 레이아웃 반복 방지
 ├── 디자인 일관성 (Design System Skill)
 ├── AI 이미지 품질 (Image Gen Skill)
+│   ├── 인포그래픽은 imagegen 생성 asset 사용
 │   ├── 테마 색상 일관성
 │   ├── 텍스트 미포함 확인
 │   └── 접근성 alt text 포함
 ├── Presentation Quality Gate (공통 필수)
 │   ├── 인포그래픽 적합성 확인
 │   ├── 전체 슬라이드 렌더/contact sheet 확인
+│   ├── 개별 slide/page PNG 확대 검수
+│   ├── 레이아웃 간격, 텍스트 위계, 한글 자간 확인
 │   ├── 한국어 word breaking 확인
-│   └── PDF 동시 생성 및 PDF 렌더 확인
+│   ├── PDF 동시 생성 및 PDF 렌더 확인
+│   └── 사용자 레이아웃 피드백 후 기존 PASS 폐기 및 재렌더
 ├── Future Slide QA (HTML 덱 선택 시)
 │   ├── validator error 0건
 │   ├── overflow/padding/word-break FAIL 0건
@@ -446,7 +464,7 @@ npm run build:all    # PPTX + PDF 동시 생성
 
 ### 추가 예정 기능
 
-- [x] AI 이미지 생성 (Gemini 3) - **완료**
+- [x] AI 이미지 생성 (imagegen) - **완료**
 - [ ] 실시간 협업 지원
 - [ ] 다국어 번역 자동화
 - [ ] 발표 리허설 지원
