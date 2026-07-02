@@ -64,6 +64,9 @@ Use a restrained educational presentation style.
 - 제목, 본문, 각주, 이미지, 도형, 차트가 화면 밖으로 나가거나 서로 겹치면 실패로 본다.
 - 텍스트 박스의 overflow, 잘림, 비정상 축소, 불필요한 여백 부족, 페이지 밖 crop을 확인한다.
 - 레이아웃 간격은 제목-부제, 부제-본문, 카드 간 gap, 표 row/column padding, 이미지-텍스트 사이, 하단 핵심 문장 safe area를 항목별로 확인한다.
+- 표/리스트 셀 안의 텍스트는 수평 정렬만이 아니라 수직 정렬도 확인한다. 셀 높이 대비 텍스트가 상단에 몰려 하단이 비면 실패로 본다. 셀 텍스트 박스는 셀 전체 높이 + middle anchor를 기본값으로 만든다.
+- 불릿 리스트는 "• " 같은 텍스트 prefix로 만들지 않는다. 첫 글자가 영문인 줄과 한글인 줄의 폰트 메트릭이 달라 불릿 간격이 줄마다 달라진다. 불릿은 별도 도형 또는 고정 위치 요소로 분리한다.
+- 페이드 처리된 배경/장식 이미지도 겹침 검사 대상이다. "배경이니까 괜찮다"로 텍스트 박스와의 겹침을 통과시키지 않는다.
 - 텍스트 위계는 `title`, `subtitle`, `section label`, `card title`, `body`, `caption`, `footer takeaway`가 서로 구분되는지 확인한다. 같은 페이지에서 본문이 제목보다 강하거나 보조 카드가 핵심 메시지를 압도하면 실패로 본다.
 - 한국어 자간은 기본값을 유지한다. 한글 제목/본문에 negative letter spacing, 과한 condensed 느낌, 의미 단위를 깨는 강제 축소가 보이면 실패로 본다.
 - contact sheet를 만들어 전체 흐름과 문제 슬라이드를 한 번에 볼 수 있어야 한다.
@@ -87,6 +90,19 @@ Use a restrained educational presentation style.
 - PPTX 텍스트 박스는 조사, 어미, 단위가 줄 첫머리에 홀로 남지 않도록 문장을 짧게 나누거나 명시적 줄바꿈을 넣는다.
 - 제목과 큰 본문은 한 줄에 의미 단위가 유지되는지 확인한다.
 - 한국어 설명문은 직역투, AI 번역투, 어색한 현업 비사용어를 별도 패스로 다듬는다. 코드 식별자, 파일명, API 이름은 바꾸지 않는다.
+
+### 4.1 폰트 지정과 임베드 검증
+
+- python-pptx `font.name`은 latin 폰트만 지정한다. 한글 텍스트는 run 단위로 `<a:ea>`(+`<a:cs>`) typeface를 XML로 직접 지정해야 한다. ea 미지정 상태는 렌더러가 한글 폰트를 임의 대체하므로 실패로 본다.
+- 폰트 패밀리명은 렌더러가 실제로 해석하는지 실증한다. macOS 시스템 한글 폰트는 LibreOffice에서 영문 패밀리명("Apple SD Gothic Neo")이 아니라 한글 로컬라이즈 패밀리명("Apple SD 산돌고딕 Neo", "나눔고딕")으로만 정상 해석되는 경우가 있다. 1장짜리 테스트 PPTX → PDF → `pdffonts`로 확인한 뒤 본 덱에 적용한다.
+- 최종 PDF는 `pdffonts`로 임베드 폰트 목록을 확인한다. 의도한 패밀리 외의 대체 폰트(Arial Narrow, LiberationSans, STHeiti, NanumBrush 등)가 섞여 있으면 실패다. "시스템 폰트라 대체 없음" 같은 주장은 `pdffonts` 출력 없이 QA 리포트에 쓰지 않는다.
+- 한글과 Latin/숫자의 웨이트가 같은 줄에서 달라 보이면(한쪽만 굵거나 좁음) 폰트 대체를 의심하고 임베드 목록부터 확인한다.
+
+### 4.2 문체 일관성
+
+- 슬라이드 본문의 종결 문체를 역할별로 정하고 전수 스캔한다. 기본 규칙: 제목·하단 핵심 문장은 합니다체, 카드/표/리스트 본문은 명사형 개조식, 인용문·질문형 점검표·학습 목표 원문은 원형 유지.
+- 같은 슬라이드 안에서 카드 본문이 "~동작"(명사형)과 "~달라집니다"(합니다체)로 섞이면 실패다. `rg "습니다|합니다|한다\."`류 검색으로 본문 문자열을 훑고 역할별 규칙과 대조한다.
+- 제목·카피는 문법이 맞아도 의미가 한 번에 잡히지 않으면 실패로 본다. 압축으로 주어/목적어가 생략돼 모호해진 문장(예: "구조화 출력은 서비스가 읽을 수 있어야 합니다")은 청중 언어로 풀어 쓴다.
 
 ### 5. PDF 동시 생성
 
@@ -123,6 +139,7 @@ Use a restrained educational presentation style.
 ```bash
 soffice --headless --convert-to pdf --outdir <out>/pdf <deck>.pptx
 pdfinfo <out>/pdf/<deck>.pdf
+pdffonts <out>/pdf/<deck>.pdf   # 임베드 폰트가 의도한 패밀리뿐인지 확인
 pdftoppm -png -r 150 <out>/pdf/<deck>.pdf <out>/qa_pdf_render/png/slide
 ```
 
