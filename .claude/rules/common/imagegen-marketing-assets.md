@@ -4,6 +4,13 @@
 
 이 규칙은 `imagegen` 스킬의 실행 정책을 바꾸지 않습니다. 기본은 built-in `image_gen`이고, CLI/API fallback은 사용자가 명시적으로 요청하거나 승인한 경우에만 사용합니다.
 
+출처와 동기화 기준:
+
+- 선별 참고: https://github.com/coreyhaines31/marketingskills/blob/main/skills/image/SKILL.md
+- 선별 참고: https://github.com/coreyhaines31/marketingskills/blob/main/skills/image/references/ai-image-prompting.md
+- 설치된 시스템 스킬 보강 위치: `/Users/woogi/.codex/skills/.system/imagegen/references/marketing-assets.md`
+- 시스템 스킬 설치 경로는 git 저장소가 아니므로, 장기 보존 기준은 이 tracked rule에 둡니다.
+
 ## 적용 대상
 
 다음 요청에서 적용합니다.
