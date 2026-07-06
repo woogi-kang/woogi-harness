@@ -1,6 +1,6 @@
 # Workflows
 
-Use this file to choose the right operating mode.
+Use this file to choose the right operating mode. Every workflow starts with a Design Read and ends with the relevant gate from `preflight.md`.
 
 ## Shape
 
@@ -9,11 +9,13 @@ Use before code when direction or scope is unclear.
 Output:
 
 - Design read.
+- Register and five dial values.
+- Main slop risk and anti-reference.
 - Reference stance when a brand, product, site, or proven design direction is relevant.
-- Register and dial values.
 - Surface map: sections/screens/components.
 - Visual stance and anti-goals.
-- Key assets needed.
+- Key assets/evidence needed.
+- System decision: official DS, local tokens, or bespoke.
 - Open questions limited to blockers.
 - Validation method.
 
@@ -26,13 +28,15 @@ Use when building a page/screen/component.
 Steps:
 
 1. Inspect existing stack, tokens, components, and package dependencies.
-2. Decide register, reference stance, and dials.
-3. Translate borrowed reference grammar into local tokens, components, and layout rules.
-4. Identify the one visual idea or product usability goal.
-5. Implement with existing primitives where they fit.
-6. Add necessary states and responsive behavior.
-7. Run mechanical preflight.
-8. Run browser/screenshot QA when possible.
+2. Write design read, dials, and main slop risk.
+3. Read `design-system-map.md` when an official system may apply.
+4. Translate borrowed reference grammar into local tokens, components, and layout rules.
+5. Identify the one visual idea or product usability goal.
+6. Implement with existing primitives where they fit.
+7. Add necessary states and responsive behavior.
+8. Run mechanical detector.
+9. Run browser/screenshot QA when possible.
+10. Run final preflight.
 
 ## Measure
 
@@ -65,7 +69,14 @@ Prioritize:
 2. Layout/responsive failures.
 3. Missing states.
 4. AI slop signatures.
-5. Visual polish.
+5. Evidence gaps.
+6. Visual polish.
+
+Include gate status:
+
+- Detector run or not applicable.
+- Screenshot/browser QA if performed.
+- Highest-risk preflight failures.
 
 ## Polish
 
@@ -76,21 +87,24 @@ Order of operations:
 1. Fix readability and contrast.
 2. Fix spacing rhythm and hierarchy.
 3. Remove generic filler elements.
-4. Add or correct interaction states.
-5. Apply interface polish: text wrapping, dynamic numerals, optical alignment, radius math, image edges, hit areas, and transition specificity.
-6. Improve assets and copy.
-7. Tune motion only where it communicates.
+4. Replace fake evidence with real screenshots/data/assets or remove the claim.
+5. Add or correct interaction states.
+6. Apply interface polish: text wrapping, dynamic numerals, optical alignment, radius math, image edges, hit areas, and transition specificity.
+7. Improve assets and copy.
+8. Tune motion only where it communicates.
+9. Run detector and preflight.
 
 ## Redesign
 
-Use for existing projects.
+Use for existing projects. Read `redesign-protocol.md` first.
 
-1. Detect mode: preserve, evolve, or overhaul.
-2. Inventory current font, palette, radius, shadows, spacing, icon set, section patterns.
-3. Pick primary, secondary, and anti-reference if the redesign needs outside direction.
+1. Detect mode: greenfield, preserve, evolve, or overhaul.
+2. Inventory current font, palette, radius, shadows, spacing, icon set, section patterns, routes, forms, legal/SEO/analytics-sensitive elements.
+3. Pick primary, secondary, and anti-reference if outside direction is needed.
 4. List top 5 slop signatures and top 5 trust/usability issues.
-5. Fix in low-risk order: typography, color tokens, interaction states, spacing, layout, assets, motion.
-6. Preserve URL structure, form field names, legal copy, analytics hooks, and product behavior unless requested.
+5. Fix in low-risk order: typography, spacing, color tokens, component states, surface geometry, key-section recomposition, evidence, motion.
+6. Preserve URL structure, form field names, legal copy, analytics hooks, and product behavior unless explicitly requested.
+7. Run detector, browser QA when possible, and final preflight.
 
 ## Harden
 
@@ -105,3 +119,5 @@ Use before ship.
 - Transition hygiene and `will-change` usage.
 - Dynamic numeric alignment.
 - i18n and Korean line breaking where relevant.
+- Dark/dual-mode parity where relevant.
+- Detector and final preflight.
