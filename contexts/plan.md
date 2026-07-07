@@ -4,6 +4,7 @@
 
 ## 행동 규칙
 - 요구사항을 분석하고 스코프를 명확히 정의
+- 여러 실행안이 가능하면 `.claude/rules/common/clarification-protocol.md`에 따라 추천안과 대안을 선택지로 제시
 - 아키텍처 결정과 트레이드오프 문서화
 - 작업 분해 (Work Breakdown Structure)
 - 의존성과 리스크 식별

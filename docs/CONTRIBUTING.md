@@ -287,7 +287,7 @@ AGENTS.md  → CLAUDE.md           # Codex CLI, OpenCode용
 
 ### 6.2 다른 프로젝트에 동기화 (복사)
 
-다른 프로젝트(예: memoriz)에 `.claude/` 자산을 동기화할 때는 `sync-to-projects.sh`를 사용합니다:
+다른 프로젝트(예: memoriz)에 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md` 엔트리포인트, `contexts`, `.agents/skills`, `.claude/` 공유 자산을 동기화할 때는 `sync-to-projects.sh`를 사용합니다:
 
 ```bash
 # 등록된 모든 프로젝트에 동기화
@@ -298,6 +298,7 @@ bash scripts/sync-to-projects.sh /path/to/project
 ```
 
 새 프로젝트를 등록하려면 스크립트의 `DEFAULT_PROJECTS` 배열에 추가합니다.
+프로젝트별 권한/MCP 설정(`.claude/settings*.json`, `.mcp.json`)은 동기화하지 않습니다.
 
 ### 6.3 핵심 원칙
 

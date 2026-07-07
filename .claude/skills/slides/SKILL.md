@@ -40,3 +40,16 @@ Strategic HTML presentation design with data visualization.
 1. Parse subcommand from `$ARGUMENTS` (first word)
 2. Load corresponding `references/{subcommand}.md`
 3. Execute with remaining arguments
+
+## Presentation Quality Gate
+
+For Korean information decks, training decks, and strategic explanation decks, apply the same
+quality gate used by the PPT/Future Slide harness before final delivery:
+
+- Keep title, lede/key sentence, and first content block spacing consistent across slides.
+- Do not use decorative divider lines, number underlines, or shadows unless they explain flow.
+- Keep same-level boxes symmetric in width, height, baseline, and left/right edges.
+- Use accent color only for a meaningful state or emphasis; do not highlight one process card by accident.
+- Use left alignment for sentence-style Korean explanations; reserve center alignment for labels or short titles.
+- Replace abstract claims with concrete examples: input/question, natural-language answer, structured output, and validation/fallback reason.
+- Regenerate PDF and review a contact sheet or screenshots after visual changes.

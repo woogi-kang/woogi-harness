@@ -39,7 +39,7 @@
 - 결과를 다음 반복이 읽을 곳에 기록할 수 있다.
 - 명확한 stop condition과 approval boundary가 있다.
 
-하나라도 빠지면 one-shot 작업으로 축소하거나 먼저 질문한다.
+하나라도 빠지면 one-shot 작업으로 축소하거나 `.claude/rules/common/clarification-protocol.md`에 따라 선택지 기반 질문을 먼저 한다.
 
 ## 오케스트레이션 필드
 

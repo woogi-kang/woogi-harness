@@ -244,7 +244,7 @@ cd claude-craft
 
 ## 다른 프로젝트에 동기화
 
-claude-craft의 에이전트/스킬/규칙을 다른 프로젝트에 복사합니다:
+claude-craft의 루트 엔트리포인트와 공유 하네스 자산을 다른 프로젝트에 복사합니다:
 
 ```bash
 # 등록된 모든 프로젝트에 동기화
@@ -254,8 +254,10 @@ bash scripts/sync-to-projects.sh
 bash scripts/sync-to-projects.sh /path/to/my-project
 ```
 
-동기화 대상: `agents`, `commands`, `hooks`, `rules`, `skills`
-제외: `settings.json`, `logs/`
+기본 등록 프로젝트: `memoriz`, `memoriz-invite`, `Documents/Playground`
+
+동기화 대상: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.agents/skills`, `contexts`, `.claude/{agents,commands,hooks,rules,skills,templates,evals}`, `.claude/statusline.py`
+제외: 프로젝트별 권한/MCP 설정(`.claude/settings*.json`, `.mcp.json`), `logs/`
 
 새 프로젝트를 등록하려면 `scripts/sync-to-projects.sh`의 `DEFAULT_PROJECTS` 배열에 추가합니다.
 
@@ -301,7 +303,7 @@ AGENTS.md → CLAUDE.md  ← Codex CLI, OpenCode
 | 스크립트 | 설명 |
 |----------|------|
 | `install.sh` | ~/.claude에 자산 설치 |
-| `sync-to-projects.sh` | 다른 프로젝트에 .claude/ 동기화 |
+| `sync-to-projects.sh` | 다른 프로젝트에 CLAUDE/AGENTS/GEMINI 엔트리포인트와 .claude/ 동기화 |
 | `validate-skills.sh` | SKILL.md 프론트매터 검증 |
 | `skill-catalog.py` | 스킬 카탈로그 자동 생성 |
 | `integrity-check.py` | 참조 무결성 검증 |

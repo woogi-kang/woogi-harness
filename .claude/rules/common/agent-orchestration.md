@@ -11,17 +11,18 @@
 ```
 1. 슬래시 커맨드와 매칭되는가? → Skill 도구로 실행
 2. 사람/회사/프로젝트/과거 결정/이전 맥락 요청인가? → GBrain memory 조회 후 계속 진행
-3. 기술 문서/SDK/API/라이브러리 동작이 현재성에 의존하는가? → `official-docs-guide` 적용
-4. 공개 웹 소스가 막히거나 근거 검증이 필요한가? → `web-access-ladder` 적용
-5. 반복/장기/자율 작업인가? → `execution-contract.md` + `goal-prep-pack` 또는 `autonomous-loops` 적용
-6. 외부 모델/워커/리뷰어에게 repo context를 보낼 예정인가? → `context-pack-gate` 적용
-7. 마케팅/제품 이미지에 `imagegen`을 사용할 예정인가? → `imagegen-marketing-assets.md` 적용
-8. 여러 도메인 병렬 협업이 필요한가? → /team 제안 (자동 DAG)
-9. 단일 도메인 에이전트가 필요한 복합 작업인가? → Agent 도구로 위임
-10. 한국어 기술/제출 문서 작성 또는 수정인가? → `korean-writing-style.md` 적용 후 Skill 도구 실행
-11. 스킬 자동 트리거에 해당하는가? → Skill 도구로 실행
-12. 단순 코드 작업인가? → 직접 처리 (Glob/Grep/Read/Edit)
-13. 탐색이 필요한가? → Explore 서브에이전트
+3. 불명확한 지시, 결과가 달라지는 선택지, 승인 지점이 있는가? → `clarification-protocol.md`에 따라 선택지 기반 질문
+4. 기술 문서/SDK/API/라이브러리 동작이 현재성에 의존하는가? → `official-docs-guide` 적용
+5. 공개 웹 소스가 막히거나 근거 검증이 필요한가? → `web-access-ladder` 적용
+6. 반복/장기/자율 작업인가? → `execution-contract.md` + `goal-prep-pack` 또는 `autonomous-loops` 적용
+7. 외부 모델/워커/리뷰어에게 repo context를 보낼 예정인가? → `context-pack-gate` 적용
+8. 마케팅/제품 이미지에 `imagegen`을 사용할 예정인가? → `imagegen-marketing-assets.md` 적용
+9. 여러 도메인 병렬 협업이 필요한가? → /team 제안 (자동 DAG)
+10. 단일 도메인 에이전트가 필요한 복합 작업인가? → Agent 도구로 위임
+11. 한국어 기술/제출 문서 작성 또는 수정인가? → `korean-writing-style.md` 적용 후 Skill 도구 실행
+12. 스킬 자동 트리거에 해당하는가? → Skill 도구로 실행
+13. 단순 코드 작업인가? → 직접 처리 (Glob/Grep/Read/Edit)
+14. 탐색이 필요한가? → Explore 서브에이전트
 ```
 
 ---
@@ -203,6 +204,7 @@
 모든 오케스트레이션 plan은 가능한 경우 `success_criteria`, `eval_type`, `stop_condition`, `approval_boundary`, `state_record`를 포함한다. 반복/장기 작업은 `.claude/rules/common/execution-contract.md`와 `autonomous-loops`를 먼저 적용한다.
 넓은 repo context를 워커에게 넘기거나 외부 리뷰를 결합할 때는 먼저 `context-pack-gate`를 실행하고, worker에 `context_pack` 필드를 포함한다.
 자연어 요청이 넓으면 `/team`은 worktree DAG, one-shot agent, deterministic workflow 중 어떤 substrate가 맞는지 짧게 판단하고, 위험도가 높은 작업에는 critic/refute worker를 추가한다.
+팀/에이전트 실행 전에 입력이 빠졌거나 선택에 따라 결과가 달라지면 `clarification-protocol.md`의 structured blocker → 선택 질문 → 재위임 흐름을 따른다.
 
 ### 멀티 LLM 협업
 ```

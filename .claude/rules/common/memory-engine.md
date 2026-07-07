@@ -44,6 +44,7 @@ scripts/brain-memory.sh get "<slug>"
 - 실패한 접근과 재시도 금지 사항
 - 반복 가능한 업무 패턴
 - 프로젝트 재개에 필요한 다음 액션
+- 구조화 선택 질문에서 드러난 반복 가능한 사용자 선호 또는 하네스 라우팅 기본값
 
 캡처 후 응답 또는 작업 로그에는 capture receipt를 남긴다.
 
@@ -61,6 +62,7 @@ Capture receipt:
 - API key, token, credential, password, private env
 - 사용자의 말투 선호 같은 agent 운영 선호
 - 일회성 임시 로그
+- 이번 한 번만 적용되는 선택지 응답
 - 원본 소스 코드 전체
 - 검증되지 않은 추측
 
