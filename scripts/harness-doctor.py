@@ -19,6 +19,7 @@ from harness_runtime_lib import (
     load_data,
     merge_effective_capabilities,
     parse_frontmatter,
+    path_matches_any,
     provider_registry_errors,
     project_root_from,
     resolve_provider_quality,
@@ -31,6 +32,33 @@ class Check:
     name: str
     status: str
     message: str
+
+
+def project_protected_paths(root: Path) -> list[str]:
+    registry_path = root / ".claude" / "registry" / "projects" / "projects.json"
+    if not registry_path.is_file():
+        return []
+    try:
+        registry = load_data(registry_path)
+        project = next(
+            (
+                item
+                for item in registry.get("projects", [])
+                if Path(str(item.get("path", ""))).expanduser().resolve() == root
+            ),
+            None,
+        )
+        if not isinstance(project, dict):
+            return []
+        profile_path = Path(str(project.get("profile", "")))
+        if not profile_path.is_absolute():
+            profile_path = root / profile_path
+        profile = load_data(profile_path)
+    except (HarnessError, OSError, StopIteration):
+        return []
+    if not isinstance(profile, dict):
+        return []
+    return [str(pattern) for pattern in profile.get("protected_paths", [])]
 
 
 def bounded_process(
@@ -55,10 +83,21 @@ def run_checks(
     root: Path, *, require_host_model_attestation: bool = False
 ) -> list[Check]:
     checks: list[Check] = []
+    protected_paths = project_protected_paths(root)
 
     for name in ("AGENTS.md", "GEMINI.md"):
         path = root / name
-        if path.is_symlink() and os.readlink(path) == "CLAUDE.md":
+        if path_matches_any(name, protected_paths):
+            checks.append(
+                Check(
+                    f"link:{name}",
+                    "pass" if path.exists() or path.is_symlink() else "error",
+                    "protected project file preserved"
+                    if path.exists() or path.is_symlink()
+                    else "protected project file missing",
+                )
+            )
+        elif path.is_symlink() and os.readlink(path) == "CLAUDE.md":
             checks.append(Check(f"link:{name}", "pass", "links to CLAUDE.md"))
         else:
             checks.append(
