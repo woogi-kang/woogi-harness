@@ -1,0 +1,85 @@
+{
+  "schema": "harness-image-generation-manifest-v1",
+  "manifest_created_at": "2026-07-13T05:04:20+09:00",
+  "prompt_source": {
+    "path": "docs/260713-harness-v3-image-smoke-test/prompts.jsonl",
+    "sha256": "d373aaaba47be53b24fd7163458cb9aaffa177f9460bc0681bfb3a2cdcbee6f7",
+    "compiler": "exact-vendored image-prompt@2.3.0",
+    "upstream_commit": "d1cd1dd3e77f7e12e2fed982fd738cc1ea880598",
+    "validation": "5/5 records passed check_prompt.mjs with zero warnings"
+  },
+  "generation_contract": {
+    "generator": "image_gen__imagegen",
+    "tool_alias": "$imagegen",
+    "required_model": "gpt-image-2",
+    "model_binding": "trusted-host-fixed",
+    "input_mapping": {"full_prompt": "prompt"},
+    "fallback": [],
+    "host_reported_model": null,
+    "local_model_verification": "unavailable",
+    "generation_assurance": "generated_under_trusted_host_contract"
+  },
+  "summary": {
+    "generated": 5,
+    "approved": 4,
+    "rejected": 1,
+    "post_generation_text_overlay": false
+  },
+  "artifacts": [
+    {
+      "id": "C3-HARNESS-POSTER-001",
+      "prompt_record": 1,
+      "path": "docs/260713-harness-v3-image-smoke-test/images/01-evidence-poster.png",
+      "sha256": "e772f238f16cb1f5e4fdb7ce0c0372241969bdbcb25569742666a253697ebfc5",
+      "bytes": 3020050,
+      "dimensions": {"width": 1122, "height": 1402},
+      "status": "approved",
+      "qa": {"goal_fit": 5, "text_accuracy": 5, "material_realism": 5, "layout": 5},
+      "review": "한국어 제목과 영문 부제가 각각 한 번만 정확히 나타나며, 활판·비코팅지 물성과 비정형 그리드가 명확하다."
+    },
+    {
+      "id": "C4-HARNESS-RELAY-001",
+      "prompt_record": 2,
+      "path": "docs/260713-harness-v3-image-smoke-test/images/02-evidence-relay.png",
+      "sha256": "4d631e693fd24046e46409a5d9426a5919071b987b9969663b80c622fe121ca7",
+      "bytes": 1833384,
+      "dimensions": {"width": 1672, "height": 941},
+      "status": "approved_with_note",
+      "qa": {"goal_fit": 4, "text_accuracy": 5, "material_realism": 5, "layout": 5},
+      "review": "세 라벨은 정확하고 분해 도감의 재질도 좋다. CONTEXT 리더가 입력 카트리지보다 상단 셸에 가깝게 연결된 점은 경미한 의미 오차다."
+    },
+    {
+      "id": "C9-HARNESS-SEAL-001",
+      "prompt_record": 3,
+      "path": "docs/260713-harness-v3-image-smoke-test/images/03-evidence-seal.png",
+      "sha256": "bb4be1fa4d7e9eb4834199c6f7f3190170ba163aa2f26d54f6567bf252ec8fbf",
+      "bytes": 1778199,
+      "dimensions": {"width": 1254, "height": 1254},
+      "status": "approved",
+      "qa": {"goal_fit": 5, "text_accuracy": null, "material_realism": 5, "layout": 5},
+      "review": "단일 오브젝트와 세 재질의 결합이 명확하고, 불필요한 문자나 AI 상징이 없다."
+    },
+    {
+      "id": "C11-HARNESS-SHADOW-001",
+      "prompt_record": 4,
+      "path": "docs/260713-harness-v3-image-smoke-test/images/04-workshop-shadow.png",
+      "sha256": "75a2372b862ce5bb0f972cd9aaacf3a172c546b69ec6da1fbbe8fd314f0eb36a",
+      "bytes": 2779618,
+      "dimensions": {"width": 1672, "height": 941},
+      "status": "rejected",
+      "qa": {"goal_fit": 3, "text_accuracy": 3, "material_realism": 5, "layout": 4},
+      "review": "프롬프트에 없던 RESULT PACKETS와 유사 문자가 생겼고 하단 배너도 추가되어 text-free 계약을 위반했다. 한 차례 positive-only repair도 추가 문자를 만들어 채택하지 않았다."
+    },
+    {
+      "id": "C12-HARNESS-COVER-001",
+      "prompt_record": 5,
+      "path": "docs/260713-harness-v3-image-smoke-test/images/05-evidence-first-cover.png",
+      "sha256": "8f03224957af6e9ced3b1db82d9817aa1b5a1a9e467bc78a5733a1f6386a5aaf",
+      "bytes": 2268377,
+      "dimensions": {"width": 1672, "height": 941},
+      "status": "approved",
+      "qa": {"goal_fit": 5, "text_accuracy": 5, "material_realism": 5, "layout": 5},
+      "review": "두 영문 문구가 정확하고, 카드 그리드 대신 하나의 물리적 evidence flow로 읽힌다."
+    }
+  ]
+}
