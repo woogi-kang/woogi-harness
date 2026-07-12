@@ -15,6 +15,7 @@
     ".claude/registry",
     ".claude/project-packs/default",
     ".claude/project-packs/default.scope.json",
+    ".claude/project-packs/design-runtime",
     ".claude/project-packs/image-generation",
     ".claude/statusline.py",
     "scripts/harness_runtime_lib.py",
