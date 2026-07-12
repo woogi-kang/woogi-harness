@@ -5,6 +5,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -150,6 +151,197 @@ class ImagePolicyBoundaryTests(unittest.TestCase):
         self.assertTrue(
             any("image manifest contract incomplete" in error for error in errors)
         )
+
+    def test_selective_design_pack_scopes_required_image_routes(self) -> None:
+        spec = importlib.util.spec_from_file_location("image_policy_verifier", VERIFIER)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            module.ROOT = root
+            module.DEFAULT_PACK = root / ".claude/project-packs/default/pack.json"
+            module.DESIGN_RUNTIME_PACK = (
+                root / ".claude/project-packs/design-runtime/pack.json"
+            )
+            module.CANONICAL_SOURCE_MARKER = (
+                root / ".claude/project-packs/.canonical-source"
+            )
+            module.FULL_SCOPE_MARKER = root / ".claude/project-packs/default.scope.json"
+            module.DESIGN_SCOPE_MARKER = (
+                root / ".claude/project-packs/design-runtime.scope.json"
+            )
+            for relative in (
+                ".claude/rules/common/imagegen-marketing-assets.md",
+                ".claude/skills/design-harness/SKILL.md",
+            ):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("image-prompt\n", encoding="utf-8")
+            module.DESIGN_RUNTIME_PACK.parent.mkdir(parents=True, exist_ok=True)
+            module.DESIGN_RUNTIME_PACK.write_text(
+                json.dumps(
+                    {
+                        "image_policy_required_surfaces": [
+                            ".claude/rules/common/imagegen-marketing-assets.md",
+                            ".claude/skills/design-harness/SKILL.md",
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            module.DESIGN_SCOPE_MARKER.write_text(
+                json.dumps(
+                    {
+                        "schema": "harness.installation-scope.v1",
+                        "scope": "selective-design-runtime",
+                        "base_pack": "design-runtime",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            errors: list[str] = []
+            surfaces = module.required_surfaces_for_installation(errors)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(
+            set(surfaces),
+            {
+                ".claude/rules/common/imagegen-marketing-assets.md",
+                ".claude/skills/design-harness/SKILL.md",
+            },
+        )
+
+    def test_selective_design_pack_rejects_missing_or_unknown_route_contract(
+        self,
+    ) -> None:
+        spec = importlib.util.spec_from_file_location("image_policy_verifier", VERIFIER)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            module.ROOT = root
+            module.DEFAULT_PACK = root / ".claude/project-packs/default/pack.json"
+            module.DESIGN_RUNTIME_PACK = (
+                root / ".claude/project-packs/design-runtime/pack.json"
+            )
+            module.CANONICAL_SOURCE_MARKER = (
+                root / ".claude/project-packs/.canonical-source"
+            )
+            module.FULL_SCOPE_MARKER = root / ".claude/project-packs/default.scope.json"
+            module.DESIGN_SCOPE_MARKER = (
+                root / ".claude/project-packs/design-runtime.scope.json"
+            )
+            module.DESIGN_RUNTIME_PACK.parent.mkdir(parents=True, exist_ok=True)
+            module.DESIGN_SCOPE_MARKER.write_text(
+                json.dumps(
+                    {
+                        "schema": "harness.installation-scope.v1",
+                        "scope": "selective-design-runtime",
+                        "base_pack": "design-runtime",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            module.DESIGN_RUNTIME_PACK.write_text("{}\n", encoding="utf-8")
+            missing_errors: list[str] = []
+            missing_surfaces = module.required_surfaces_for_installation(missing_errors)
+
+            module.DESIGN_RUNTIME_PACK.write_text(
+                json.dumps(
+                    {"image_policy_required_surfaces": ["unknown/image-route.md"]}
+                ),
+                encoding="utf-8",
+            )
+            unknown_errors: list[str] = []
+            module.required_surfaces_for_installation(unknown_errors)
+
+        self.assertEqual(missing_surfaces, ())
+        self.assertTrue(any("must declare" in error for error in missing_errors))
+        self.assertTrue(any("unknown" in error for error in unknown_errors))
+
+    def test_image_policy_scope_fails_closed_on_ambiguity_and_marker_loss(
+        self,
+    ) -> None:
+        spec = importlib.util.spec_from_file_location("image_policy_verifier", VERIFIER)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            module.ROOT = root
+            module.DEFAULT_PACK = root / ".claude/project-packs/default/pack.json"
+            module.DESIGN_RUNTIME_PACK = (
+                root / ".claude/project-packs/design-runtime/pack.json"
+            )
+            module.CANONICAL_SOURCE_MARKER = (
+                root / ".claude/project-packs/.canonical-source"
+            )
+            module.FULL_SCOPE_MARKER = root / ".claude/project-packs/default.scope.json"
+            module.DESIGN_SCOPE_MARKER = (
+                root / ".claude/project-packs/design-runtime.scope.json"
+            )
+            module.DEFAULT_PACK.parent.mkdir(parents=True, exist_ok=True)
+            module.DESIGN_RUNTIME_PACK.parent.mkdir(parents=True, exist_ok=True)
+            module.DEFAULT_PACK.write_text("{}\n", encoding="utf-8")
+            module.DESIGN_RUNTIME_PACK.write_text(
+                json.dumps(
+                    {
+                        "image_policy_required_surfaces": [
+                            ".claude/rules/common/imagegen-marketing-assets.md",
+                            ".claude/skills/design-harness/SKILL.md",
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            module.FULL_SCOPE_MARKER.write_text(
+                json.dumps(
+                    {
+                        "schema": "harness.installation-scope.v1",
+                        "scope": "full",
+                        "base_pack": "default",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            module.DESIGN_SCOPE_MARKER.write_text(
+                json.dumps(
+                    {
+                        "schema": "harness.installation-scope.v1",
+                        "scope": "selective-design-runtime",
+                        "base_pack": "design-runtime",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            ambiguous_errors: list[str] = []
+            ambiguous = module.required_surfaces_for_installation(ambiguous_errors)
+
+            module.DESIGN_SCOPE_MARKER.unlink()
+            full_errors: list[str] = []
+            full = module.required_surfaces_for_installation(full_errors)
+
+            module.FULL_SCOPE_MARKER.unlink()
+            missing_errors: list[str] = []
+            missing = module.required_surfaces_for_installation(missing_errors)
+
+        self.assertEqual(ambiguous, ())
+        self.assertTrue(any("ambiguous" in error for error in ambiguous_errors))
+        self.assertEqual(full_errors, [])
+        self.assertEqual(full, module.REQUIRED_SURFACES)
+        self.assertEqual(missing, ())
+        self.assertTrue(any("requires" in error for error in missing_errors))
 
     def test_claude_observable_generation_routes_are_denied(self) -> None:
         cases = (

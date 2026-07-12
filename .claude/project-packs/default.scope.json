@@ -1,0 +1,5 @@
+{
+  "schema": "harness.installation-scope.v1",
+  "scope": "full",
+  "base_pack": "default"
+}

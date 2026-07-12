@@ -14,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / ".claude/registry/providers/image-generation.yaml"
 PROVIDER_CORE = ROOT / ".claude/registry/providers/core.yaml"
 PACK = ROOT / ".claude/project-packs/image-generation/pack.json"
+DEFAULT_PACK = ROOT / ".claude/project-packs/default/pack.json"
+DESIGN_RUNTIME_PACK = ROOT / ".claude/project-packs/design-runtime/pack.json"
+CANONICAL_SOURCE_MARKER = ROOT / ".claude/project-packs/.canonical-source"
+FULL_SCOPE_MARKER = ROOT / ".claude/project-packs/default.scope.json"
+DESIGN_SCOPE_MARKER = ROOT / ".claude/project-packs/design-runtime.scope.json"
 MODEL_GUARD = ROOT / ".claude/hooks/image-generation-guard.py"
 VENDOR_LOCK = ROOT / "third_party/gongnyang-prompt-kit/UPSTREAM.lock.json"
 
@@ -418,6 +423,7 @@ def validate_pack(errors: list[str]) -> None:
         errors.append(str(exc))
         return
     required_paths = {
+        ".claude/project-packs/image-generation/pack.json",
         "third_party/gongnyang-prompt-kit",
         ".claude/hooks/image-generation-guard.py",
         ".claude/skills/image-prompt",
@@ -453,6 +459,93 @@ def validate_pack(errors: list[str]) -> None:
         errors.append("image-generation settings merge hooks drifted")
 
 
+def validate_scope_marker(
+    path: Path, expected: dict[str, str], errors: list[str]
+) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        marker = read_json(path)
+    except ValueError as exc:
+        errors.append(str(exc))
+        return True
+    if marker != expected:
+        errors.append(f"installation scope marker drifted: {path.relative_to(ROOT)}")
+    return True
+
+
+def required_surfaces_for_installation(errors: list[str]) -> tuple[str, ...]:
+    """Bind required routes to a recognized full or selective distribution pack."""
+    full = validate_scope_marker(
+        FULL_SCOPE_MARKER,
+        {
+            "schema": "harness.installation-scope.v1",
+            "scope": "full",
+            "base_pack": "default",
+        },
+        errors,
+    )
+    selective = validate_scope_marker(
+        DESIGN_SCOPE_MARKER,
+        {
+            "schema": "harness.installation-scope.v1",
+            "scope": "selective-design-runtime",
+            "base_pack": "design-runtime",
+        },
+        errors,
+    )
+    canonical_source = CANONICAL_SOURCE_MARKER.is_file()
+    if canonical_source:
+        if not full or not DEFAULT_PACK.is_file():
+            errors.append(
+                "canonical source is missing the full installation scope contract"
+            )
+            return ()
+        return REQUIRED_SURFACES
+    if full and selective:
+        errors.append(
+            "ambiguous image-policy installation: both full and selective base packs are present"
+        )
+        return ()
+    if full:
+        if not DEFAULT_PACK.is_file():
+            errors.append("full installation scope is missing the default pack")
+            return ()
+        return REQUIRED_SURFACES
+    if not selective:
+        errors.append(
+            "image-policy verifier requires a full default pack or the selective design-runtime pack"
+        )
+        return ()
+    if not DESIGN_RUNTIME_PACK.is_file():
+        errors.append(
+            "selective design-runtime scope is missing its declared base pack"
+        )
+        return ()
+
+    try:
+        design_pack = read_json(DESIGN_RUNTIME_PACK)
+    except ValueError as exc:
+        errors.append(str(exc))
+        return ()
+    declared = design_pack.get("image_policy_required_surfaces")
+    if not isinstance(declared, list) or not declared:
+        errors.append(
+            "selective design-runtime pack must declare image_policy_required_surfaces"
+        )
+        return ()
+    if any(not isinstance(path, str) for path in declared):
+        errors.append("selective image-policy routes must be strings")
+        return ()
+    unknown = sorted(set(declared) - set(REQUIRED_SURFACES))
+    if unknown:
+        errors.append(
+            "selective design-runtime pack declares unknown image-policy routes: "
+            + ", ".join(unknown)
+        )
+    return tuple(dict.fromkeys(declared))
+
+
 def main() -> int:
     errors: list[str] = []
     generative_surfaces: set[str] = set()
@@ -460,8 +553,9 @@ def main() -> int:
 
     validate_registry(errors)
     validate_pack(errors)
+    required_surfaces = required_surfaces_for_installation(errors)
 
-    for relative in REQUIRED_SURFACES:
+    for relative in required_surfaces:
         path = ROOT / relative
         if not path.is_file():
             errors.append(f"missing required image-policy surface: {relative}")
@@ -533,7 +627,7 @@ def main() -> int:
     print(
         "LOCAL IMAGE CONTROLS: PASS "
         f"({len(generative_surfaces)} active generative surfaces; "
-        f"{len(REQUIRED_SURFACES)} required routes; "
+        f"{len(required_surfaces)} required routes; "
         f"{len(deterministic_exemptions_used)} deterministic exemptions)"
     )
     for relative, reason in sorted(deterministic_exemptions_used.items()):

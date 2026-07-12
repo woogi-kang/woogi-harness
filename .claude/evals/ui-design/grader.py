@@ -8,9 +8,11 @@ import base64
 import binascii
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -94,6 +96,90 @@ TRUSTED_PRODUCERS = {
 }
 
 
+@lru_cache(maxsize=1)
+def resolve_openssl_ed25519() -> str | None:
+    candidates = (
+        shutil.which("openssl"),
+        shutil.which("openssl3"),
+        "/opt/homebrew/opt/openssl@3/bin/openssl",
+        "/usr/local/opt/openssl@3/bin/openssl",
+        "/opt/homebrew/bin/openssl",
+        "/usr/local/bin/openssl",
+    )
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        try:
+            with tempfile.TemporaryDirectory(prefix="design-grader-openssl-") as temp:
+                root = Path(temp)
+                private = root / "private.pem"
+                public = root / "public.pem"
+                payload = root / "payload.bin"
+                signature = root / "signature.bin"
+                payload.write_bytes(b"design-grader-ed25519-probe")
+                commands = (
+                    [
+                        candidate,
+                        "genpkey",
+                        "-algorithm",
+                        "ED25519",
+                        "-out",
+                        str(private),
+                    ],
+                    [
+                        candidate,
+                        "pkey",
+                        "-in",
+                        str(private),
+                        "-pubout",
+                        "-out",
+                        str(public),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-sign",
+                        "-inkey",
+                        str(private),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-out",
+                        str(signature),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-verify",
+                        "-pubin",
+                        "-inkey",
+                        str(public),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-sigfile",
+                        str(signature),
+                    ],
+                )
+                supported = all(
+                    subprocess.run(
+                        command,
+                        check=False,
+                        capture_output=True,
+                        timeout=5,
+                    ).returncode
+                    == 0
+                    for command in commands
+                )
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        if supported:
+            return candidate
+    return None
+
+
 def load_object(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -133,30 +219,37 @@ def verify_signature(
         signature = base64.b64decode(signature_b64, validate=True)
     except (ValueError, binascii.Error):
         return False
+    openssl = resolve_openssl_ed25519()
+    if openssl is None:
+        return False
     with tempfile.TemporaryDirectory(prefix="ui-design-grader-signature-") as temporary:
         root = Path(temporary)
         payload_path = root / "payload.json"
         signature_path = root / "signature.bin"
         payload_path.write_bytes(canonical_bytes(payload))
         signature_path.write_bytes(signature)
-        process = subprocess.run(
-            [
-                "openssl",
-                "pkeyutl",
-                "-verify",
-                "-pubin",
-                "-inkey",
-                str(public_key),
-                "-rawin",
-                "-in",
-                str(payload_path),
-                "-sigfile",
-                str(signature_path),
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
+        try:
+            process = subprocess.run(
+                [
+                    openssl,
+                    "pkeyutl",
+                    "-verify",
+                    "-pubin",
+                    "-inkey",
+                    str(public_key),
+                    "-rawin",
+                    "-in",
+                    str(payload_path),
+                    "-sigfile",
+                    str(signature_path),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return False
     return process.returncode == 0
 
 
@@ -311,6 +404,10 @@ def grade(args: argparse.Namespace) -> int:
     ).get("public_key_sha256"):
         integrity_errors.append(
             "critic public key is missing or differs from the run trust policy"
+        )
+    elif resolve_openssl_ed25519() is None:
+        integrity_errors.append(
+            "OpenSSL with Ed25519 pkeyutl -rawin support is required"
         )
     elif not verify_signature(
         public_key, payload, str(attestation.get("signature", ""))

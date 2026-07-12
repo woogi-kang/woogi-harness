@@ -1,0 +1,5 @@
+{
+  "schema": "harness.installation-scope.v1",
+  "scope": "selective-design-runtime",
+  "base_pack": "design-runtime"
+}

@@ -3,6 +3,7 @@
   "id": "image-generation",
   "description": "Pinned Gongnyang image-prompt runtime, Codex gpt-image-2 policy, and verification assets.",
   "paths": [
+    ".claude/project-packs/image-generation/pack.json",
     "third_party/gongnyang-prompt-kit",
     ".claude/hooks/image-generation-guard.py",
     ".claude/skills/image-prompt",

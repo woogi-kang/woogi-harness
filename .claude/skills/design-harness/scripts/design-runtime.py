@@ -24,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import zlib
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -77,6 +78,91 @@ REVIEW_PACKET_SCHEMA = "design-review-packet-v1"
 CRITIC_ATTESTATION_SCHEMA = "design-critic-attestation-v1"
 CAPTURE_ATTESTATION_SCHEMA = "design-capture-attestation-v1"
 DESIGN_TRUST_STORE = RUNTIME_DIR / "registry" / "design" / "trusted-authorities.json"
+
+
+@lru_cache(maxsize=1)
+def resolve_openssl_ed25519() -> str | None:
+    """Find an OpenSSL executable that can actually create Ed25519 keys."""
+    candidates = (
+        shutil.which("openssl"),
+        shutil.which("openssl3"),
+        "/opt/homebrew/opt/openssl@3/bin/openssl",
+        "/usr/local/opt/openssl@3/bin/openssl",
+        "/opt/homebrew/bin/openssl",
+        "/usr/local/bin/openssl",
+    )
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        try:
+            with tempfile.TemporaryDirectory(prefix="design-openssl-probe-") as temp:
+                root = Path(temp)
+                private = root / "private.pem"
+                public = root / "public.pem"
+                payload = root / "payload.bin"
+                signature = root / "signature.bin"
+                payload.write_bytes(b"design-runtime-ed25519-probe")
+                commands = (
+                    [
+                        candidate,
+                        "genpkey",
+                        "-algorithm",
+                        "ED25519",
+                        "-out",
+                        str(private),
+                    ],
+                    [
+                        candidate,
+                        "pkey",
+                        "-in",
+                        str(private),
+                        "-pubout",
+                        "-out",
+                        str(public),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-sign",
+                        "-inkey",
+                        str(private),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-out",
+                        str(signature),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-verify",
+                        "-pubin",
+                        "-inkey",
+                        str(public),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-sigfile",
+                        str(signature),
+                    ],
+                )
+                supported = all(
+                    subprocess.run(
+                        command,
+                        check=False,
+                        capture_output=True,
+                        timeout=5,
+                    ).returncode
+                    == 0
+                    for command in commands
+                )
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        if supported:
+            return candidate
+    return None
 
 
 def utc_now() -> str:
@@ -558,6 +644,11 @@ def verify_ed25519_signature(
     errors: list[str] = []
     if not public_key.is_file():
         return [f"critic attestation public key missing: {public_key}"]
+    openssl = resolve_openssl_ed25519()
+    if openssl is None:
+        return [
+            "OpenSSL with Ed25519 support is required to verify critic attestations"
+        ]
     try:
         signature = base64.b64decode(signature_b64, validate=True)
     except (ValueError, binascii.Error):
@@ -570,7 +661,7 @@ def verify_ed25519_signature(
             signature_path.write_bytes(signature)
             process = subprocess.run(
                 [
-                    "openssl",
+                    openssl,
                     "pkeyutl",
                     "-verify",
                     "-pubin",
@@ -585,11 +676,14 @@ def verify_ed25519_signature(
                 check=False,
                 capture_output=True,
                 text=True,
+                timeout=10,
             )
         if process.returncode != 0:
             errors.append("critic attestation Ed25519 signature verification failed")
-    except FileNotFoundError:
-        errors.append("openssl is required to verify critic attestations")
+    except (OSError, subprocess.TimeoutExpired):
+        errors.append(
+            "OpenSSL with Ed25519 support is required to verify critic attestations"
+        )
     return errors
 
 

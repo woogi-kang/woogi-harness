@@ -21,6 +21,92 @@ HARNESS_ROOT = EVAL_DIR.parents[2]
 RUNTIME = CLAUDE_DIR / "skills" / "design-harness" / "scripts" / "design-runtime.py"
 
 
+def resolve_openssl_ed25519() -> str:
+    candidates = (
+        shutil.which("openssl"),
+        shutil.which("openssl3"),
+        "/opt/homebrew/opt/openssl@3/bin/openssl",
+        "/usr/local/opt/openssl@3/bin/openssl",
+        "/opt/homebrew/bin/openssl",
+        "/usr/local/bin/openssl",
+    )
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        try:
+            with tempfile.TemporaryDirectory(prefix="design-eval-openssl-") as temp:
+                root = Path(temp)
+                private = root / "private.pem"
+                public = root / "public.pem"
+                payload = root / "payload.bin"
+                signature = root / "signature.bin"
+                payload.write_bytes(b"design-eval-ed25519-probe")
+                commands = (
+                    [
+                        candidate,
+                        "genpkey",
+                        "-algorithm",
+                        "ED25519",
+                        "-out",
+                        str(private),
+                    ],
+                    [
+                        candidate,
+                        "pkey",
+                        "-in",
+                        str(private),
+                        "-pubout",
+                        "-out",
+                        str(public),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-sign",
+                        "-inkey",
+                        str(private),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-out",
+                        str(signature),
+                    ],
+                    [
+                        candidate,
+                        "pkeyutl",
+                        "-verify",
+                        "-pubin",
+                        "-inkey",
+                        str(public),
+                        "-rawin",
+                        "-in",
+                        str(payload),
+                        "-sigfile",
+                        str(signature),
+                    ],
+                )
+                supported = all(
+                    subprocess.run(
+                        command,
+                        check=False,
+                        capture_output=True,
+                        timeout=5,
+                    ).returncode
+                    == 0
+                    for command in commands
+                )
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        if supported:
+            return candidate
+    raise RuntimeError("OpenSSL with Ed25519 support is required for UI runtime evals")
+
+
+OPENSSL = resolve_openssl_ed25519()
+
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -289,12 +375,12 @@ class DesignRuntimeTest(unittest.TestCase):
         private = root / "critic-private.pem"
         public = root / "critic-public.pem"
         subprocess.run(
-            ["openssl", "genpkey", "-algorithm", "ED25519", "-out", str(private)],
+            [OPENSSL, "genpkey", "-algorithm", "ED25519", "-out", str(private)],
             check=True,
             capture_output=True,
         )
         subprocess.run(
-            ["openssl", "pkey", "-in", str(private), "-pubout", "-out", str(public)],
+            [OPENSSL, "pkey", "-in", str(private), "-pubout", "-out", str(public)],
             check=True,
             capture_output=True,
         )
@@ -472,7 +558,7 @@ class DesignRuntimeTest(unittest.TestCase):
         canonical.write_bytes(canonical_bytes(payload))
         subprocess.run(
             [
-                "openssl",
+                OPENSSL,
                 "pkeyutl",
                 "-sign",
                 "-inkey",
@@ -615,7 +701,7 @@ class DesignRuntimeTest(unittest.TestCase):
         canonical.write_bytes(canonical_bytes(attestation_payload))
         subprocess.run(
             [
-                "openssl",
+                OPENSSL,
                 "pkeyutl",
                 "-sign",
                 "-inkey",
@@ -850,7 +936,7 @@ class DesignRuntimeTest(unittest.TestCase):
             public = root / "rogue-public.pem"
             subprocess.run(
                 [
-                    "openssl",
+                    OPENSSL,
                     "genpkey",
                     "-algorithm",
                     "ED25519",
@@ -862,7 +948,7 @@ class DesignRuntimeTest(unittest.TestCase):
             )
             subprocess.run(
                 [
-                    "openssl",
+                    OPENSSL,
                     "pkey",
                     "-in",
                     str(rogue_private),
@@ -910,13 +996,13 @@ class DesignRuntimeTest(unittest.TestCase):
             private = root / "self-private.pem"
             public = root / "self-public.pem"
             subprocess.run(
-                ["openssl", "genpkey", "-algorithm", "ED25519", "-out", str(private)],
+                [OPENSSL, "genpkey", "-algorithm", "ED25519", "-out", str(private)],
                 check=True,
                 capture_output=True,
             )
             subprocess.run(
                 [
-                    "openssl",
+                    OPENSSL,
                     "pkey",
                     "-in",
                     str(private),
