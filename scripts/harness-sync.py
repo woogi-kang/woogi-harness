@@ -8,6 +8,7 @@ import copy
 import json
 import os
 import stat
+import subprocess
 import sys
 import uuid
 from pathlib import Path
@@ -366,8 +367,34 @@ def receipt_path(project_root: Path, run_id: str) -> Path:
     )
 
 
+def git_tracked_source_paths(root: Path) -> set[str] | None:
+    """Return the committed/index-owned source set, or None outside a Git root."""
+    try:
+        top_level = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+        if Path(top_level).resolve() != root.resolve():
+            return None
+        result = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--cached"],
+            capture_output=True,
+            check=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return {
+        raw.decode("utf-8", errors="surrogateescape")
+        for raw in result.stdout.split(b"\0")
+        if raw
+    }
+
+
 def desired_assets(root: Path, pack: dict[str, Any]) -> list[dict[str, Any]]:
     excludes = list(pack.get("exclude", []))
+    tracked_paths = git_tracked_source_paths(root)
     assets: dict[str, dict[str, Any]] = {}
     for raw in pack.get("paths", []):
         relative = Path(str(raw))
@@ -376,6 +403,12 @@ def desired_assets(root: Path, pack: dict[str, Any]) -> list[dict[str, Any]]:
         source = root / relative
         if not source.exists() and not source.is_symlink():
             raise HarnessError(f"pack source missing: {relative.as_posix()}")
+        if (
+            tracked_paths is not None
+            and (source.is_file() or source.is_symlink())
+            and relative.as_posix() not in tracked_paths
+        ):
+            raise HarnessError(f"pack source is not Git-tracked: {relative.as_posix()}")
         candidates = (
             [source]
             if source.is_file() or source.is_symlink()
@@ -385,6 +418,8 @@ def desired_assets(root: Path, pack: dict[str, Any]) -> list[dict[str, Any]]:
             if not (candidate.is_file() or candidate.is_symlink()):
                 continue
             rel = candidate.relative_to(root).as_posix()
+            if tracked_paths is not None and rel not in tracked_paths:
+                continue
             if path_matches_any(rel, excludes):
                 continue
             if candidate.is_symlink():

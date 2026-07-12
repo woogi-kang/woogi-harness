@@ -340,6 +340,34 @@ class SyncAdversarialTests(unittest.TestCase):
             "applied": False,
         }
 
+    def test_git_source_pack_excludes_untracked_and_ignored_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary)
+            owned = source / "owned"
+            owned.mkdir()
+            (owned / "tracked.txt").write_text("tracked", encoding="utf-8")
+            (owned / "untracked.txt").write_text("untracked", encoding="utf-8")
+            (owned / "ignored.txt").write_text("ignored", encoding="utf-8")
+            (source / ".gitignore").write_text("owned/ignored.txt\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "init", "-q"], cwd=source, check=True, capture_output=True
+            )
+            subprocess.run(
+                ["git", "add", ".gitignore", "owned/tracked.txt"],
+                cwd=source,
+                check=True,
+                capture_output=True,
+            )
+            assets = SYNC.desired_assets(
+                source,
+                {
+                    "schema_version": "harness.project-pack.v1",
+                    "id": "test",
+                    "paths": ["owned"],
+                },
+            )
+            self.assertEqual([asset["path"] for asset in assets], ["owned/tracked.txt"])
+
     def test_source_drift_after_plan_is_rejected_before_write(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
