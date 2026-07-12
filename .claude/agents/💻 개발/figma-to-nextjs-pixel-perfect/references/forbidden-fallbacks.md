@@ -24,4 +24,3 @@ reason: missing_asset | missing_font | unsupported_effect | unavailable_tool
 required_user_action: "..."
 strict_completion: false
 ```
-

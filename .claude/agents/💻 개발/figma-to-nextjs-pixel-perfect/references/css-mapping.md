@@ -60,4 +60,3 @@ shadcn may provide behavior. It must not provide visual truth.
   Label
 </Button>
 ```
-

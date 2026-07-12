@@ -31,4 +31,3 @@ If diff worsens, revert the refactor or keep the exact render implementation.
 ## Completion
 
 Productionize mode must not change the verified visual output. If maintainability conflicts with fidelity, fidelity wins unless the user explicitly changes the goal.
-

@@ -47,4 +47,3 @@ medium:
 ```
 
 Critical issues always fail strict completion.
-

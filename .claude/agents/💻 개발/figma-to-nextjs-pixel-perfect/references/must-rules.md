@@ -31,4 +31,3 @@ These rules apply to every `figma-to-nextjs-pixel-perfect` run.
 
 - Pixel-perfect responsive output requires matching Figma frames for each claimed breakpoint.
 - If only a desktop frame exists, claim only desktop fidelity.
-

@@ -80,4 +80,3 @@ llm_panel:
   can_override_diff_failure: false
   can_declare_pass_without_gates: false
 ```
-

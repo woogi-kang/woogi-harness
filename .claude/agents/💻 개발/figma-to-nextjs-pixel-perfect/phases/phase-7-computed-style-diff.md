@@ -42,4 +42,3 @@ computed-style-report.json
 ## Quality Gate
 
 If computed styles differ while screenshot diff passes, document the discrepancy. If the difference is likely to break another browser/viewport, block productionize mode.
-

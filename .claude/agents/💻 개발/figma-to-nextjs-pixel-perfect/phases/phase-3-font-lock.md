@@ -36,4 +36,3 @@ Text metrics drive layout. Missing fonts must block strict completion.
 ## Quality Gate
 
 If any required font or weight is missing, stop with `BLOCKED: missing_font`. Do not use browser default fallback and claim pixel-perfect output.
-

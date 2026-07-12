@@ -45,4 +45,3 @@ All images, icons, logos, masks, and rasterized unsupported layers must come fro
 - Manually drawn replacement SVG.
 - AI-generated substitute.
 - Similar but non-Figma asset.
-

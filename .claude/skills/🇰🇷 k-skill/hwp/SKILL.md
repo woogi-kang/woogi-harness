@@ -12,7 +12,7 @@ metadata:
 
 ## What this skill does
 
-`.hwp` 문서를 읽어 JSON / Markdown / HTML로 변환하고, 이미지 추출이나 배치 처리를 수행한다.  
+`.hwp` 문서를 읽어 JSON / Markdown / HTML로 변환하고, 이미지 추출이나 배치 처리를 수행한다.
 환경이 **Windows + 한글(HWP) 프로그램 설치 + 직접 제어가 필요한 작업**이면 `hwp-mcp`를 선택하고, 그 외에는 기본값으로 `@ohah/hwpjs`를 사용한다.
 
 ## When to use

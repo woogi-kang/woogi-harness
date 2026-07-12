@@ -48,4 +48,3 @@ Fail on:
 - Color mismatch beyond tolerance.
 - Text metric mismatch beyond tolerance.
 - Diff budget exceeded.
-

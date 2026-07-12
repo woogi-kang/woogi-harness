@@ -39,4 +39,3 @@ frame-map.json
 ## Quality Gate
 
 If the user asks for responsive pixel-perfect output but only one Figma frame exists, continue only with explicit scope: `desktop exact, responsive approximation not claimed`.
-

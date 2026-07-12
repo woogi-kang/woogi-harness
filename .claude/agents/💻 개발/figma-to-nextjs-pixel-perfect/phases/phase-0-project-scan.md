@@ -45,4 +45,3 @@ Record these values in `environment-report.json`:
 ## Quality Gate
 
 Do not continue if the target is not a Next.js project unless the user explicitly asks to create one. If a project is created, use CLI setup and keep it separate from existing source.
-

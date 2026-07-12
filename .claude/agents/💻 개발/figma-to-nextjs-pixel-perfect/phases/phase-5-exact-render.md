@@ -42,4 +42,3 @@ render-route.txt
 ## Quality Gate
 
 Generated code must build and render a preview route for every target frame.
-

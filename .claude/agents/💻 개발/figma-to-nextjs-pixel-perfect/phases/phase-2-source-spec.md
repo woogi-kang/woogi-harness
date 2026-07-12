@@ -55,4 +55,3 @@ unsupported-effects.json
 ## Quality Gate
 
 If a visual property cannot be represented in CSS and cannot be faithfully decomposed, mark it as a blocker or rasterize that exact layer from Figma as an asset. Do not approximate silently.
-

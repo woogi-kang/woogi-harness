@@ -35,4 +35,3 @@ Stop and report `BLOCKED` when:
 - Unsupported effect cannot be represented or rasterized.
 - Three targeted fixes regress another passed area.
 - The user-requested scope lacks necessary Figma frames.
-

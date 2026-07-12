@@ -49,4 +49,3 @@ Code and assets contain none of:
 ### Responsive Scope
 
 Final report states exactly which frames are strict and which, if any, are approximation-only.
-
