@@ -630,7 +630,7 @@ class AppButton extends StatelessWidget {
       );
 
   ButtonStyle get _secondaryStyle => ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryLight.withOpacity(0.1),
+        backgroundColor: AppColors.primaryLight.withValues(alpha: 0.1),
         foregroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.smAll),
         padding: _padding,
@@ -695,7 +695,7 @@ class ProductCard extends StatelessWidget {
           borderRadius: AppRadius.mdAll,
           boxShadow: [
             BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.05),
+              color: AppColors.textPrimary.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -812,7 +812,7 @@ class ProductPriceTag extends StatelessWidget {
               vertical: 2,
             ),
             decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.1),
+              color: AppColors.error.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: AppText(

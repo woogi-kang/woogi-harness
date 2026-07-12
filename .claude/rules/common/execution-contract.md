@@ -1,72 +1,89 @@
-# Execution Contract
+# Execution Contract — Runtime v1
 
-모든 구현, 루프, 오케스트레이션, 리뷰, 검증 작업은 시작 전에 짧은 실행 계약을 세운다. 이 규칙은 직접 작업, 스킬 실행, 에이전트 위임, `/team`, `/team-launch`, `/orchestrate`, `/verify`에 공통 적용된다.
+반복·장기·병렬·자율 작업과 배포/외부 전송/비용/파괴 위험이 있는 작업은 실행 전에 성공과 중단 조건을 typed record로 고정한다.
 
-## 기본 계약
+## Required fields
 
-작업 전 아래 항목을 명시하거나 내부적으로 확정한다.
+- `objective`: 구체적 최종 결과.
+- `success_criteria`: 관찰 가능하고 검증 가능한 기준.
+- `verification`: 각 기준을 증명할 명령/파일/flow.
+- `approval_boundary`: 사용자 승인 없이 넘지 않을 경계.
+- `stop_condition`: 반복 실패, 외부 blocker, 안전 경계.
+- `state_record`: 실행 outcome JSON 경로.
 
-| 항목 | 의미 |
-|------|------|
-| Outcome | 이번 작업이 끝났다고 말할 수 있는 구체적 결과 |
-| Scope | 수정/조회 가능한 파일, 시스템, 환경 |
-| Success criteria | PASS로 인정할 관찰 가능한 기준 |
-| Verification | 기준을 증명할 명령, 테스트, 브라우저 플로우, 리뷰 방법 |
-| Stop condition | success, clean no-op, blocked, approval-required, exhausted, stagnated 중 어느 상태로 멈출지 |
-| Approval boundary | 승인 전까지 하지 않을 production, destructive, privacy/finance, external-send 작업 |
-| State record | 다음 반복이나 인계가 읽을 기록 위치 |
+```bash
+python3 scripts/harness-execution.py init \
+  --file <outcome.json> --id <execution-id> --objective "<objective>" \
+  --success-criterion "<criterion>"
 
-작업이 작으면 사용자에게 길게 말하지 않는다. 그래도 구현 전에는 성공 기준과 검증 방법을 짧게 잡고, 완료 후 그 기준으로 확인한다.
-
-## Goal Prep Pack 전환 기준
-
-아래 중 하나라도 참이면 단순 계약 대신 `goal-prep-pack`을 사용해 `.claude/goals/{yyMMdd}-{goal-slug}/` 아래에 `VALIDATION.md`, `RECOVERY.md`, `PLAN.md`, `PROGRESS.md`, `goal-command.md`를 만든다.
-
-- PRD, 로드맵, 출시 계획, 장기 목표를 실제 구현으로 전환한다.
-- 작업이 여러 세션, 여러 에이전트, 여러 워크트리를 넘나든다.
-- rollback, production, privacy, finance, external-send, deploy 승인이 필요할 수 있다.
-- 실패 후 재시도/복구 경로를 다음 실행자가 읽어야 한다.
-
-작업 중에는 `PROGRESS.md`를 최신 항목이 위로 오도록 갱신한다. 같은 blocker가 세 번 반복되면 진행을 멈추고 blocked 상태를 명시한다.
-
-## 루프 판정
-
-아래가 모두 참이면 루프로 설계한다.
-
-- fresh observation이 다음 행동을 바꿀 수 있다.
-- 각 반복에서 한 가지 bounded action을 할 수 있다.
-- 같은 acceptance check를 반복 실행할 수 있다.
-- 결과를 다음 반복이 읽을 곳에 기록할 수 있다.
-- 명확한 stop condition과 approval boundary가 있다.
-
-하나라도 빠지면 one-shot 작업으로 축소하거나 `.claude/rules/common/clarification-protocol.md`에 따라 선택지 기반 질문을 먼저 한다.
-
-## 오케스트레이션 필드
-
-`plan.json` worker에는 가능한 경우 아래 필드를 넣는다.
-
-```json
-{
-  "name": "Worker",
-  "task": "bounded task",
-  "depends_on": ["OtherWorker"],
-  "success_criteria": ["observable pass condition"],
-  "eval_type": "unit|integration|ui|docs|security|review|manual",
-  "stop_condition": "when this worker must stop",
-  "approval_boundary": ["what requires explicit user approval"],
-  "state_record": "handoff.md or another repo-local state file"
-}
+python3 scripts/harness-execution.py transition --file <outcome.json> --to running
 ```
 
-`success_criteria`는 task prose 안에 묻지 말고 가능하면 별도 필드로 둔다. 반복 작업은 `stop_condition`, `approval_boundary`, `state_record`까지 포함한다.
-넓은 repo context를 worker에게 제공할 때는 `context-pack-gate` 산출물 경로를 `context_pack` 필드로 별도 기록한다.
+## States
 
-## 완료 보고
+```text
+pending → running → succeeded | failed | blocked | needs_approval
+blocked/needs_approval → running only after the condition changes
+```
 
-완료 보고는 아래를 포함한다.
+- `succeeded`: 모든 criterion에 passed check와 evidence가 있다.
+- `failed`: 구현 또는 검증 hard gate가 실패했다.
+- `blocked`: 필요한 tool/input/external state가 없어 안전하게 진행할 수 없다.
+- `needs_approval`: 배포, destructive change, 외부 전송, 비용, 개인정보 같은 승인 경계에 도달했다.
 
-- 변경 요약
-- 실행한 검증과 결과
-- 충족한 success criteria
-- 남은 blocked/approval-required/stagnated 항목
-- 사용자가 바로 이어서 할 수 있는 다음 액션
+Process exit 0은 transport 신호일 뿐 성공 상태가 아니다.
+
+```bash
+python3 scripts/harness-execution.py from-exit \
+  --exit-code 0 --outcome-file <outcome.json>
+```
+
+Outcome file이 없거나 evidence/check가 빠졌으면 `succeeded`로 변환하지 않는다.
+
+## Evidence
+
+Evidence는 실제로 확인한 것만 기록한다.
+
+- test/build/analyze command와 결과.
+- source diff 또는 schema validation.
+- browser/device/API flow.
+- screenshot/golden/accessibility artifact.
+- 배포/운영 state의 live query.
+
+“완료함”, 계획, prompt, 자체 평가, 실행하지 않은 명령은 evidence가 아니다. 개인정보·시크릿 원문은 record에 복사하지 않는다.
+`succeeded` evidence에는 실제 실행의 `producer`, argv 배열 `command`, `exit_code`, `status`와 regular file의 `path`, `sha256`, `bytes`를 함께 기록한다. `artifact_root`는 고정값 `artifacts`이고, `path`는 outcome 옆 `artifacts/` 기준의 non-symlink 상대 경로만 사용한다. final validation이 artifact를 다시 hash한다. `TYPE:DESCRIPTION` 축약형은 diagnostic-only라 성공 증거가 아니다.
+
+```bash
+python3 scripts/harness-execution.py transition \
+  --file <outcome.json> --to succeeded \
+  --evidence '{"type":"test-log","description":"pytest passed","producer":"pytest","command":["python3","-m","pytest"],"exit_code":0,"status":"passed","path":"pytest.log","sha256":"<actual-lowercase-sha256>","bytes":<actual-bytes>}' \
+  --check "<criterion>=passed"
+
+python3 scripts/harness-execution.py validate --file <outcome.json> --final
+```
+
+## Retry and stop
+
+- 같은 원인·같은 방식의 실패를 세 번 반복하지 않는다.
+- 첫 실패는 원인을 분류하고, 두 번째는 접근 또는 조건을 바꾼다.
+- 세 번째 동일 실패는 `blocked` 또는 `failed`로 기록하고 stop reason을 남긴다.
+- UI/design repair는 Design Runtime 정책상 최대 2회다.
+- test/eval 기준을 구현에 맞게 약화해 성공시키지 않는다.
+
+## Approval boundary
+
+다음은 명시 승인 없이 실행하지 않는다.
+
+- production deploy/rollback/data mutation.
+- destructive git 또는 target-only 파일 삭제.
+- hosted/third-party service로 repo context 전송.
+- 유료 API/대량 생성.
+- 사용자 계정으로 외부 메시지/게시/구매.
+
+승인을 기다리는 동안 read-only 진단, local test, dry-run, manifest 생성은 계속할 수 있다.
+
+## Orchestration
+
+Worker는 `success_criteria`, `stop_condition`, `approval_boundary`, `state_record`, 필요 시 `context_pack`을 받는다. Orchestrator는 worker process exit가 아니라 typed outcome을 검증해 DAG 상태를 갱신한다.
+
+장기 목표의 recovery/progress 문서가 필요하면 `goal-prep-pack`; 반복 loop 설계가 필요하면 `autonomous-loops`; repo context 전달은 `context-pack-gate`를 함께 사용한다.

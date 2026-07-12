@@ -30,14 +30,14 @@ Flutter 프로젝트에 Firebase 서비스를 설정하고 통합합니다.
 
 | 서비스 | 패키지 | 버전 | 설명 |
 |--------|--------|------|------|
-| **Core** | firebase_core | ^4.9.0 | Firebase 초기화 (필수) |
-| **Auth** | firebase_auth | ^6.5.1 | 인증 (이메일, 소셜 로그인) |
-| **Firestore** | cloud_firestore | ^6.4.1 | NoSQL 데이터베이스 |
-| **Messaging** | firebase_messaging | ^16.2.2 | 푸시 알림 (FCM) |
-| **Crashlytics** | firebase_crashlytics | ^5.2.2 | 크래시 리포팅 |
-| **Analytics** | firebase_analytics | ^12.4.1 | 사용자 분석 |
-| **Storage** | firebase_storage | ^13.4.1 | 파일 저장소 |
-| **Remote Config** | firebase_remote_config | ^6.5.1 | 원격 설정 |
+| **Core** | firebase_core | ^4.11.0 | Firebase 초기화 (필수) |
+| **Auth** | firebase_auth | ^6.5.4 | 인증 (이메일, 소셜 로그인) |
+| **Firestore** | cloud_firestore | ^6.6.0 | NoSQL 데이터베이스 |
+| **Messaging** | firebase_messaging | ^16.4.1 | 푸시 알림 (FCM) |
+| **Crashlytics** | firebase_crashlytics | ^5.2.4 | 크래시 리포팅 |
+| **Analytics** | firebase_analytics | ^12.4.3 | 사용자 분석 |
+| **Storage** | firebase_storage | ^13.4.3 | 파일 저장소 |
+| **Remote Config** | firebase_remote_config | ^6.5.3 | 원격 설정 |
 
 ---
 
@@ -48,28 +48,28 @@ Flutter 프로젝트에 Firebase 서비스를 설정하고 통합합니다.
 ```yaml
 dependencies:
   # Firebase Core (필수)
-  firebase_core: ^4.9.0
+  firebase_core: ^4.11.0
 
   # Authentication
-  firebase_auth: ^6.5.1
+  firebase_auth: ^6.5.4
 
   # Database
-  cloud_firestore: ^6.4.1
+  cloud_firestore: ^6.6.0
 
   # Push Notifications
-  firebase_messaging: ^16.2.2
+  firebase_messaging: ^16.4.1
 
   # Crash Reporting
-  firebase_crashlytics: ^5.2.2
+  firebase_crashlytics: ^5.2.4
 
   # Analytics
-  firebase_analytics: ^12.4.1
+  firebase_analytics: ^12.4.3
 
   # File Storage
-  firebase_storage: ^13.4.1
+  firebase_storage: ^13.4.3
 
   # Remote Config
-  firebase_remote_config: ^6.5.1
+  firebase_remote_config: ^6.5.3
 ```
 
 ---
@@ -883,65 +883,65 @@ part 'firebase_providers.g.dart';
 
 // Firebase 인스턴스 Provider
 @riverpod
-FirebaseAuth firebaseAuth(FirebaseAuthRef ref) => FirebaseAuth.instance;
+FirebaseAuth firebaseAuth(Ref ref) => FirebaseAuth.instance;
 
 @riverpod
-FirebaseFirestore firestore(FirestoreRef ref) => FirebaseFirestore.instance;
+FirebaseFirestore firestore(Ref ref) => FirebaseFirestore.instance;
 
 @riverpod
-FirebaseMessaging firebaseMessaging(FirebaseMessagingRef ref) =>
+FirebaseMessaging firebaseMessaging(Ref ref) =>
     FirebaseMessaging.instance;
 
 @riverpod
-FirebaseAnalytics firebaseAnalytics(FirebaseAnalyticsRef ref) =>
+FirebaseAnalytics firebaseAnalytics(Ref ref) =>
     FirebaseAnalytics.instance;
 
 @riverpod
-FirebaseCrashlytics firebaseCrashlytics(FirebaseCrashlyticsRef ref) =>
+FirebaseCrashlytics firebaseCrashlytics(Ref ref) =>
     FirebaseCrashlytics.instance;
 
 @riverpod
-FirebaseRemoteConfig firebaseRemoteConfig(FirebaseRemoteConfigRef ref) =>
+FirebaseRemoteConfig firebaseRemoteConfig(Ref ref) =>
     FirebaseRemoteConfig.instance;
 
 @riverpod
-FirebaseStorage firebaseStorage(FirebaseStorageRef ref) =>
+FirebaseStorage firebaseStorage(Ref ref) =>
     FirebaseStorage.instance;
 
 // 서비스 Provider
 @riverpod
-FirebaseAuthService firebaseAuthService(FirebaseAuthServiceRef ref) {
+FirebaseAuthService firebaseAuthService(Ref ref) {
   return FirebaseAuthServiceImpl(auth: ref.watch(firebaseAuthProvider));
 }
 
 @riverpod
-FirestoreService firestoreService(FirestoreServiceRef ref) {
+FirestoreService firestoreService(Ref ref) {
   return FirestoreServiceImpl(firestore: ref.watch(firestoreProvider));
 }
 
 @riverpod
-FCMService fcmService(FCMServiceRef ref) {
+FCMService fcmService(Ref ref) {
   return FCMService(messaging: ref.watch(firebaseMessagingProvider));
 }
 
 @riverpod
-AnalyticsService analyticsService(AnalyticsServiceRef ref) {
+AnalyticsService analyticsService(Ref ref) {
   return AnalyticsService(analytics: ref.watch(firebaseAnalyticsProvider));
 }
 
 @riverpod
-CrashlyticsService crashlyticsService(CrashlyticsServiceRef ref) {
+CrashlyticsService crashlyticsService(Ref ref) {
   return CrashlyticsService(crashlytics: ref.watch(firebaseCrashlyticsProvider));
 }
 
 @riverpod
-RemoteConfigService remoteConfigService(RemoteConfigServiceRef ref) {
+RemoteConfigService remoteConfigService(Ref ref) {
   return RemoteConfigService(remoteConfig: ref.watch(firebaseRemoteConfigProvider));
 }
 
 // Auth State Stream
 @riverpod
-Stream<User?> authState(AuthStateRef ref) {
+Stream<User?> authState(Ref ref) {
   return ref.watch(firebaseAuthServiceProvider).authStateChanges;
 }
 ```

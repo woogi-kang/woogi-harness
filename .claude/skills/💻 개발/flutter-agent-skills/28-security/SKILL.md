@@ -40,16 +40,16 @@ metadata:
 ```yaml
 dependencies:
   # Secure Storage
-  flutter_secure_storage: ^10.3.0
+  flutter_secure_storage: ^10.3.1
 
   # Biometric Authentication
-  local_auth: ^3.0.1
+  local_auth: ^3.0.2
 
   # Root/Jailbreak Detection
   flutter_jailbreak_detection: ^1.10.0
 
   # SSL Pinning (Dio interceptor)
-  dio: ^5.9.2
+  dio: ^5.10.0
 
   # Encryption
   encrypt: ^5.0.3

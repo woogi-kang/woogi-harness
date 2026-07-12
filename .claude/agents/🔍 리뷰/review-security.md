@@ -4,7 +4,8 @@ description: |
   보안 리뷰 전문 에이전트. 보안 정책, 취약점, 컴플라이언스를 평가합니다.
   review-orchestrator에 의해 호출됩니다.
 tools: Read, Grep, Glob, Bash
-model: opus
+model: inherit
+quality_tier: independent_critic
 ---
 
 # Review Security - 보안 리뷰 전문가

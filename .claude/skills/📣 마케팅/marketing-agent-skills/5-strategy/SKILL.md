@@ -522,7 +522,7 @@ platform_priority:
 ai_tools:
   무료_필수:
     영상_편집: "CapCut"
-    그래픽: "Canva AI"
+    그래픽: "image-prompt → Codex gpt-image-2"
     스크립트: "ChatGPT"
     랜딩페이지: "Carrd, Tally"
     이메일: "Mailchimp (무료 티어)"
@@ -530,7 +530,7 @@ ai_tools:
 
   유료_추천:
     영상: "Descript, Runway"
-    그래픽: "Midjourney, DALL-E"
+    그래픽: "image-prompt → Codex gpt-image-2"
     아바타: "HeyGen, Synthesia"
     카피: "Jasper, Copy.ai"
     자동화: "Zapier, Make"

@@ -1,356 +1,160 @@
 ---
 name: ckm:ui-styling
-description: "UI 스타일링 — shadcn/ui, Tailwind CSS 기반 접근성 높은 인터페이스 구현"
-argument-hint: "[component or layout]"
+description: "Design Runtime v3의 구현 adapter. 기존 프로젝트의 Web/Flutter stack, token, component system을 보존해 접근 가능한 UI를 구현하고 route/state/viewport evidence를 만든다. shadcn, Tailwind, Motion, Material을 기본값으로 강제하지 않으며 디자인 방향과 최종 평가는 design-harness가 소유한다."
+argument-hint: "[surface or component]"
 license: MIT
 metadata:
   author: claudekit
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
-# UI Styling Skill
+# UI Styling Implementation Adapter
 
-Comprehensive skill for creating beautiful, accessible user interfaces combining shadcn/ui components, Tailwind CSS utility styling, and canvas-based visual design systems.
+이 skill은 “예쁜 UI 추천”이 아니라 `design-harness`가 고정한 contract를 현재 프로젝트 stack으로 구현한다.
 
-## 범위 (Scope)
+## Entry requirements
 
-**이 스킬의 핵심 역할: 구현 단계 (IMPLEMENTATION)**
-- **shadcn/ui 컴포넌트** — 설치, 구성, 조합, 커스터마이징
-- **Tailwind CSS 스타일링** — 유틸리티 클래스 기반 레이아웃/색상/타이포그래피
-- **다크모드 구현** — next-themes + CSS 변수 기반 테마 전환
-- **반응형 레이아웃** — 모바일 퍼스트 브레이크포인트 시스템
-- **접근성 구현** — Radix UI 프리미티브 기반 키보드/스크린리더 지원
-- **캔버스 비주얼 디자인** — HTML Canvas 기반 시각적 구성
+구현 전에 다음을 확보한다.
 
-**이 스킬이 직접 처리하지 않는 것:**
-- 스타일/컬러/폰트/UI 방향 의사결정 → `design-harness`
-- 한글 웹폰트 페어링/상업 사용 후보 추천 → `korean-typography`
-- 디자인 토큰 아키텍처 정의 → `design-system`
-- 로고/배너/CIP/아이콘 제작 → `design`, `logo-creator`, `banner-design`
+- Design Read, register, 5 dials, main slop risk.
+- 대상 route/screen, state, viewport.
+- 실제 `package.json`/`pubspec.yaml`, theme/token, 대표 component.
+- 유지해야 할 design system과 behavior contract.
+- evidence manifest 경로 또는 검증 계획.
 
-## 위임 (Delegates to)
+방향이 정해지지 않았으면 `design-harness shape`; token 구조가 없으면 `design-system`; 한국어 typography 결정이 필요하면 `korean-typography`로 돌아간다.
 
-| 요청 내용 | 위임 대상 | 조건 |
-|-----------|-----------|------|
-| 어떤 스타일/컬러를 사용할지 모를 때 | `design-harness` | 디자인 의사결정이 필요한 경우 |
-| 한국어 UI의 폰트 역할/웹폰트 후보가 정해지지 않았을 때 | `korean-typography` | Tailwind/CSS 적용 전에 한글 타이포그래피 선택 필요 |
-| 토큰 시스템을 정의해야 할 때 | `design-system` | CSS 변수 아키텍처 설계 시 |
-| UX 접근성 검토가 필요할 때 | `design-harness` | 구현 후 UX 리뷰 시 |
+## Stack detection, not stack invention
 
-## 이 스킬을 사용하지 않는 경우
-
-- 어떤 스타일이 적합한지 추천받고 싶을 때 → `design-harness`
-- 디자인 토큰을 정의하고 검증할 때 → `design-system`
-- 로고/배너/CIP를 만들 때 → `logo-creator`, `banner-design`, `design`
-- UX 리뷰/접근성 감사만 할 때 → `design-harness`
-
-## Reference
-
-- shadcn/ui: https://ui.shadcn.com/llms.txt
-- Tailwind CSS: https://tailwindcss.com/docs
-
-## When to Use This Skill
-
-Use when:
-- Building UI with React-based frameworks (Next.js, Vite, Remix, Astro)
-- Implementing accessible components (dialogs, forms, tables, navigation)
-- Styling with utility-first CSS approach
-- Creating responsive, mobile-first layouts
-- Implementing dark mode and theme customization
-- Building design systems with consistent tokens
-- Generating visual designs, posters, or brand materials
-- Rapid prototyping with immediate visual feedback
-- Adding complex UI patterns (data tables, charts, command palettes)
-
-## Core Stack
-
-### Component Layer: shadcn/ui
-- Pre-built accessible components via Radix UI primitives
-- Copy-paste distribution model (components live in your codebase)
-- TypeScript-first with full type safety
-- Composable primitives for complex UIs
-- CLI-based installation and management
-
-### Styling Layer: Tailwind CSS
-- Utility-first CSS framework
-- Build-time processing with zero runtime overhead
-- Mobile-first responsive design
-- Consistent design tokens (colors, spacing, typography)
-- Automatic dead code elimination
-
-### Visual Design Layer: Canvas
-- Museum-quality visual compositions
-- Philosophy-driven design approach
-- Sophisticated visual communication
-- Minimal text, maximum visual impact
-- Systematic patterns and refined aesthetics
-
-## Quick Start
-
-### Component + Styling Setup
-
-**Install shadcn/ui with Tailwind:**
 ```bash
-npx shadcn@latest init
+python3 .claude/skills/design-harness/scripts/design-runtime.py plan --root .
 ```
 
-CLI prompts for framework, TypeScript, paths, and theme preferences. This configures both shadcn/ui and Tailwind CSS.
+### Web
 
-**Add components:**
-```bash
-npx shadcn@latest add button card dialog form
-```
+- 현재 framework, package manager, rendering mode, CSS/token 방식, component primitives를 유지한다.
+- shadcn/Radix/Tailwind/Motion은 이미 설치됐거나 design contract가 선택했을 때만 사용한다.
+- component library는 behavior/accessibility를 제공할 수 있지만 프로젝트의 시각 truth를 덮지 않는다.
+- semantic HTML, keyboard flow, focus, responsive layout, loading/empty/error를 함께 구현한다.
+- 동적 class string, 무분별한 `transition-all`, giant z-index, viewport `100vh`, placeholder label을 피한다.
 
-**Use components with utility styling:**
+### Flutter
+
+- 현재 `ThemeData`, Material/Cupertino 선택, localization, router, state-management pattern을 유지한다.
+- token을 raw `Color`/spacing 값으로 화면마다 복제하지 않는다.
+- `Semantics`, focus order, text scale, safe area, keyboard inset, scroll/overflow, reduced motion을 확인한다.
+- loading/empty/error/disabled/focus를 실제 widget state로 만든다.
+- 변경 후 `flutter analyze`, relevant test/golden/integration capture를 남긴다.
+
+새 기술을 도입해야 하면 tech-stack registry의 recommended baseline과 migration gate를 확인한다. UI styling이 package upgrade를 몰래 수행하지 않는다.
+
+## Implementation sequence
+
+1. **Map** — 기존 token/component와 contract의 역할을 매핑한다.
+2. **Structure** — semantic hierarchy, task order, responsive collapse를 먼저 구현한다.
+3. **States** — default만 만들지 말고 scope의 loading/empty/error/disabled/focus를 구현한다.
+4. **Style** — register와 dials 안에서 type/color/spacing/radius/elevation/motion을 적용한다.
+5. **Content** — 실제 data shape와 구체적 copy를 사용한다. fake metric/logo/screenshot을 만들지 않는다.
+6. **Verify** — source scan, build/test, route/state/viewport evidence를 만든다.
+
+## Web component contract
+
+모든 interactive component에서 확인한다.
+
+- 올바른 native element 또는 검증된 accessible primitive.
+- visible label, accessible name, focus-visible treatment.
+- keyboard operation과 focus return.
+- touch target 약 44px, hover-only action 없음.
+- async pending/disabled/error feedback.
+- mobile overflow와 longest-content behavior.
+- theme/dark mode가 존재하면 token parity.
+
+Example은 library 기본 Card grid가 아니라 project component API로 시작한다.
+
 ```tsx
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+type ReviewQueueProps = {
+  rows: ReviewRow[]
+  status: "loading" | "ready" | "empty" | "error"
+  onRetry(): void
+}
 
-export function Dashboard() {
-  return (
-    <div className="container mx-auto p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Analytics</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">View your metrics</p>
-          <Button variant="default" className="w-full">
-            View Details
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  )
+export function ReviewQueue(props: ReviewQueueProps) {
+  if (props.status === "loading") return <QueueSkeleton aria-label="검토 목록 불러오는 중" />
+  if (props.status === "error") return <InlineRecovery onRetry={props.onRetry} />
+  if (props.status === "empty") return <QueueEmpty />
+  return <ReviewTable rows={props.rows} />
 }
 ```
 
-### Alternative: Tailwind-Only Setup
+구체 class/token은 프로젝트 truth에서 가져온다. 예제의 시각값을 template처럼 복사하지 않는다.
 
-**Vite projects:**
-```bash
-npm install -D tailwindcss @tailwindcss/vite
-```
+## Flutter component contract
 
-```javascript
-// vite.config.ts
-import tailwindcss from '@tailwindcss/vite'
-export default { plugins: [tailwindcss()] }
-```
-
-```css
-/* src/index.css */
-@import "tailwindcss";
-```
-
-## Component Library Guide
-
-**Comprehensive component catalog with usage patterns, installation, and composition examples.**
-
-See: `references/shadcn-components.md`
-
-Covers:
-- Form & input components (Button, Input, Select, Checkbox, Date Picker, Form validation)
-- Layout & navigation (Card, Tabs, Accordion, Navigation Menu)
-- Overlays & dialogs (Dialog, Drawer, Popover, Toast, Command)
-- Feedback & status (Alert, Progress, Skeleton)
-- Display components (Table, Data Table, Avatar, Badge)
-
-## Theme & Customization
-
-**Theme configuration, CSS variables, dark mode implementation, and component customization.**
-
-See: `references/shadcn-theming.md`
-
-Covers:
-- Dark mode setup with next-themes
-- CSS variable system
-- Color customization and palettes
-- Component variant customization
-- Theme toggle implementation
-
-## Accessibility Patterns
-
-**ARIA patterns, keyboard navigation, screen reader support, and accessible component usage.**
-
-See: `references/shadcn-accessibility.md`
-
-Covers:
-- Radix UI accessibility features
-- Keyboard navigation patterns
-- Focus management
-- Screen reader announcements
-- Form validation accessibility
-
-## Tailwind Utilities
-
-**Core utility classes for layout, spacing, typography, colors, borders, and shadows.**
-
-See: `references/tailwind-utilities.md`
-
-Covers:
-- Layout utilities (Flexbox, Grid, positioning)
-- Spacing system (padding, margin, gap)
-- Typography (font sizes, weights, alignment, line height)
-- Colors and backgrounds
-- Borders and shadows
-- Arbitrary values for custom styling
-
-## Responsive Design
-
-**Mobile-first breakpoints, responsive utilities, and adaptive layouts.**
-
-See: `references/tailwind-responsive.md`
-
-Covers:
-- Mobile-first approach
-- Breakpoint system (sm, md, lg, xl, 2xl)
-- Responsive utility patterns
-- Container queries
-- Max-width queries
-- Custom breakpoints
-
-## Tailwind Customization
-
-**Config file structure, custom utilities, plugins, and theme extensions.**
-
-See: `references/tailwind-customization.md`
-
-Covers:
-- @theme directive for custom tokens
-- Custom colors and fonts
-- Spacing and breakpoint extensions
-- Custom utility creation
-- Custom variants
-- Layer organization (@layer base, components, utilities)
-- Apply directive for component extraction
-
-## Visual Design System
-
-**Canvas-based design philosophy, visual communication principles, and sophisticated compositions.**
-
-See: `references/canvas-design-system.md`
-
-Covers:
-- Design philosophy approach
-- Visual communication over text
-- Systematic patterns and composition
-- Color, form, and spatial design
-- Minimal text integration
-- Museum-quality execution
-- Multi-page design systems
-
-## Utility Scripts
-
-**Python automation for component installation and configuration generation.**
-
-### shadcn_add.py
-Add shadcn/ui components with dependency handling:
-```bash
-python scripts/shadcn_add.py button card dialog
-```
-
-### tailwind_config_gen.py
-Generate tailwind.config.js with custom theme:
-```bash
-python scripts/tailwind_config_gen.py --colors brand:blue --fonts display:Inter
-```
-
-## Best Practices
-
-1. **Component Composition**: Build complex UIs from simple, composable primitives
-2. **Utility-First Styling**: Use Tailwind classes directly; extract components only for true repetition
-3. **Mobile-First Responsive**: Start with mobile styles, layer responsive variants
-4. **Accessibility-First**: Leverage Radix UI primitives, add focus states, use semantic HTML
-5. **Design Tokens**: Use consistent spacing scale, color palettes, typography system
-6. **Dark Mode Consistency**: Apply dark variants to all themed elements
-7. **Performance**: Leverage automatic CSS purging, avoid dynamic class names
-8. **TypeScript**: Use full type safety for better DX
-9. **Visual Hierarchy**: Let composition guide attention, use spacing and color intentionally
-10. **Expert Craftsmanship**: Every detail matters - treat UI as a craft
-
-## Reference Navigation
-
-**Component Library**
-- `references/shadcn-components.md` - Complete component catalog
-- `references/shadcn-theming.md` - Theming and customization
-- `references/shadcn-accessibility.md` - Accessibility patterns
-
-**Styling System**
-- `references/tailwind-utilities.md` - Core utility classes
-- `references/tailwind-responsive.md` - Responsive design
-- `references/tailwind-customization.md` - Configuration and extensions
-
-**Visual Design**
-- `references/canvas-design-system.md` - Design philosophy and canvas workflows
-
-**Automation**
-- `scripts/shadcn_add.py` - Component installation
-- `scripts/tailwind_config_gen.py` - Config generation
-
-## Common Patterns
-
-**Form with validation:**
-```tsx
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8)
-})
-
-export function LoginForm() {
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: { email: "", password: "" }
-  })
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(console.log)} className="space-y-6">
-        <FormField control={form.control} name="email" render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input type="email" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )} />
-        <Button type="submit" className="w-full">Sign In</Button>
-      </form>
-    </Form>
-  )
+```dart
+sealed class QueueState {
+  const QueueState();
 }
+
+final class QueueReady extends QueueState {
+  const QueueReady(this.rows);
+  final List<ReviewRow> rows;
+}
+
+Widget buildQueue(QueueState state) => switch (state) {
+  QueueLoading() => const QueueSkeleton(),
+  QueueEmpty() => const QueueEmpty(),
+  QueueFailure(:final retry) => QueueRecovery(onRetry: retry),
+  QueueReady(:final rows) => ReviewList(rows: rows),
+};
 ```
 
-**Responsive layout with dark mode:**
-```tsx
-<div className="min-h-screen bg-white dark:bg-gray-900">
-  <div className="container mx-auto px-4 py-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-        <CardContent className="p-6">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Content
-          </h3>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-</div>
+Theme와 semantics는 실제 프로젝트 component에서 연결한다. snippet은 상태 완결성의 형태만 보여준다.
+
+## Anti-slop implementation gate
+
+- category가 palette/layout을 자동 결정하지 않는다.
+- centered hero + pill + generic CTA + equal card grid를 기본 scaffold로 만들지 않는다.
+- shadcn/Material default appearance를 제품 정체성처럼 출하하지 않는다.
+- real evidence가 필요한 곳에 div fake UI, abstract blob, empty bento를 넣지 않는다.
+- 모든 section에 같은 radius/card/elevation을 반복하지 않는다.
+- 실제 상태/데이터 없이 완성도를 주장하지 않는다.
+
+```bash
+node .claude/skills/design-harness/scripts/detect-design-slop.mjs \
+  --format json --fail-on hard-fail --output <run>/source-scan.json \
+  <changed-ui-paths>
 ```
 
-## Resources
+## Evidence handoff
 
-- shadcn/ui Docs: https://ui.shadcn.com
-- Tailwind CSS Docs: https://tailwindcss.com
-- Radix UI: https://radix-ui.com
-- Tailwind UI: https://tailwindui.com
-- Headless UI: https://headlessui.com
-- v0 (AI UI Generator): https://v0.dev
+구현자는 다음 artifact를 만들되 최종 self-approval하지 않는다.
+
+- build/type/analyze/test log.
+- planned route/screen의 state별 screenshot.
+- Web accessibility tree 또는 Flutter semantics evidence.
+- detector JSON.
+- 변경된 evidence ID 목록.
+
+`design-harness`가 independent critic과 register eval을 실행한다.
+
+## Reference routing
+
+기존 프로젝트가 해당 stack을 이미 사용하거나 contract가 명시적으로 선택한 경우에만 읽는다.
+
+- `references/shadcn-components.md`
+- `references/shadcn-theming.md`
+- `references/shadcn-accessibility.md`
+- `references/tailwind-utilities.md`
+- `references/tailwind-responsive.md`
+- `references/tailwind-customization.md`
+
+Canvas/brand visual 방향은 이 skill이 임의로 정하지 않는다. Raster 이미지가 필요하면 `image-prompt`가 prompt를 소유한다.
+
+## Not owned here
+
+- Art direction/register/dials: `design-harness`.
+- Token architecture: `design-system`.
+- Framework architecture: Flutter/Next project skills.
+- Logo/banner/CIP: 해당 asset skill.
+- Raster prompt compilation: exact-vendored `image-prompt`.
+- Final approval: independent critic + UI eval.

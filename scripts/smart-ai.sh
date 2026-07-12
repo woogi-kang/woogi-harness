@@ -188,7 +188,7 @@ $(cat $temp_dir/gemini_review.md)
   rm -rf "$temp_dir"
 }
 
-# Expense classification with Claude Haiku (fast & cheap)
+# Expense classification with the provider's configured fast-scan quality tier
 do_classify() {
   local file="$1"
 

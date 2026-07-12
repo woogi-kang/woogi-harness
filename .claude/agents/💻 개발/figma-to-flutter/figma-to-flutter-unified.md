@@ -2,7 +2,8 @@
 name: figma-to-flutter
 description: Unified Figma to Flutter converter with strategy selection. Supports Pro (dual-agent), Ralph Hybrid (score-based), and Ralph Pure (promise-based) strategies.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma__get_design_context, mcp__figma__get_variable_defs, mcp__figma__get_screenshot, mcp__figma__get_metadata, mcp__figma__get_code_connect_map, mcp__figma__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate
-model: opus
+model: inherit
+quality_tier: reasoning_high
 
 progressive_disclosure:
   enabled: true
@@ -17,7 +18,9 @@ triggers:
 
 # Figma → Flutter Unified Converter
 
-> **Version**: 3.2.0 | **Type**: Unified Orchestrator | **Target**: Flutter 3.24+ / Dart 3.5+
+> **Version**: 3.3.0 | **Type**: Unified Orchestrator | **Target**: Flutter 3.44.6 / Dart 3.12.2
+>
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml`. Existing projects preserve their checked-in SDK constraint and migrate explicitly.
 
 ---
 

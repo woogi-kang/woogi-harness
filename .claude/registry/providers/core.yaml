@@ -1,0 +1,129 @@
+{
+  "schema_version": "harness.providers.v1",
+  "model_policy": {
+    "selection": "provider-native-or-project-profile",
+    "disallow_hardcoded_general_models": true,
+    "dangerous_permission_defaults": false,
+    "image_policy": "separate-provider-policy",
+    "quality_class_resolution": "project-provider-adapter"
+  },
+  "quality_classes": [
+    {
+      "id": "reasoning_high",
+      "intent": "Architecture, ambiguous diagnosis, and high-consequence synthesis.",
+      "required_capabilities": ["multi_step_reasoning", "tool_use", "structured_output"],
+      "required_tools": ["filesystem_read", "search"]
+      ,"context_policy": "isolated"
+    },
+    {
+      "id": "implementation",
+      "intent": "Repository changes carried through focused verification.",
+      "required_capabilities": ["code_edit", "shell_execution", "test_execution"],
+      "required_tools": ["filesystem_read", "filesystem_write", "shell"]
+      ,"context_policy": "isolated"
+    },
+    {
+      "id": "fast_scan",
+      "intent": "Bounded inventory, discovery, and low-risk classification.",
+      "required_capabilities": ["low_latency", "tool_use"],
+      "required_tools": ["filesystem_read", "search"]
+      ,"context_policy": "isolated"
+    },
+    {
+      "id": "independent_critic",
+      "intent": "A separate evidence-based review pass without implementation ownership.",
+      "required_capabilities": ["independent_context", "structured_output"],
+      "required_tools": ["filesystem_read", "evaluation"]
+      ,"context_policy": "fresh_required"
+    }
+  ],
+  "providers": [
+    {
+      "id": "claude",
+      "capabilities": ["agents", "skills", "commands", "hooks", "subagents"],
+      "quality_capabilities": ["multi_step_reasoning", "tool_use", "structured_output", "code_edit", "shell_execution", "test_execution", "low_latency", "independent_context"],
+      "quality_classes": ["reasoning_high", "implementation", "fast_scan", "independent_critic"],
+      "instruction_entrypoints": ["CLAUDE.md"],
+      "skill_roots": [".claude/skills"],
+      "hook_support": ["PreToolUse", "PostToolUse"],
+      "tools": ["filesystem_read", "filesystem_write", "search", "shell", "evaluation"],
+      "tool_adapter": "native",
+      "execution_adapter": {"kind": "cli", "executable": "claude", "args": ["-p"], "input": "stdin"},
+      "quality_adapter": {
+        "strategy": "provider-native",
+        "bindings": {
+          "reasoning_high": {"selection": "reasoning_high", "context_policy": "isolated", "execution_profile": {"kind": "cli-args", "args": ["--effort", "xhigh"]}},
+          "implementation": {"selection": "implementation", "context_policy": "isolated", "execution_profile": {"kind": "cli-args", "args": ["--effort", "high"]}},
+          "fast_scan": {"selection": "fast_scan", "context_policy": "isolated", "execution_profile": {"kind": "cli-args", "args": ["--effort", "low"]}},
+          "independent_critic": {"selection": "independent_critic", "context_policy": "fresh_required", "execution_profile": {"kind": "cli-args", "args": ["--effort", "max"]}}
+        }
+      }
+    },
+    {
+      "id": "codex",
+      "capabilities": ["skills", "rules", "multi_agent", "tools"],
+      "quality_capabilities": ["multi_step_reasoning", "tool_use", "structured_output", "code_edit", "shell_execution", "test_execution", "low_latency", "independent_context"],
+      "quality_classes": ["reasoning_high", "implementation", "fast_scan", "independent_critic"],
+      "instruction_entrypoints": ["AGENTS.md"],
+      "skill_roots": [".agents/skills"],
+      "hook_support": [],
+      "tools": ["filesystem_read", "filesystem_write", "search", "shell", "evaluation"],
+      "tool_adapter": "native",
+      "host_tool_contracts": [
+        {"id": "codex.image-generation", "tool": "image_gen__imagegen", "alias": "$imagegen", "schema_model_field": null, "model_binding": "trusted-host-fixed", "required_model": "gpt-image-2", "hook_interception": false}
+      ],
+      "execution_adapter": {"kind": "host-native", "profile": "codex-native"},
+      "quality_adapter": {
+        "strategy": "provider-native",
+        "bindings": {
+          "reasoning_high": {"selection": "reasoning_high", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "codex-native:reasoning_high"}},
+          "implementation": {"selection": "implementation", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "codex-native:implementation"}},
+          "fast_scan": {"selection": "fast_scan", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "codex-native:fast_scan"}},
+          "independent_critic": {"selection": "independent_critic", "context_policy": "fresh_required", "execution_profile": {"kind": "host-native", "profile": "codex-native:independent_critic"}}
+        }
+      }
+    },
+    {
+      "id": "gemini",
+      "capabilities": ["skills", "instructions", "tools"],
+      "quality_capabilities": ["multi_step_reasoning", "tool_use", "structured_output", "code_edit", "shell_execution", "test_execution", "low_latency", "independent_context"],
+      "quality_classes": ["reasoning_high", "implementation", "fast_scan", "independent_critic"],
+      "instruction_entrypoints": ["GEMINI.md"],
+      "skill_roots": [".agents/skills"],
+      "hook_support": [],
+      "tools": ["filesystem_read", "filesystem_write", "search", "shell", "evaluation"],
+      "tool_adapter": "native",
+      "execution_adapter": {"kind": "host-native", "profile": "gemini-native"},
+      "quality_adapter": {
+        "strategy": "provider-native",
+        "bindings": {
+          "reasoning_high": {"selection": "reasoning_high", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "gemini-native:reasoning_high"}},
+          "implementation": {"selection": "implementation", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "gemini-native:implementation"}},
+          "fast_scan": {"selection": "fast_scan", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "gemini-native:fast_scan"}},
+          "independent_critic": {"selection": "independent_critic", "context_policy": "fresh_required", "execution_profile": {"kind": "host-native", "profile": "gemini-native:independent_critic"}}
+        }
+      }
+    },
+    {
+      "id": "opencode",
+      "capabilities": ["skills", "instructions", "tools"],
+      "quality_capabilities": ["multi_step_reasoning", "tool_use", "structured_output", "code_edit", "shell_execution", "test_execution", "low_latency", "independent_context"],
+      "quality_classes": ["reasoning_high", "implementation", "fast_scan", "independent_critic"],
+      "instruction_entrypoints": ["AGENTS.md"],
+      "skill_roots": [".agents/skills"],
+      "hook_support": [],
+      "tools": ["filesystem_read", "filesystem_write", "search", "shell", "evaluation"],
+      "tool_adapter": "native",
+      "execution_adapter": {"kind": "host-native", "profile": "opencode-native"},
+      "quality_adapter": {
+        "strategy": "provider-native",
+        "bindings": {
+          "reasoning_high": {"selection": "reasoning_high", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "opencode-native:reasoning_high"}},
+          "implementation": {"selection": "implementation", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "opencode-native:implementation"}},
+          "fast_scan": {"selection": "fast_scan", "context_policy": "isolated", "execution_profile": {"kind": "host-native", "profile": "opencode-native:fast_scan"}},
+          "independent_critic": {"selection": "independent_critic", "context_policy": "fresh_required", "execution_profile": {"kind": "host-native", "profile": "opencode-native:independent_critic"}}
+        }
+      }
+    }
+  ]
+}

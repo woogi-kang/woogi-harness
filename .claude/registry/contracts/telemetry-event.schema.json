@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.telemetry.v1",
+  "type": "object",
+  "required": ["schema_version", "timestamp", "session_id", "provider", "event_type", "subject_type", "subject_id", "status", "metadata"],
+  "properties": {
+    "schema_version": {"const": "harness.telemetry.v1"},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "provider": {"type": "string", "minLength": 1},
+    "event_type": {"type": "string", "minLength": 1},
+    "subject_type": {"type": "string", "minLength": 1},
+    "subject_id": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "minLength": 1},
+    "duration_ms": {"type": ["integer", "null"], "minimum": 0},
+    "context_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "metadata": {"type": "object"}
+  }
+}

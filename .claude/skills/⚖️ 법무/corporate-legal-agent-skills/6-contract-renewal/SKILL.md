@@ -1,7 +1,8 @@
 ---
 name: contract-renewal
 description: 계약 갱신 기한 관리 및 알림
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "계약갱신"
   - "계약만료"

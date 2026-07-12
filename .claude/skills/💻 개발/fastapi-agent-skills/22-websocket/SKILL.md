@@ -580,10 +580,10 @@ class RedisPubSub:
                 pass
 
         if self._pubsub:
-            await self._pubsub.close()
+            await self._pubsub.aclose()
 
         if self._redis:
-            await self._redis.close()
+            await self._redis.aclose()
 
         await logger.ainfo("Redis Pub/Sub disconnected")
 

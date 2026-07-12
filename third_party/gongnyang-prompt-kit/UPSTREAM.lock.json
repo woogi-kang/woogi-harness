@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/kimsh-1/gongnyang-prompt-kit",
+  "ref": "main",
+  "commit": "d1cd1dd3e77f7e12e2fed982fd738cc1ea880598",
+  "skill_version": "2.3.0",
+  "license": "MIT",
+  "runtime_paths": [
+    "LICENSE",
+    "hooks/block-text-overlay.sh",
+    "skills/image-prompt"
+  ],
+  "archive_sha256": "6da64bfb626cf4d4d63da31c7bf55669b3f67b5a9c19dc2eee0e92d9b857ce71",
+  "local_patches": []
+}

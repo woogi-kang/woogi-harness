@@ -180,7 +180,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.0'
+          flutter-version: '3.44.6'
 
       - name: Install dependencies
         run: flutter pub get

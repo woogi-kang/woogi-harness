@@ -1,0 +1,40 @@
+import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
+
+/**
+ * Auth.js proxy for Next.js 16.
+ *
+ * 보호된 라우트에 대한 인증 검사를 수행합니다.
+ * 로그인하지 않은 사용자는 /login으로 리디렉션됩니다.
+ */
+export default auth((req) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+
+  const publicRoutes = ["/", "/login", "/register"];
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isApiRoute = nextUrl.pathname.startsWith("/api");
+  const isAuthApi = nextUrl.pathname.startsWith("/api/auth");
+
+  if (isAuthApi) {
+    return NextResponse.next();
+  }
+
+  if (!isLoggedIn && !isPublicRoute && !isApiRoute) {
+    const loginUrl = new URL("/login", nextUrl.origin);
+    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isLoggedIn && (nextUrl.pathname === "/login" || nextUrl.pathname === "/register")) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl.origin));
+  }
+
+  return NextResponse.next();
+});
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};

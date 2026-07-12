@@ -1,45 +1,49 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const args = process.argv.slice(2);
-const targets = args.length ? args : ['.'];
-const root = process.cwd();
+function parseArgs(argv) {
+  const options = {
+    format: 'text',
+    failOn: 'warning',
+    output: null,
+    targets: [],
+  };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--format') options.format = argv[++index];
+    else if (arg === '--fail-on') options.failOn = argv[++index];
+    else if (arg === '--output') options.output = argv[++index];
+    else if (arg === '--help' || arg === '-h') {
+      console.log('Usage: detect-design-slop.mjs [--format text|json|sarif] [--fail-on warning|strong-warning|hard-fail|none] [--output FILE] [TARGET ...]');
+      process.exit(0);
+    } else if (arg.startsWith('--')) {
+      throw new Error(`Unknown option: ${arg}`);
+    } else options.targets.push(arg);
+  }
+  if (!['text', 'json', 'sarif'].includes(options.format)) throw new Error(`Unsupported --format: ${options.format}`);
+  if (!['warning', 'strong-warning', 'hard-fail', 'none'].includes(options.failOn)) throw new Error(`Unsupported --fail-on: ${options.failOn}`);
+  if (!options.targets.length) options.targets = ['.'];
+  return options;
+}
 
-const SKIP_DIRS = new Set([
-  '.git',
-  '.agents',
-  '.claude',
-  '.codex',
-  '.cursor',
-  '.gemini',
-  '.github',
-  '.opencode',
-  'node_modules',
-  '.next',
-  'dist',
-  'build',
-  'coverage',
-  '.turbo',
-  '.vercel',
-  '__pycache__',
-]);
+let options;
+try {
+  options = parseArgs(process.argv.slice(2));
+} catch (error) {
+  console.error(`detect-design-slop: ${error.message}`);
+  process.exit(64);
+}
+const targets = options.targets;
+const root = fs.realpathSync(process.cwd());
 
-const EXTENSIONS = new Set([
-  '.html',
-  '.css',
-  '.scss',
-  '.sass',
-  '.js',
-  '.jsx',
-  '.ts',
-  '.tsx',
-  '.vue',
-  '.svelte',
-  '.astro',
-  '.md',
-  '.mdx',
-]);
+const sourcePolicyPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../registry/design/source-policy.json');
+const sourcePolicy = JSON.parse(fs.readFileSync(sourcePolicyPath, 'utf8'));
+if (sourcePolicy.schema !== 'design-source-policy-v1') throw new Error('invalid design source policy');
+const SKIP_DIRS = new Set(sourcePolicy.skip_directories);
+const EXTENSIONS = new Set(sourcePolicy.extensions);
 
 const SEVERITY_RANK = {
   warning: 1,
@@ -177,7 +181,7 @@ const RULES = [
   {
     id: 'unsupported-perfect-metric',
     severity: 'warning',
-    regex: /\b(99\.99%|100%|1,000,000\+|10x|\d+%\s+(?:faster|better|more))\b/i,
+    regex: /(?:\b99\.99%|\b100%|\b1,000,000\+|\b10x\b|\b\d+%\s+(?:faster|better|more)\b)/i,
     message: 'Perfect or unsupported metric; verify source or make organic/sourced',
   },
   {
@@ -204,9 +208,39 @@ const RULES = [
     regex: /\buppercase\b[^\n]{0,80}\btracking-(?:wide|wider|widest|\[[^\]]+\])/i,
     message: 'Uppercase tracking eyebrow; count and verify it is not overused',
   },
+  {
+    id: 'generic-cta',
+    severity: 'warning',
+    regex: />\s*(Get Started|Learn More|Explore More|Start Now)\s*</i,
+    message: 'Generic CTA; replace with a concrete action when the product intent is known',
+  },
+  {
+    id: 'flutter-backdrop-filter',
+    severity: 'warning',
+    regex: /\bBackdropFilter\s*\(/,
+    message: 'Flutter blur/glass surface; verify purpose, performance, contrast, and fallback',
+  },
+];
+
+const FILE_RULES = [
+  {
+    id: 'flutter-ai-gradient',
+    severity: 'strong-warning',
+    regex: /LinearGradient\s*\([\s\S]{0,700}?(?:Colors\.(?:purple|deepPurple|indigo|blue)|Color\(0xFF(?:7C3AED|8B5CF6|4F46E5|2563EB)\))/i,
+    message: 'Flutter purple/blue gradient reflex',
+  },
+  {
+    id: 'default-ai-landing-structure',
+    severity: 'strong-warning',
+    regex: /(?:pill|badge)[\s\S]{0,1200}(?:Get Started|Start Now)[\s\S]{0,1800}(?:grid-cols-3|three (?:equal )?(?:cards|features))/i,
+    message: 'Default AI landing structure: pill, generic CTA, and three equal cards',
+  },
 ];
 
 const findings = [];
+const filesScanned = [];
+const fileHashes = {};
+const inputErrors = [];
 
 function shouldRead(filePath) {
   return EXTENSIONS.has(path.extname(filePath));
@@ -216,16 +250,41 @@ function isSkippedPath(filePath) {
   return path.relative(root, filePath).split(path.sep).some(part => SKIP_DIRS.has(part));
 }
 
-function walk(target) {
+function isInsideRoot(filePath) {
+  const relative = path.relative(root, filePath);
+  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+}
+
+function walk(target, topLevel = false) {
   const absolute = path.resolve(root, target);
-  if (!fs.existsSync(absolute)) return;
+  let stat;
+  try {
+    stat = fs.lstatSync(absolute);
+  } catch {
+    if (topLevel) inputErrors.push(`target does not exist: ${target}`);
+    return;
+  }
+  if (stat.isSymbolicLink()) {
+    if (topLevel) inputErrors.push(`target is a symlink and cannot be scanned: ${target}`);
+    return;
+  }
+  let real;
+  try {
+    real = fs.realpathSync(absolute);
+  } catch {
+    if (topLevel) inputErrors.push(`target cannot be resolved: ${target}`);
+    return;
+  }
+  if (!isInsideRoot(real)) {
+    if (topLevel) inputErrors.push(`target resolves outside project root: ${target}`);
+    return;
+  }
   if (isSkippedPath(absolute)) return;
-  const stat = fs.statSync(absolute);
 
   if (stat.isDirectory()) {
     for (const entry of fs.readdirSync(absolute)) {
       if (SKIP_DIRS.has(entry)) continue;
-      walk(path.join(absolute, entry));
+      walk(path.join(absolute, entry), false);
     }
     return;
   }
@@ -233,7 +292,10 @@ function walk(target) {
   if (!stat.isFile() || !shouldRead(absolute)) return;
 
   const rel = path.relative(root, absolute);
-  const text = fs.readFileSync(absolute, 'utf8');
+  filesScanned.push(rel || path.basename(absolute));
+  const bytes = fs.readFileSync(absolute);
+  fileHashes[rel || path.basename(absolute)] = crypto.createHash('sha256').update(bytes).digest('hex');
+  const text = bytes.toString('utf8');
   const lines = text.split(/\r?\n/);
 
   lines.forEach((line, index) => {
@@ -250,14 +312,24 @@ function walk(target) {
       }
     }
   });
+
+  for (const rule of FILE_RULES) {
+    const match = text.match(rule.regex);
+    if (!match || match.index === undefined) continue;
+    const line = text.slice(0, match.index).split(/\r?\n/).length;
+    findings.push({
+      id: rule.id,
+      severity: rule.severity,
+      message: rule.message,
+      file: rel,
+      line,
+      snippet: match[0].replace(/\s+/g, ' ').trim().slice(0, 220),
+    });
+  }
 }
 
-for (const target of targets) walk(target);
-
-if (!findings.length) {
-  console.log('No design-slop pattern hits found.');
-  process.exit(0);
-}
+for (const target of targets) walk(target, true);
+if (!filesScanned.length) inputErrors.push('no supported UI source files were scanned');
 
 findings.sort((a, b) => {
   const severityDelta = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
@@ -270,12 +342,72 @@ const counts = findings.reduce((acc, finding) => {
   return acc;
 }, {});
 
-for (const finding of findings) {
-  console.log(`${finding.file}:${finding.line} [${finding.severity}] [${finding.id}] ${finding.message}`);
-  console.log(`  ${finding.snippet}`);
+const status = inputErrors.length || counts['hard-fail'] ? 'fail' : findings.length ? 'review' : 'pass';
+const payload = {
+  schema: 'design-slop-scan-v2',
+  status,
+  targets,
+  files_scanned: [...new Set(filesScanned)].sort(),
+  file_hashes: Object.fromEntries(Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right))),
+  errors: inputErrors,
+  counts: {
+    'hard-fail': counts['hard-fail'] || 0,
+    'strong-warning': counts['strong-warning'] || 0,
+    warning: counts.warning || 0,
+    total: findings.length,
+  },
+  findings,
+};
+
+function toSarif() {
+  const ruleMap = new Map([...RULES, ...FILE_RULES].map(rule => [rule.id, rule]));
+  return {
+    version: '2.1.0',
+    $schema: 'https://json.schemastore.org/sarif-2.1.0.json',
+    runs: [{
+      tool: {
+        driver: {
+          name: 'Claude Craft Design Slop Detector',
+          version: '3.0.0',
+          rules: [...ruleMap.values()].map(rule => ({
+            id: rule.id,
+            shortDescription: { text: rule.message },
+            defaultConfiguration: { level: rule.severity === 'hard-fail' ? 'error' : 'warning' },
+          })),
+        },
+      },
+      results: findings.map(finding => ({
+        ruleId: finding.id,
+        level: finding.severity === 'hard-fail' ? 'error' : 'warning',
+        message: { text: finding.message },
+        locations: [{ physicalLocation: { artifactLocation: { uri: finding.file }, region: { startLine: finding.line } } }],
+      })),
+    }],
+  };
 }
 
-console.log(`\n${findings.length} finding(s). hard-fail=${counts['hard-fail'] || 0}, strong-warning=${counts['strong-warning'] || 0}, warning=${counts.warning || 0}.`);
-console.log('Treat warnings as review prompts. Hard-fail findings require a fix or an explicit waiver.');
+let rendered;
+if (options.format === 'json') rendered = `${JSON.stringify(payload, null, 2)}\n`;
+else if (options.format === 'sarif') rendered = `${JSON.stringify(toSarif(), null, 2)}\n`;
+else if (inputErrors.length) rendered = `${inputErrors.map(error => `ERROR: ${error}`).join('\n')}\n`;
+else if (!findings.length) rendered = 'No design-slop pattern hits found.\n';
+else {
+  const lines = [];
+  for (const finding of findings) {
+    lines.push(`${finding.file}:${finding.line} [${finding.severity}] [${finding.id}] ${finding.message}`);
+    lines.push(`  ${finding.snippet}`);
+  }
+  lines.push('');
+  lines.push(`${findings.length} finding(s). hard-fail=${payload.counts['hard-fail']}, strong-warning=${payload.counts['strong-warning']}, warning=${payload.counts.warning}.`);
+  lines.push('Treat warnings as review prompts. Hard-fail findings require a fix or an explicit waiver.');
+  rendered = `${lines.join('\n')}\n`;
+}
 
-process.exit(counts['hard-fail'] ? 2 : 1);
+if (options.output) fs.writeFileSync(path.resolve(root, options.output), rendered, 'utf8');
+else process.stdout.write(rendered);
+
+if (inputErrors.length) process.exit(2);
+if (options.failOn === 'none') process.exit(0);
+const threshold = SEVERITY_RANK[options.failOn];
+const shouldFail = findings.some(finding => SEVERITY_RANK[finding.severity] >= threshold);
+process.exit(shouldFail ? (counts['hard-fail'] ? 2 : 1) : 0);

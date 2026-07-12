@@ -167,102 +167,42 @@ video_storyboard:
     - 음소거 시청 고려 → 자막 필수
 ```
 
-## AI 이미지 생성 프롬프트
+## 생성형 이미지
 
-### 프롬프트 구조
+이 스킬은 자체 prompt 구조, style keyword, 플랫폼별 suffix를 만들지 않습니다.
+모든 생성형 이미지 요청은 다음 경로를 사용합니다.
 
-```yaml
-ai_image_prompt:
-  structure:
-    subject: "주제/피사체"
-    style: "아트 스타일"
-    composition: "구도"
-    lighting: "조명"
-    mood: "분위기"
-    details: "추가 디테일"
-
-  example:
-    prompt: |
-      A modern minimalist workspace with a laptop,
-      coffee cup, and plant on a white desk,
-      soft natural lighting from window,
-      clean and professional aesthetic,
-      lifestyle photography style,
-      4K, high quality
-
-  style_keywords:
-    minimalist: "clean, simple, white space"
-    corporate: "professional, business, modern"
-    creative: "colorful, artistic, dynamic"
-    lifestyle: "natural, authentic, candid"
-    tech: "futuristic, digital, sleek"
+```text
+platform spec + content claim + brand evidence
+→ `image-prompt`
+→ upstream validator
+→ Codex `$imagegen`
+→ `gpt-image-2`
 ```
 
-### 플랫폼별 프롬프트 가이드
+- 단일 post, carousel cover, campaign visual은 Gongnyang C3/C5/C7/P 계열
+  중 적합한 경로를 원본 compiler가 선택하게 합니다.
+- Gongnyang `full_prompt`만 Codex host tool의 `prompt` 필드로 매핑합니다.
+- 다른 provider/model fallback과 로컬 prompt library를 사용하지 않습니다.
+- 텍스트가 있는 이미지도 생성 raster 위에 후처리로 얹지 않습니다. 정확하지
+  않으면 prompt를 수정해 재생성합니다.
+- 실제 제품 화면은 browser/app screenshot으로 캡처합니다.
+- 정확한 통계, 표, 긴 본문은 HTML/SVG/native chart로 만듭니다.
+- deterministic 산출물과 생성형 raster를 하나의 이미지로 합성하지 않습니다.
 
-```yaml
-platform_prompts:
-  instagram:
-    style: "Instagram-worthy, aesthetic, lifestyle"
-    mood: "aspirational, visually pleasing"
-    avoid: "stock photo feel, overly corporate"
+생성 후 manifest에는 `image-prompt` version, upstream commit, prompt record,
+platform size, output path, review status와 아래 host trust contract를 기록합니다.
+`required_model: gpt-image-2`, `model_binding: trusted-host-fixed`,
+`local_model_verification: unavailable`, `host_reported_model: null`,
+`generation_assurance: generated_under_trusted_host_contract`를 사용하고,
+실제 모델을 확인한 것처럼 보이는 `model` 필드는 기록하지 않습니다.
 
-  linkedin:
-    style: "professional, corporate, clean"
-    mood: "trustworthy, competent"
-    avoid: "too casual, meme-like"
+## 제작 도구 경계
 
-  x:
-    style: "eye-catching, shareable, bold"
-    mood: "impactful, memorable"
-    avoid: "complex, hard to read on mobile"
-
-  threads:
-    style: "casual, authentic, relatable"
-    mood: "friendly, approachable"
-    avoid: "overly polished, corporate"
-```
-
-## 디자인 도구 추천
-
-```yaml
-design_tools:
-  beginner:
-    - name: "Canva"
-      best_for: "템플릿 기반 빠른 제작"
-      price: "무료/Pro $12.99/월"
-
-    - name: "Adobe Express"
-      best_for: "소셜미디어 최적화"
-      price: "무료/Premium $9.99/월"
-
-  intermediate:
-    - name: "Figma"
-      best_for: "커스텀 디자인, 협업"
-      price: "무료/Pro $12/월"
-
-    - name: "Photoshop"
-      best_for: "고급 이미지 편집"
-      price: "$20.99/월"
-
-  video:
-    - name: "CapCut"
-      best_for: "릴스/숏폼 편집"
-      price: "무료"
-
-    - name: "Premiere Pro"
-      best_for: "전문 영상 편집"
-      price: "$20.99/월"
-
-  ai_generation:
-    - name: "Midjourney"
-      best_for: "아티스틱 이미지"
-      price: "$10-30/월"
-
-    - name: "DALL-E"
-      best_for: "다양한 스타일"
-      price: "크레딧 기반"
-```
+- 생성형 raster: `image-prompt` + Codex `$imagegen`
+- 실제 화면: browser/app screenshot
+- 정확한 text/chart: HTML/CSS/SVG/native renderer
+- 영상 편집: 사용자가 지정한 편집 도구 또는 기존 영상 workflow
 
 ## 비주얼 체크리스트
 
@@ -315,8 +255,16 @@ visual_output:
       text: "[내용]"
       elements: ["숫자 강조", "아이콘"]
 
-  ai_prompts:
-    background: "[AI 이미지 프롬프트]"
+  generative_assets:
+    - role: "background"
+      compiler: "image-prompt@2.3.0"
+      prompt_record: "prompts.jsonl#C3-SOCIAL-001"
+      generator: "image_gen__imagegen"
+      required_model: "gpt-image-2"
+      model_binding: "trusted-host-fixed"
+      local_model_verification: "unavailable"
+      host_reported_model: null
+      generation_assurance: "generated_under_trusted_host_contract"
 
   design_notes:
     - "브랜드 컬러: #FF6B6B, #4ECDC4"

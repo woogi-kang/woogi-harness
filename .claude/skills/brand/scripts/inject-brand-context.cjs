@@ -179,94 +179,35 @@ function extractCoreAttributes(content) {
 }
 
 /**
- * Extract AI image generation context
+ * Extract structured evidence for the `image-prompt` compiler.
  */
-function extractImageStyle(content) {
-  const imageStyle = {
-    basePrompt: "",
-    keywords: [],
-    mood: [],
-    donts: [],
-    examplePrompts: [],
+function extractImageContext(content) {
+  const sectionMatch = content.match(/## Image Generation Context[\s\S]*?(?=\n## |$)/i);
+  if (!sectionMatch) return null;
+
+  const section = sectionMatch[0];
+  const registerMatch = section.match(/Product\s*\/\s*Brand\s*\/\s*Operational:\s*([^\n]+)/i);
+  const evidenceMatch = section.match(/### Visual Evidence[\s\S]*?(?=###|##|$)/i);
+  const requiredMatch = section.match(/### Required Characteristics[\s\S]*?(?=###|##|$)/i);
+  const exactCopyMatch = section.match(/### Exact Copy[\s\S]*?(?=###|##|$)/i);
+  const bullets = (value) =>
+    value ? [...value.matchAll(/^\s*-\s+(.+)$/gm)].map((match) => match[1].trim()) : [];
+
+  return {
+    owner: "image-prompt",
+    register: registerMatch ? registerMatch[1].trim() : "Not specified",
+    palette: extractHexColors(section),
+    evidence: bullets(evidenceMatch ? evidenceMatch[0] : ""),
+    requiredCharacteristics: bullets(requiredMatch ? requiredMatch[0] : ""),
+    exactCopy: bullets(exactCopyMatch ? exactCopyMatch[0] : ""),
   };
-
-  // Extract base prompt template (content between ``` blocks after "Base Prompt Template")
-  const basePromptMatch = content.match(
-    /### Base Prompt Template[\s\S]*?```\n?([\s\S]*?)```/i
-  );
-  if (basePromptMatch) {
-    imageStyle.basePrompt = basePromptMatch[1].trim().replace(/\n/g, " ");
-  }
-
-  // Extract style keywords from table
-  const keywordsMatch = content.match(
-    /### Style Keywords[\s\S]*?\|[\s\S]*?(?=###|##|$)/i
-  );
-  if (keywordsMatch) {
-    const keywordRows = keywordsMatch[0].match(/\|\s*\*\*[^*]+\*\*\s*\|\s*([^|]+)\|/g);
-    if (keywordRows) {
-      keywordRows.forEach((row) => {
-        const match = row.match(/\|\s*\*\*[^*]+\*\*\s*\|\s*([^|]+)\|/);
-        if (match) {
-          const keywords = match[1].split(",").map((k) => k.trim()).filter(Boolean);
-          imageStyle.keywords.push(...keywords);
-        }
-      });
-    }
-  }
-
-  // Extract visual mood descriptors (bullet points)
-  const moodMatch = content.match(
-    /### Visual Mood Descriptors[\s\S]*?(?=###|##|$)/i
-  );
-  if (moodMatch) {
-    const moodItems = moodMatch[0].match(/-\s*([^\n]+)/g);
-    if (moodItems) {
-      imageStyle.mood = moodItems.map((item) => item.replace(/^-\s*/, "").trim());
-    }
-  }
-
-  // Extract visual don'ts from table
-  const dontsMatch = content.match(
-    /### Visual Don'ts[\s\S]*?\|[\s\S]*?(?=###|##|$)/i
-  );
-  if (dontsMatch) {
-    const dontRows = dontsMatch[0].match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/g);
-    if (dontRows) {
-      dontRows.forEach((row) => {
-        const match = row.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/);
-        if (match && !match[1].includes("Avoid") && !match[1].includes("---")) {
-          imageStyle.donts.push(match[1].trim());
-        }
-      });
-    }
-  }
-
-  // Extract example prompts (content between ``` blocks after specific headers)
-  const exampleMatch = content.match(/### Example Prompts[\s\S]*?(?=##|$)/i);
-  if (exampleMatch) {
-    const prompts = exampleMatch[0].match(/\*\*([^*]+)\*\*:\s*```\n?([\s\S]*?)```/g);
-    if (prompts) {
-      prompts.forEach((p) => {
-        const match = p.match(/\*\*([^*]+)\*\*:\s*```\n?([\s\S]*?)```/);
-        if (match) {
-          imageStyle.examplePrompts.push({
-            type: match[1].trim(),
-            prompt: match[2].trim().replace(/\n/g, " "),
-          });
-        }
-      });
-    }
-  }
-
-  return imageStyle;
 }
 
 /**
  * Generate system prompt addition
  */
 function generatePromptAddition(brandContext) {
-  const { colors, typography, voice, attributes, imageStyle } = brandContext;
+  const { colors, typography, voice, attributes, imageContext } = brandContext;
 
   let prompt = `
 BRAND CONTEXT:
@@ -285,14 +226,15 @@ CONTENT RULES:
 - Prohibited Terms: ${voice.prohibited.join(", ") || "None specified"}
 `;
 
-  // Add image style context if available
-  if (imageStyle && imageStyle.basePrompt) {
+  // Image data is compiler evidence, never a local image prompt template.
+  if (imageContext) {
     prompt += `
-IMAGE GENERATION:
-- Base Prompt: ${imageStyle.basePrompt}
-- Style Keywords: ${imageStyle.keywords.slice(0, 10).join(", ") || "Not specified"}
-- Visual Mood: ${imageStyle.mood.slice(0, 5).join("; ") || "Not specified"}
-- Avoid: ${imageStyle.donts.join(", ") || "None specified"}
+IMAGE COMPILER INPUT (image-prompt owns final prompt):
+- Register: ${imageContext.register}
+- Palette Evidence: ${imageContext.palette.join(", ") || "Not specified"}
+- Source Evidence: ${imageContext.evidence.join("; ") || "Not specified"}
+- Required Characteristics: ${imageContext.requiredCharacteristics.join("; ") || "Not specified"}
+- Exact Copy: ${imageContext.exactCopy.join("; ") || "None specified"}
 `;
   }
 
@@ -333,7 +275,7 @@ function main() {
     typography: extractTypography(content),
     voice: extractVoice(content),
     attributes: extractCoreAttributes(content),
-    imageStyle: extractImageStyle(content),
+    imageContext: extractImageContext(content),
     source: resolvedPath,
     extractedAt: new Date().toISOString(),
   };

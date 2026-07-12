@@ -64,11 +64,11 @@ E2E tests should cover **critical user journeys** only. Follow this coverage dis
 # pyproject.toml
 [project.optional-dependencies]
 e2e = [
-    "pytest>=8.3.0",
-    "pytest-asyncio>=0.24.0",
-    "httpx>=0.28.0",
-    "testcontainers>=4.8.0",
-    "docker>=7.1.0",
+    "pytest>=9.1.1,<10.0",
+    "pytest-asyncio>=1.4.0,<2.0",
+    "httpx>=0.28.1,<0.29",
+    "testcontainers>=4.14.2,<5.0",
+    "docker>=7.2.0,<8.0",
 ]
 ```
 
@@ -202,9 +202,10 @@ async def wait_for_service(
     """
     import httpx
 
-    start_time = asyncio.get_event_loop().time()
+    loop = asyncio.get_running_loop()
+    start_time = loop.time()
 
-    while asyncio.get_event_loop().time() - start_time < timeout:
+    while loop.time() - start_time < timeout:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url, timeout=5.0)
@@ -817,19 +818,19 @@ timeout = 60
 ```toml
 [project.optional-dependencies]
 e2e = [
-    "pytest>=8.3.0",
-    "pytest-asyncio>=0.24.0",
-    "pytest-rerunfailures>=14.0",  # Automatic test retries
-    "pytest-timeout>=2.3.0",       # Test timeout
-    "httpx>=0.28.0",
-    "testcontainers>=4.8.0",
-    "docker>=7.1.0",
+    "pytest>=9.1.1,<10.0",
+    "pytest-asyncio>=1.4.0,<2.0",
+    "pytest-rerunfailures>=16.4,<17.0",  # Automatic test retries
+    "pytest-timeout>=2.4.0,<3.0",        # Test timeout
+    "httpx>=0.28.1,<0.29",
+    "testcontainers>=4.14.2,<5.0",
+    "docker>=7.2.0,<8.0",
 ]
 
 [project.optional-dependencies.playwright]
 playwright = [
-    "pytest-playwright>=0.5.0",
-    "playwright>=1.48.0",
+    "pytest-playwright>=0.8.0,<0.9",
+    "playwright>=1.61.0,<1.62",
 ]
 ```
 
@@ -895,10 +896,16 @@ async def context(browser: Browser) -> BrowserContext:
 
 
 @pytest.fixture(scope="function")
-async def page(context: BrowserContext) -> Page:
+async def page(context: BrowserContext, request: pytest.FixtureRequest) -> Page:
     """Create a new page for each test (function-scoped for isolation)."""
     page = await context.new_page()
     yield page
+    if getattr(request.node, "rep_call", None) and request.node.rep_call.failed:
+        os.makedirs("test-results", exist_ok=True)
+        await page.screenshot(
+            path=f"test-results/failure-{request.node.name}.png",
+            full_page=True,
+        )
     await page.close()
 
 
@@ -932,30 +939,11 @@ async def authenticated_page(
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """Capture screenshot on test failure."""
-    import asyncio
-
+    """Expose each phase result to async fixture finalizers."""
     outcome = yield
     rep = outcome.get_result()
 
-    if rep.when == "call" and rep.failed:
-        page = item.funcargs.get("page")
-        if page:
-            async def capture():
-                os.makedirs("test-results", exist_ok=True)
-                await page.screenshot(
-                    path=f"test-results/failure-{item.name}.png",
-                    full_page=True,
-                )
-
-            try:
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    asyncio.ensure_future(capture())
-                else:
-                    loop.run_until_complete(capture())
-            except Exception:
-                pass  # Don't fail the test due to screenshot error
+    setattr(item, f"rep_{rep.when}", rep)
 ```
 
 **Key Benefits of Unified conftest.py:**
@@ -1154,23 +1142,22 @@ from playwright.async_api import Page
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """Capture screenshot on test failure."""
+    """Expose the call result to async fixture finalizers."""
     outcome = yield
     rep = outcome.get_result()
 
-    if rep.when == "call" and rep.failed:
-        page = item.funcargs.get("page")
-        if page:
-            # Async screenshot capture
-            import asyncio
+    setattr(item, f"rep_{rep.when}", rep)
 
-            async def capture():
-                await page.screenshot(
-                    path=f"test-results/failure-{item.name}.png",
-                    full_page=True,
-                )
-
-            asyncio.get_event_loop().run_until_complete(capture())
+@pytest.fixture
+async def screenshot_page(context, request):
+    page = await context.new_page()
+    yield page
+    if getattr(request.node, "rep_call", None) and request.node.rep_call.failed:
+        await page.screenshot(
+            path=f"test-results/failure-{request.node.name}.png",
+            full_page=True,
+        )
+    await page.close()
 ```
 
 ### Running Playwright Tests

@@ -1,7 +1,8 @@
 ---
 name: subscription-manager
 description: 구독 라이프사이클 관리 및 플랜 변경 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "구독"
   - "플랜"

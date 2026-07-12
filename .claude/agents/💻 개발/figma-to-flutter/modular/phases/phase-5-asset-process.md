@@ -204,7 +204,7 @@ flutter:
 ```dart
 // pubspec.yaml
 dependencies:
-  google_fonts: ^6.0.0
+  google_fonts: ^8.1.0
 
 // 코드에서 사용
 import 'package:google_fonts/google_fonts.dart';
@@ -298,8 +298,8 @@ SvgPicture.asset(AppAssets.iconHome)
 ```yaml
 # pubspec.yaml
 dev_dependencies:
-  flutter_gen_runner: ^5.3.0
-  build_runner: ^2.4.0
+  flutter_gen_runner: ^5.14.1
+  build_runner: ^2.15.1
 
 flutter_gen:
   output: lib/gen/

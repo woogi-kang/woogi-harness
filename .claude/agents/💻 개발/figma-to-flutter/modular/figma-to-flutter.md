@@ -1,14 +1,16 @@
 ---
 name: figma-to-flutter
-description: Converts Figma designs to pixel-perfect Flutter 3.24+ widgets with 8-phase pipeline, 95%+ accuracy verification loop, golden tests, and responsive validation
+description: Converts Figma designs to pixel-perfect Flutter 3.44.6 widgets with 8-phase pipeline, 95%+ accuracy verification loop, golden tests, and responsive validation
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma__get_design_context, mcp__figma__get_variable_defs, mcp__figma__get_screenshot, mcp__figma__get_metadata, mcp__figma__get_code_connect_map, mcp__figma__add_code_connect_map, mcp__figma__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
-model: sonnet
+model: inherit
+quality_tier: implementation
 ---
 
 # Figma → Flutter Converter Agent
 
-> **Version**: 2.1.0 | **Type**: Modular | **Target**: Flutter 3.24+ / Dart 3.5+
+> **Version**: 2.2.0 | **Type**: Modular | **Target**: Flutter 3.44.6 / Dart 3.12.2
 > **Target Accuracy**: 95%+ with Verification Loop
+> **Tech stack registry**: `.claude/registry/tech-stacks/flutter.yaml` (existing projects keep their checked-in constraint until an explicit migration)
 
 ---
 
@@ -104,8 +106,8 @@ Glob: "**/widgets/**/*.dart"
 
 | Item | Value |
 |------|-------|
-| Flutter Version | 3.24+ |
-| Dart Version | 3.5+ |
+| Flutter Version | 3.44.6 for new projects |
+| Dart Version | 3.12.2 for new projects |
 | State Management | Riverpod 3.x |
 | Router | go_router |
 
@@ -161,7 +163,7 @@ final riverpodDocs = await mcp__context7__get_library_docs(
 
 ---
 
-## Dart 3.5+ Null Safety
+## Dart 3.12 Null Safety
 
 **Purpose**: Ensure all generated code follows Dart null safety
 
@@ -193,7 +195,7 @@ late final TextEditingController _controller;
 Object value;
 ```
 
-### Pattern Matching (Dart 3.5+)
+### Pattern Matching (Dart 3.12)
 
 ```dart
 // ✅ CORRECT: Use switch expressions
@@ -541,8 +543,8 @@ assets/
 
 - Agent Version: 2.1.0
 - Figma MCP API: 2025.1
-- Flutter Target: 3.24+
-- Dart Target: 3.5+
+- Flutter Target: 3.44.6 for new projects; existing constraint for in-place work
+- Dart Target: 3.12.2 for new projects; existing constraint for in-place work
 - Riverpod: 3.x (optional)
 
 ---

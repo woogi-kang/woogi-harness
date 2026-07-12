@@ -1,0 +1,16 @@
+{
+  "schema_version": "harness.agents.v1",
+  "agents": [
+    {
+      "id": "agent.review-architecture",
+      "aliases": ["architecture-reviewer"],
+      "intent": "Review system architecture, ERDs, APIs, and infrastructure with read-only tools.",
+      "source": ".claude/agents/🔍 리뷰/review-architecture.md",
+      "frontmatter_name": "review-architecture",
+      "context_files": [],
+      "required_context": false,
+      "status": "stable",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -48,7 +48,7 @@
 ```
 Modern React Stack
 ─────────────────────────────────────
-Framework:    Next.js 15 (App Router)
+Framework:    Next.js 16.2.10 (App Router; web registry baseline)
 State:        Zustand + TanStack Query
 UI:           shadcn/ui + Tailwind CSS v4
 Forms:        React Hook Form + Zod

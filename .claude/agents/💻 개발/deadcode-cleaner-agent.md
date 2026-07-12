@@ -4,7 +4,8 @@ description: |
   데드코드 탐지 및 안전한 정리 전문 에이전트.
   사용하지 않는 코드, 임포트, 의존성을 찾아 제거.
   "데드코드", "dead code", "unused", "정리", "cleanup" 요청에 반응.
-model: sonnet
+model: inherit
+quality_tier: implementation
 tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
 ---
 

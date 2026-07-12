@@ -12,6 +12,8 @@ Extends: `../../_shared/project-setup/SKILL.md` (공통 프로세스 참조)
 
 Flutter 프로젝트 초기 설정 및 의존성 구성을 수행합니다.
 
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml` (`flutter@recommended`). 기존 프로젝트에서는 실제 `pubspec.yaml`과 lockfile을 우선하고 migration gate 없이 major family를 치환하지 않는다.
+
 ## Triggers
 
 - "프로젝트 생성", "프로젝트 설정", "flutter init", "flutter create"
@@ -37,28 +39,28 @@ description: A Flutter application with Clean Architecture.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.12.0 <4.0.0'
-  flutter: '>=3.44.0'
+  sdk: '>=3.12.2 <4.0.0'
+  flutter: '>=3.44.6'
 
 dependencies:
   flutter:
     sdk: flutter
 
   # 상태관리
-  flutter_riverpod: ^3.3.1
-  riverpod_annotation: ^4.0.2
+  flutter_riverpod: ^3.3.2
+  riverpod_annotation: ^4.0.3
 
   # 라우팅
-  go_router: ^17.2.3
+  go_router: ^17.3.0
 
   # 네트워킹
-  dio: ^5.9.2
+  dio: ^5.10.0
   retrofit: ^4.9.2
 
   # 로컬 DB
-  drift: ^2.33.0
-  sqlite3: ^3.3.1
-  path_provider: ^2.1.5
+  drift: ^2.34.1
+  sqlite3: ^3.4.0
+  path_provider: ^2.1.6
   path: ^1.9.1
 
   # 로깅
@@ -77,10 +79,10 @@ dependencies:
 
   # 유틸리티
   fpdart: ^1.2.0
-  connectivity_plus: ^7.1.1
+  connectivity_plus: ^7.2.0
 
   # 환경 변수
-  envied: ^1.3.5
+  envied: ^1.3.8
 
   # 반응형 UI 보조 (선택: 레이아웃 분기는 MediaQuery/LayoutBuilder 우선)
   flutter_screenutil: ^5.9.3
@@ -91,51 +93,51 @@ dependencies:
     sdk: flutter
 
   # Firebase
-  firebase_core: ^4.9.0
-  firebase_auth: ^6.5.1
-  cloud_firestore: ^6.4.1
-  firebase_messaging: ^16.2.2
-  firebase_crashlytics: ^5.2.2
-  firebase_analytics: ^12.4.1
-  firebase_storage: ^13.4.1
-  firebase_remote_config: ^6.5.1
+  firebase_core: ^4.11.0
+  firebase_auth: ^6.5.4
+  cloud_firestore: ^6.6.0
+  firebase_messaging: ^16.4.1
+  firebase_crashlytics: ^5.2.4
+  firebase_analytics: ^12.4.3
+  firebase_storage: ^13.4.3
+  firebase_remote_config: ^6.5.3
 
   # Local Notifications (FCM)
-  flutter_local_notifications: ^21.0.0
+  flutter_local_notifications: ^22.0.1
 
   # Supabase (Firebase 대안)
-  supabase_flutter: ^2.12.4
+  supabase_flutter: ^2.16.0
 
   # 보안
-  flutter_secure_storage: ^10.3.0
-  local_auth: ^3.0.1
+  flutter_secure_storage: ^10.3.1
+  local_auth: ^3.0.2
   flutter_jailbreak_detection: ^1.10.0
   encrypt: ^5.0.3
 
   # 딥링크
-  app_links: ^7.0.0
+  app_links: ^7.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.15.0
+  build_runner: ^2.15.1
   freezed: ^3.2.5
   json_serializable: ^6.14.0
-  riverpod_generator: ^4.0.3
+  riverpod_generator: ^4.0.4
   go_router_builder: ^4.3.0
-  injectable_generator: ^3.0.2
-  retrofit_generator: ^10.2.6
-  drift_dev: ^2.33.0
-  pigeon: ^26.3.4
+  injectable_generator: ^3.1.0
+  retrofit_generator: ^10.2.7
+  drift_dev: ^2.34.3
+  pigeon: ^27.1.1
   mocktail: ^1.0.5
   # 타입 지향 assertion (선택)
   checks: ^0.3.1
-  patrol: ^4.6.0
+  patrol: ^4.6.1
   alchemist: ^0.14.0
   # Flavor & 환경 변수
   flutter_flavorizr: ^2.5.0
-  envied_generator: ^1.3.5
+  envied_generator: ^1.3.8
 ```
 
 최신 패키지 조합을 유지하되 레거시 프로젝트에 적용할 때는 `_references/RECENT-FLUTTER-CHANGES.md`의 호환 최소선을 먼저 확인한다.

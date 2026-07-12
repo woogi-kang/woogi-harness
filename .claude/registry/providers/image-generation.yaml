@@ -1,0 +1,95 @@
+{
+  "schema_version": "harness.image-generation-policy.v2",
+  "id": "provider.image-generation",
+  "prompt_compiler": {
+    "id": "image-prompt",
+    "version": "2.3.0",
+    "skill": ".claude/skills/image-prompt/SKILL.md",
+    "validator": "third_party/gongnyang-prompt-kit/skills/image-prompt/scripts/check_prompt.mjs",
+    "vendor_repository": "https://github.com/kimsh-1/gongnyang-prompt-kit",
+    "vendor_commit": "d1cd1dd3e77f7e12e2fed982fd738cc1ea880598",
+    "local_patches": [],
+    "upstream_provider_instructions_authoritative": false
+  },
+  "generation": {
+    "provider": "codex",
+    "tool_alias": "$imagegen",
+    "host_tool": "image_gen__imagegen",
+    "required_model": "gpt-image-2",
+    "fallback": [],
+    "input_mapping": {
+      "full_prompt": "prompt"
+    },
+    "allowed_host_fields": [
+      "prompt",
+      "referenced_image_paths",
+      "num_last_images_to_include"
+    ],
+    "model_binding": {
+      "mode": "trusted-host-fixed",
+      "parameter": null,
+      "locally_observable": false,
+      "enforcement_owner": "codex-host",
+      "on_reported_mismatch": "block",
+      "on_strict_without_attestation": "blocked_imagegen_model_unverifiable"
+    },
+    "transparency": {
+      "supported": false,
+      "policy": "use-opaque-background-or-block"
+    }
+  },
+  "assurance": {
+    "vendor_bytes": "locally-verified",
+    "prompt_validation": "locally-verified",
+    "active_routes": "static-scan-and-observable-route-denial",
+    "model": "trusted-host-not-locally-observable",
+    "allowed_provenance_claim": "generated_under_trusted_host_contract",
+    "forbidden_provenance_claim": "verified_gpt_image_2"
+  },
+  "artifact_manifest_contract": {
+    "required_model": "gpt-image-2",
+    "model_binding": "trusted-host-fixed",
+    "local_model_verification": "unavailable",
+    "host_reported_model": null,
+    "pre_generation_assurance": "pending_trusted_host_generation",
+    "post_generation_assurance": "generated_under_trusted_host_contract",
+    "forbidden_fields": [
+      "model"
+    ]
+  },
+  "blocked_generation_providers": [
+    "adobe-firefly",
+    "gemini-image-generation",
+    "ideogram",
+    "leonardo-ai",
+    "midjourney",
+    "recraft",
+    "replicate",
+    "stability-ai"
+  ],
+  "blocked_generation_models": [
+    "dall-e",
+    "flux",
+    "gpt-image-1",
+    "gpt-image-1.5",
+    "imagen",
+    "nano-banana",
+    "sdxl"
+  ],
+  "runtime_hooks": [
+    {
+      "provider": "claude",
+      "scope": "observable-bash-routes-only",
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "command": "$CLAUDE_PROJECT_DIR/third_party/gongnyang-prompt-kit/hooks/block-text-overlay.sh"
+    },
+    {
+      "provider": "claude",
+      "scope": "observable-bash-skill-mcp-routes",
+      "event": "PreToolUse",
+      "matcher": "Bash|Skill|mcp__.*",
+      "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/image-generation-guard.py"
+    }
+  ]
+}

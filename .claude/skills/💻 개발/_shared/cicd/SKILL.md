@@ -162,7 +162,7 @@ on:
 | 항목 | FastAPI | Flutter | Next.js |
 |------|---------|---------|---------|
 | 패키지 매니저 셋업 | astral-sh/setup-uv | subosito/flutter-action | pnpm/action-setup + setup-node |
-| Lint | ruff check + ruff format | flutter analyze + dart format | next lint |
+| Lint | ruff check + ruff format | flutter analyze + dart format | eslint . --max-warnings=0 |
 | Type Check | mypy | (dart analyzer 포함) | tsc --noEmit |
 | Test | pytest --cov | flutter test --coverage | vitest run --coverage |
 | Build | docker build | flutter build (apk/ipa/web) | next build |

@@ -62,11 +62,7 @@ async def run_in_executor(
     **kwargs,
 ) -> T:
     """Run blocking function in thread pool executor."""
-    import functools
-
-    loop = asyncio.get_event_loop()
-    partial = functools.partial(func, *args, **kwargs)
-    return await loop.run_in_executor(None, partial)
+    return await asyncio.to_thread(func, *args, **kwargs)
 
 
 def async_timed(func: Callable) -> Callable:

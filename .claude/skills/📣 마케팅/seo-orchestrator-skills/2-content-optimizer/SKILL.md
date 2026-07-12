@@ -1,7 +1,8 @@
 ---
 name: content-optimizer
 description: SEO 콘텐츠 최적화 및 메타 태그 관리 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "최적화"
   - "메타태그"
@@ -358,6 +359,8 @@ auto_optimization:
 /seo schema --type article --title "제목"
 
 # OG 이미지 생성
+# 텍스트/카드는 Next.js ImageResponse로 deterministic하게 만듭니다.
+# 생성형 raster가 필요하면 image-prompt → validator → Codex $imagegen → gpt-image-2를 사용합니다.
 /seo og-image --title "제목" --subtitle "부제"
 
 # 콘텐츠 최적화 제안

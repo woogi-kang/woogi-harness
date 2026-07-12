@@ -1,0 +1,50 @@
+{
+  "schema_version": "harness.project-pack.v1",
+  "id": "image-generation",
+  "description": "Pinned Gongnyang image-prompt runtime, Codex gpt-image-2 policy, and verification assets.",
+  "paths": [
+    "third_party/gongnyang-prompt-kit",
+    ".claude/hooks/image-generation-guard.py",
+    ".claude/skills/image-prompt",
+    ".claude/rules/common/imagegen-marketing-assets.md",
+    ".claude/registry/providers/image-generation.yaml",
+    "scripts/verify-gongnyang-prompt-kit.sh",
+    "scripts/verify-image-generation-policy.py",
+    "scripts/test-gongnyang-image-path.sh",
+    "scripts/update-gongnyang-prompt-kit.sh"
+  ],
+  "settings_merges": [
+    {
+      "target": ".claude/settings.json",
+      "format": "json",
+      "operation": "append-if-missing",
+      "path": ["hooks", "PreToolUse"],
+      "match": {"matcher": "Bash"},
+      "append_path": ["hooks"],
+      "value": {
+        "type": "command",
+        "command": "$CLAUDE_PROJECT_DIR/third_party/gongnyang-prompt-kit/hooks/block-text-overlay.sh"
+      }
+    },
+    {
+      "target": ".claude/settings.json",
+      "format": "json",
+      "operation": "append-if-missing",
+      "path": ["hooks", "PreToolUse"],
+      "match": {"matcher": "Bash|Skill|mcp__.*"},
+      "append_path": ["hooks"],
+      "value": {
+        "type": "command",
+        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/image-generation-guard.py"
+      }
+    }
+  ],
+  "exclude": [
+    "**/.git/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    ".claude/settings*.json",
+    ".mcp.json",
+    ".env*"
+  ]
+}

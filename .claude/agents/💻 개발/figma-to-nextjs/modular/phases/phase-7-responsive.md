@@ -430,7 +430,7 @@ Chrome DevTools:
 
 ### Files Created
 - 8 component files
-- 1 tailwind.config.ts update
+- 1 globals.css `@theme` update
 - 1 globals.css update
 - 12 asset files
 

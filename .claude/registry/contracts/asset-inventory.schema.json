@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.asset-inventory.v1",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "inventory_hash", "asset_count", "duplicate_groups", "entries"],
+  "properties": {
+    "schema_version": {"const": "harness.asset-inventory.v1"},
+    "generated_at": {"type": "string"},
+    "inventory_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "asset_count": {"type": "integer", "minimum": 0},
+    "duplicate_groups": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 2}},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "source", "frontmatter_name", "aliases", "duplicate_count", "status"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["skill", "agent", "command"]},
+          "source": {"type": "string", "minLength": 1},
+          "frontmatter_name": {"type": "string", "minLength": 1},
+          "aliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "duplicate_group": {"type": ["string", "null"]},
+          "duplicate_count": {"type": "integer", "minimum": 1},
+          "status": {"enum": ["active", "supporting"]}
+        }
+      }
+    }
+  }
+}

@@ -273,7 +273,7 @@ Subtitle: AI Cyan (#00d9ff), 24pt
 │  │  from transformers import AutoModel       │  │
 │  │                                            │  │
 │  │  model = AutoModel.from_pretrained(       │  │
-│  │      "claude-opus-4-5-20251101",             │  │
+│  │      "provider-native-reasoning-high",       │  │
 │  │      device_map="auto"                    │  │
 │  │  )                                        │  │
 │  │                                            │  │

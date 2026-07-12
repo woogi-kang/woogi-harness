@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-critic-attestation-v1.json",
+  "title": "Externally Signed Design Critic Attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "payload", "signature"],
+  "properties": {
+    "schema": {"const": "design-critic-attestation-v1"},
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "run_id", "issuer", "execution_id", "critic_actor_id", "implementation_actor_id", "review_packet_sha256", "critic_sha256", "evidence_manifest_sha256", "source_fingerprint_digest", "issued_at"],
+      "properties": {
+        "schema": {"const": "design-critic-attestation-payload-v1"},
+        "run_id": {"type": "string", "minLength": 6},
+        "issuer": {"type": "string", "minLength": 3},
+        "execution_id": {"type": "string", "minLength": 6},
+        "critic_actor_id": {"type": "string", "minLength": 3},
+        "implementation_actor_id": {"type": "string", "minLength": 3},
+        "review_packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "critic_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidence_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_fingerprint_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "issued_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "signature": {"type": "string", "minLength": 16}
+  }
+}

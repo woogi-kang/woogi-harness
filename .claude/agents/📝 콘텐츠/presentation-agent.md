@@ -4,7 +4,8 @@ description: |
   전문적인 PPT 제작을 위한 종합 Agent.
   리서치부터 최종 출력까지 PPT 제작 전 과정을 관리합니다.
   "PPT 만들어줘", "발표자료 제작", "프레젠테이션 준비" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 skills:
   - ppt-research
   - ppt-validation
@@ -149,8 +150,8 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
          │                   │
          ▼                   ▼
 6. Visual Skill         7. Image Gen Skill
-   └─ 차트, 표, 라벨        └─ imagegen 인포그래픽 생성
-      연결선/overlay          테마 연동 비주얼 자동 생성
+   └─ 차트, 표, 라벨        └─ image-prompt 컴파일
+      별도 native region      Codex gpt-image-2 생성
          │                   │
          └─────────┬─────────┘
                    │
@@ -160,13 +161,13 @@ PPT Agent는 11개의 기존 PPT 전문 Skills와 Future Slide 선택 경로를 
 ```
 
 **Image Gen Skill 특징:**
-- PPT 인포그래픽은 기본적으로 `imagegen` 스킬의 built-in `image_gen`으로 생성
-- 테마별 자동 스타일 매핑 (색상, 분위기 연동)
+- 모든 생성형 asset은 `image-prompt` → validator → Codex `$imagegen`(`gpt-image-2`) 경로로 생성
+- 테마, 색상, 분위기는 별도 prompt template이 아니라 Gongnyang compiler에 전달할 deck evidence
 - 이미지 유형: hero/section opener, concept metaphor, scenario visual, process visual, service-flow visual, risk visual, product/service mockup, icon set
-- 한국어 라벨과 읽어야 하는 설명은 이미지 안이 아니라 PPT/HTML 텍스트 레이어로 분리
-- 숫자, 표, 정확한 단계명, 한국어 문장, 실제 로고/스크린샷은 imagegen으로 만들지 않고 native chart/table/text 또는 실제 source asset으로 처리
-- 기본 prompt에는 `No text, no letters, no numbers, no UI labels, no watermark`와 `Leave clean negative space for Korean PPT text`를 포함
-- 생성 asset은 `images/`에 저장하고 manifest에 prompt, generator, visual contract, alt text를 기록
+- 편집 가능한 한국어 라벨과 설명은 생성 raster와 겹치지 않는 PPT/HTML native region으로 분리
+- 숫자, 표, 정확한 단계명, 실제 로고/스크린샷은 native chart/table/text 또는 실제 source asset으로 처리
+- 자체 prompt/suffix/negative prompt를 추가하지 않고 Gongnyang `full_prompt`를 host tool의 `prompt`로 매핑
+- 생성 asset은 `images/`에 저장하고 manifest에 compiler, upstream commit, host tool, required model, trusted-host assurance, prompt record, visual contract, alt text를 기록
 
 ### Phase 4: Review & Refinement (품질 관리)
 

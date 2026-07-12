@@ -31,7 +31,7 @@ Vitest를 사용하여 단위 테스트를 작성합니다.
 
 ```bash
 # 테스트 프레임워크 (Next.js 16 / React 19 기준)
-npm install -D vitest@^4.1.7 @vitejs/plugin-react@^6.0.2
+npm install -D vitest@^4.1.10 @vitejs/plugin-react@^6.0.3
 
 # Testing Library
 npm install -D @testing-library/react@^16.3.2 @testing-library/dom@^10.4.1 @testing-library/jest-dom@^6.9.1

@@ -9,7 +9,7 @@
 
 | Property | Value |
 |----------|-------|
-| Model | Opus |
+| Quality class | reasoning_high |
 | Verification | Dual (Code + Visual via Playwright) |
 | Max Iterations | 30 (unlimited spirit) |
 | Target Accuracy | 99%+ (98% hard minimum) |

@@ -389,12 +389,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ```json
 {
   "dependencies": {
-    "zustand": "^4.5.0",
-    "@tanstack/react-query": "^5.0.0",
-    "framer-motion": "^11.0.0"
+    "zustand": "^5.0.14",
+    "@tanstack/react-query": "^5.101.2",
+    "framer-motion": "^12.42.2"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "^5.0.0"
+    "@tanstack/react-query-devtools": "^5.101.2"
   }
 }
 ```

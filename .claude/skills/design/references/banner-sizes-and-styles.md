@@ -51,7 +51,7 @@
 1. **Minimalist** — White space dominant, single focal element, 1-2 colors, clean sans-serif
 2. **Bold Typography** — Type IS the design; oversized, expressive letterforms fill canvas
 3. **Gradient / Color Wash** — Smooth transitions, mesh gradients, chromatic blends
-4. **Photo-Based** — Full-bleed photography with text overlay; hero lifestyle imagery
+4. **Photo-Based** — Existing/licensed full-bleed photography with native layout text; hero lifestyle imagery
 5. **Illustrated / Hand-Drawn** — Custom illustrations, bespoke icons, artisan feel
 6. **Geometric / Abstract** — Shapes, lines, grids as primary visual elements
 7. **Retro / Vintage** — Distressed textures, muted palettes, serif type, halftone dots

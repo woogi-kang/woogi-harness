@@ -3,7 +3,8 @@ description: "병렬 워크트리 오케스트레이션 — 여러 Claude 인스
 argument-hint: "[workers or --status/--cleanup session]"
 type: utility
 allowed-tools: Bash, Read, Write, Glob, Grep, AskUserQuestion
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context

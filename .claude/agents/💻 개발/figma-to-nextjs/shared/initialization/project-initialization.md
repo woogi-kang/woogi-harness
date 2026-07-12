@@ -104,7 +104,7 @@ npx shadcn@latest add button card input badge avatar
 ├── public/
 ├── package.json
 ├── tsconfig.json
-├── tailwind.config.ts
+├── postcss.config.mjs    # @tailwindcss/postcss
 ├── next.config.ts
 └── components.json       # shadcn config
 ```

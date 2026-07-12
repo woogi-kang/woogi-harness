@@ -1,0 +1,5 @@
+{
+  "$schema": "critic-trust-store.schema.json",
+  "schema": "design-critic-trust-store-v1",
+  "authorities": []
+}

@@ -1,7 +1,8 @@
 ---
 name: dunning-manager
 description: 결제 실패 복구 및 이탈 방지 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "결제 실패"
   - "dunning"

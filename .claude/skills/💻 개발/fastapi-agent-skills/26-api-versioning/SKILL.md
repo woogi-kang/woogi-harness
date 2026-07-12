@@ -4,11 +4,13 @@ description: |
   URL Path, Header 기반 API 버저닝 전략을 구현합니다.
 metadata:
   category: "💻 개발"
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 # API Versioning Skill
 
 URL Path, Header 기반 API 버저닝 전략을 구현합니다.
+
+> Tech stack registry: `.claude/registry/tech-stacks/python-fastapi.yaml`. 모든 스키마 예제는 Pydantic 2 API를 기준으로 합니다.
 
 ## Triggers
 
@@ -124,11 +126,13 @@ class UserResponseV1(BaseModel):
 # app/application/schemas/v2/user.py
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserResponseV2(BaseModel):
     """V2 User response - new format with additional fields."""
+
+    model_config = ConfigDict(populate_by_name=True)
 
     id: int
     email: EmailStr
@@ -141,8 +145,6 @@ class UserResponseV2(BaseModel):
     profile_image_url: str | None = None
     preferences: dict | None = None
 
-    class Config:
-        populate_by_name = True
 ```
 
 ### Version-Specific Routes

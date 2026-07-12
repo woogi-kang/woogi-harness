@@ -20,7 +20,7 @@ Design banners across social, ads, web, and print formats. Generates multiple ar
 - **웹사이트 히어로** — 랜딩 페이지 히어로 섹션 비주얼
 - **인쇄 배너** — 300 DPI, CMYK 대응
 - **아트 디렉션** — 22가지 스타일 옵션 (미니멀, 그라디언트, 볼드 타이포 등)
-- **AI 비주얼 생성** — Gemini Flash/Pro로 배경/비주얼 요소 생성
+- **생성형 비주얼** — `image-prompt`로 컴파일하고 Codex `gpt-image-2`로 생성
 - **PNG 내보내기** — chrome-devtools 스크린샷으로 정확한 픽셀 크기 출력
 
 **이 스킬이 절대 처리하지 않는 것:**
@@ -37,7 +37,7 @@ Design banners across social, ads, web, and print formats. Generates multiple ar
 |-----------|-----------|------|
 | 디자인 리서치/스타일 결정 | `design-harness` | 아트 디렉션 리서치 시 |
 | HTML/CSS 배너 제작 | `frontend-design` | HTML 기반 배너 레이아웃 시 |
-| AI 이미지 생성 | `ai-artist`, `ai-multimodal` | 비주얼 요소 생성 시 |
+| 생성형 이미지 | `image-prompt` | 비주얼 요소 생성 시 필수 compiler |
 | 스크린샷 내보내기 | `chrome-devtools` | PNG 익스포트 시 |
 | 브랜드 컨텍스트 주입 | `brand` | 브랜드 가이드 적용 시 |
 
@@ -91,46 +91,35 @@ For each art direction option:
    - Max 2 typefaces, single CTA, 4.5:1 contrast ratio
    - Inject brand context via `inject-brand-context.cjs`
 
-2. **Generate visual elements** with `ai-artist` + `ai-multimodal` skills
+2. **Choose one production lane.**
 
-   **a) Search prompt inspiration** (6000+ examples in ai-artist):
-   ```bash
-   python3 .claude/skills/ai-artist/scripts/search.py "<banner style keywords>"
-   ```
+   **Generative banner lane**
 
-   **b) Generate with Standard model** (fast, good for backgrounds/patterns):
-   ```bash
-   .claude/skills/.venv/bin/python3 .claude/skills/ai-multimodal/scripts/gemini_batch_process.py \
-     --task generate --model gemini-2.5-flash-image \
-     --prompt "<banner visual prompt>" --aspect-ratio <platform-ratio> \
-     --size 2K --output assets/banners/
-   ```
+   - Pass purpose, platform ratio, exact copy, brand evidence, selected art
+     direction, and references to `image-prompt`.
+   - Let the upstream compiler choose C3/C5/P1~P8 and Format A/B.
+   - Validate the compiled record, then map only `full_prompt` to the Codex
+     `$imagegen` host tool's `prompt`; its trusted host contract requires `gpt-image-2`.
+   - Generate one image per option/size. Do not add a local suffix, negative
+     prompt, or provider fallback.
+   - Render required text inside the generated image under Gongnyang rules.
+     If it is wrong, regenerate; do not add HTML/PIL text over the raster.
 
-   **c) Generate with Pro model** (4K, complex illustrations/hero visuals):
-   ```bash
-   .claude/skills/.venv/bin/python3 .claude/skills/ai-multimodal/scripts/gemini_batch_process.py \
-     --task generate --model gemini-3-pro-image-preview \
-     --prompt "<creative banner prompt>" --aspect-ratio <platform-ratio> \
-     --size 4K --output assets/banners/
-   ```
+   **Deterministic banner lane**
 
-   **When to use which model:**
-   | Use Case | Model | Quality |
-   |----------|-------|---------|
-   | Backgrounds, gradients, patterns | Standard (Flash) | 2K, fast |
-   | Hero illustrations, product shots | Pro | 4K, detailed |
-   | Photorealistic scenes, complex art | Pro | 4K, best quality |
-   | Quick iterations, A/B variants | Standard (Flash) | 2K, fast |
+   - Build the complete banner in HTML/CSS with native text, existing logo,
+     actual screenshot, and deterministic SVG/vector elements.
+   - Do not use a generated raster as a background for a later text overlay.
+   - This lane remains separate from generative image prompting.
 
-   **Aspect ratios:** `1:1`, `16:9`, `9:16`, `3:4`, `4:3`, `2:3`, `3:2`
-   Match to platform - e.g., Twitter header = `3:1` (use `3:2` closest), Instagram story = `9:16`
-
-   **Pro model prompt tips** (see `ai-artist` references/nano-banana-pro-examples.md):
-   - Be descriptive: style, lighting, mood, composition, color palette
-   - Include art direction: "minimalist flat design", "cyberpunk neon", "editorial photography"
-   - Specify no-text: "no text, no letters, no words" (text overlaid in HTML step)
-
-3. **Compose final banner** — overlay text, CTA, logo on generated visual in HTML/CSS
+3. **Record provenance** — save `image-prompt` version, upstream commit,
+   prompt record, output path, platform dimensions, review status, and the
+   exact host tool `generator: image_gen__imagegen` and host trust contract:
+   `required_model: gpt-image-2`,
+   `model_binding: trusted-host-fixed`, `local_model_verification: unavailable`,
+   `host_reported_model: null`, and
+   `generation_assurance: generated_under_trusted_host_contract`. Never write a
+   `model` field because the Codex host does not expose the selected model.
 
 ### Step 4: Export Banners to Images
 
@@ -201,7 +190,7 @@ Full reference: `references/banner-sizes-and-styles.md`
 | Minimalist | SaaS, tech | White space, 1-2 colors, clean type |
 | Bold Typography | Announcements | Oversized type as hero element |
 | Gradient | Modern brands | Mesh gradients, chromatic blends |
-| Photo-Based | Lifestyle, e-com | Full-bleed photo + text overlay |
+| Photo-Based | Lifestyle, e-com | Existing/licensed photo + native layout text |
 | Geometric | Tech, fintech | Shapes, grids, abstract patterns |
 | Retro/Vintage | F&B, craft | Distressed textures, muted colors |
 | Glassmorphism | SaaS, apps | Frosted glass, blur, glow borders |

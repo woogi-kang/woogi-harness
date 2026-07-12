@@ -222,49 +222,47 @@ Minimum clear space = height of the logo icon (mark)
 
 ---
 
-## AI Image Generation
+## Image Generation Context
 
-### Base Prompt Template
+이 문서는 이미지 prompt를 저장하지 않습니다. 아래 값은 `image-prompt`에
+전달할 brand evidence입니다.
 
-Always prepend to image generation prompts:
+### Visual Register
 
-```
-{DESCRIBE YOUR VISUAL STYLE HERE - mood, colors with hex codes, lighting, atmosphere}
-```
+- Product / Brand / Operational: {choose one}
 
-### Style Keywords
+### Palette Evidence
 
-| Category | Keywords |
-|----------|----------|
-| **Lighting** | {e.g., soft lighting, dramatic, natural} |
-| **Mood** | {e.g., professional, energetic, calm} |
-| **Composition** | {e.g., centered, rule of thirds, minimal} |
-| **Treatment** | {e.g., high contrast, muted, vibrant} |
-| **Aesthetic** | {e.g., modern, vintage, minimalist} |
+| Role | HEX | Surface |
+|---|---|---|
+| Primary | {#HEX} | {where it appears} |
+| Secondary | {#HEX} | {where it appears} |
+| Accent | {#HEX} | {where it appears} |
 
-### Visual Mood Descriptors
+### Visual Evidence
 
-- {Mood descriptor 1}
-- {Mood descriptor 2}
-- {Mood descriptor 3}
+- {Existing asset or reference path 1}
+- {Existing asset or reference path 2}
 
-### Visual Don'ts
+### Required Characteristics
 
-| Avoid | Reason |
-|-------|--------|
-| {Item to avoid} | {Why to avoid it} |
+- {Characteristic 1}
+- {Characteristic 2}
+- {Characteristic 3}
 
-### Example Prompts
+### Prohibited Characteristics
 
-**Hero Banner:**
-```
-{Example prompt for hero banners}
-```
+| Characteristic | Reason |
+|---|---|
+| {Do not reproduce this visual property} | {Reason} |
 
-**Social Media Post:**
-```
-{Example prompt for social graphics}
-```
+### Exact Copy
+
+- Headline: {exact text or none}
+- Supporting copy: {exact text or none}
+- Brand name: {exact text or none}
+
+`image-prompt`가 위 evidence를 사용해 최종 `full_prompt`를 컴파일합니다.
 
 ---
 

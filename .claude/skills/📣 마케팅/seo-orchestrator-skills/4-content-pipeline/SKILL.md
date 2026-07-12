@@ -1,7 +1,8 @@
 ---
 name: content-pipeline
 description: 콘텐츠 생산 자동화 파이프라인 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "블로그"
   - "콘텐츠"

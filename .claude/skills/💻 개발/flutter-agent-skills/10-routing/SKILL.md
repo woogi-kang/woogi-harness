@@ -44,7 +44,7 @@ GoRouter appRouter(Ref ref) {
     initialLocation: '/',
     debugLogDiagnostics: true,
     redirect: (context, state) {
-      final isLoggedIn = authState.valueOrNull != null;
+      final isLoggedIn = authState.value != null;
       final isAuthRoute = state.matchedLocation.startsWith('/auth');
 
       if (!isLoggedIn && !isAuthRoute) {

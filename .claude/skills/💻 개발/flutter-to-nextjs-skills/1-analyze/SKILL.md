@@ -212,9 +212,9 @@ Navigator.pushNamed(context, '/*')
 ```yaml
 # pubspec.yaml 분석
 dependencies:
-  flutter_bloc: ^8.0.0
-  dio: ^5.0.0
-  go_router: ^12.0.0
+  flutter_bloc: ^9.1.1
+  dio: ^5.10.0
+  go_router: ^17.3.0
 ```
 
 추출 정보:
@@ -353,9 +353,9 @@ import 문 분석
 
 | 패키지 | 버전 | 용도 | Next.js 대응 |
 |--------|------|------|-------------|
-| flutter_bloc | ^8.0.0 | 상태관리 | Zustand |
-| dio | ^5.0.0 | HTTP | fetch/axios |
-| go_router | ^12.0.0 | 라우팅 | App Router |
+| flutter_bloc | {pubspec 실제 버전; 예: ^9.1.1} | 상태관리 | Zustand 5 |
+| dio | {pubspec 실제 버전; 예: ^5.10.0} | HTTP | fetch/axios |
+| go_router | {pubspec 실제 버전; 예: ^17.3.0} | 라우팅 | App Router |
 | ... |
 
 ## 변환 복잡도 예측

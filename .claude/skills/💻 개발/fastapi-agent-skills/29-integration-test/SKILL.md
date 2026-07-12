@@ -50,14 +50,6 @@ from app.main import create_app
 
 
 @pytest.fixture(scope="session")
-def event_loop():
-    """Create event loop for session scope."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture(scope="session")
 def test_settings() -> Settings:
     """Test settings with test database."""
     return Settings(
@@ -68,7 +60,7 @@ def test_settings() -> Settings:
     )
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def engine(test_settings: Settings) -> AsyncGenerator[AsyncEngine, None]:
     """Create test database engine."""
     engine = create_async_engine(

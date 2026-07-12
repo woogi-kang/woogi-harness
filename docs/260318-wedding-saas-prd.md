@@ -745,7 +745,7 @@ CREATE POLICY "guestsnap_files_service" ON public.guestsnap_files
     │
     ├── 쿠키 기반 세션 관리
     │   ├── @supabase/ssr createServerClient
-    │   └── middleware.ts에서 세션 갱신
+    │   └── proxy.ts에서 세션 갱신
     │
     └── RLS가 데이터 접근 제어
         ├── auth.uid() = user_id → 본인 데이터
@@ -1449,11 +1449,11 @@ URL 구조:
 ```
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 인증 필요 경로

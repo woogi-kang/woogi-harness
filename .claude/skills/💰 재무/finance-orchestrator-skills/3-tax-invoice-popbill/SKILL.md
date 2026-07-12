@@ -1,7 +1,8 @@
 ---
 name: tax-invoice-popbill
 description: 팝빌 API 기반 세금계산서 자동 발행/수집 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "세금계산서"
   - "홈택스"

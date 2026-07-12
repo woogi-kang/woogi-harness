@@ -26,7 +26,7 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^1.0.5
   checks: ^0.3.1
-  patrol: ^4.6.0
+  patrol: ^4.6.1
   alchemist: ^0.14.0
 ```
 
@@ -698,7 +698,7 @@ flutter test test/golden
 ```yaml
 # pubspec.yaml
 dev_dependencies:
-  patrol: ^4.6.0
+  patrol: ^4.6.1
 ```
 
 ```dart
@@ -1004,7 +1004,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.0'
+          flutter-version: '3.44.6'
 
       - name: Install dependencies
         run: flutter pub get

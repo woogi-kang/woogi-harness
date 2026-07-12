@@ -1,7 +1,8 @@
 ---
 name: board-meeting
 description: 이사회 소집, 진행, 의사록 작성 지원
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "이사회"
   - "이사회 의사록"

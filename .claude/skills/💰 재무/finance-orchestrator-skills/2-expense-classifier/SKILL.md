@@ -1,7 +1,8 @@
 ---
 name: expense-classifier
 description: AI 기반 비용 자동 분류 및 검증 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "분류"
   - "카테고리"

@@ -61,7 +61,7 @@ Glob: "**/pages/**/*.tsx"       # Pages Router
 ```markdown
 | 항목 | 값 |
 |------|-----|
-| Next.js Version | 14.x / 15.x |
+| Next.js Version | Detect from `package.json`; compare with the registry instead of assuming a version |
 | Router Type | App Router / Pages Router |
 | TypeScript | Yes / No |
 ```
@@ -177,10 +177,10 @@ Grep: "<img" path:"**/*.tsx"
 ## Environment
 | 항목 | 값 |
 |------|-----|
-| Next.js | 14.2.x |
+| Next.js | 16.2.10 (new-project registry baseline) |
 | Router | App Router |
 | TypeScript | Yes (strict) |
-| Node.js | 20.x |
+| Node.js | 24.18.0 LTS |
 
 ## Styling
 | 방식 | 상태 |

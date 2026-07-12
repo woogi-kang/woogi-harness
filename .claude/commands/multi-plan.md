@@ -2,6 +2,8 @@
 name: multi-plan
 description: 멀티 LLM 협업 기획 — Claude 오케스트레이션 + 전문가 LLM 분석
 allowed-tools: ["Bash", "Read", "Write", "Glob", "Grep", "AskUserQuestion", "Agent"]
+model: inherit
+quality_tier: reasoning_high
 ---
 
 $ARGUMENTS
@@ -28,17 +30,20 @@ $ARGUMENTS
 - 의존성 확인
 
 ### Phase 3: 전문가 분석 (병렬)
-Gemini CLI와 Codex CLI를 활용하여 독립적 분석 수행:
+project profile에 등록된 provider와 quality class로 독립적 분석을 수행합니다.
+외부 worker에 repo context를 전달하기 전에 `context-pack-gate`를 통과해야 합니다.
 
 ```bash
-# Backend/시스템 분석 (Codex)
-echo "{분석 프롬프트}" | codex -q --model codex-mini 2>/dev/null || echo "Codex unavailable"
+# profile에 선언된 provider의 reasoning_high binding 확인
+python3 scripts/harness-provider.py --provider "${HARNESS_PROVIDER}" --quality-tier reasoning_high
 
-# Frontend/UX 분석 (Gemini)
-echo "{분석 프롬프트}" | gemini -p 2>/dev/null || echo "Gemini unavailable"
+# 전달할 파일/예산/secret을 먼저 검증
+python3 scripts/context-pack-gate.py --mode worker --token-budget 12000 "$SCOPED_TARGET"
 ```
 
-사용 불가한 LLM은 건너뛰고 Claude가 해당 역할도 수행.
+등록 provider가 required tools/capabilities를 충족하지 않거나 host-native 실행을
+현재 환경에서 시작할 수 없으면 다른 model로 추측해 대체하지 않고 typed `blocked`로
+반환합니다. 병렬 worker는 provider-native substrate에서 새 context로 시작합니다.
 
 ### Phase 4: 종합 및 계획 수립
 전문가 분석 결과를 종합하여 구조화된 계획 작성:

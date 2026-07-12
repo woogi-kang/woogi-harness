@@ -601,7 +601,7 @@ class Settings(BaseSettings):
 # Add to pyproject.toml
 dependencies = [
     # ... existing ...
-    "apscheduler>=3.10.0",
+    "apscheduler>=3.11.3,<4",
 ]
 ```
 

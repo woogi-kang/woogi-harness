@@ -1,7 +1,8 @@
 ---
 name: receipt-ocr-gemini
 description: Gemini CLI 기반 영수증/청구서 OCR 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "영수증"
   - "OCR"

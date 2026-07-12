@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.context-manifest.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "repository",
+    "profile",
+    "profile_path",
+    "provider_binding",
+    "capabilities",
+    "inventory_hash",
+    "budget_bytes",
+    "total_bytes",
+    "selected",
+    "skipped"
+  ],
+  "properties": {
+    "schema_version": {"const": "harness.context-manifest.v1"},
+    "generated_at": {"type": "string", "format": "date-time", "minLength": 1},
+    "repository": {"type": "string", "minLength": 1},
+    "profile": {"type": "string", "minLength": 1},
+    "profile_path": {"type": "string", "minLength": 1},
+    "provider_binding": {"$ref": "#/$defs/providerBinding"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "inventory_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "budget_bytes": {"type": "integer", "minimum": 1},
+    "total_bytes": {"type": "integer", "minimum": 0},
+    "selected": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/selectedArtifact"}
+    },
+    "skipped": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/skippedArtifact"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "providerBinding": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "provider",
+        "quality_tier",
+        "selection",
+        "context_policy",
+        "required_capabilities",
+        "required_tools",
+        "adapter",
+        "execution_adapter",
+        "execution_profile",
+        "host_tool_contracts",
+        "status",
+        "binding_hash"
+      ],
+      "properties": {
+        "schema_version": {"const": "harness.provider-binding.v1"},
+        "provider": {"type": "string", "minLength": 1},
+        "quality_tier": {"enum": ["reasoning_high", "implementation", "fast_scan", "independent_critic"]},
+        "selection": {"enum": ["reasoning_high", "implementation", "fast_scan", "independent_critic"]},
+        "context_policy": {"enum": ["isolated", "fresh_required"]},
+        "required_capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "required_tools": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "adapter": {"const": "native"},
+        "execution_adapter": {"type": "object", "minProperties": 2},
+        "execution_profile": {"type": "object", "minProperties": 2},
+        "host_tool_contracts": {"type": "array", "items": {"type": "object"}},
+        "status": {"const": "supported"},
+        "binding_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "selectedArtifact": {
+      "type": "object",
+      "required": ["path", "capability", "bytes", "sha256", "required"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "capability": {"type": "string", "minLength": 1},
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "required": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "skippedArtifact": {
+      "type": "object",
+      "required": ["path", "capability", "reason", "required"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "capability": {"type": "string", "minLength": 1},
+        "bytes": {"type": "integer", "minimum": 0},
+        "reason": {"enum": ["not-a-file", "budget-exceeded"]},
+        "required": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

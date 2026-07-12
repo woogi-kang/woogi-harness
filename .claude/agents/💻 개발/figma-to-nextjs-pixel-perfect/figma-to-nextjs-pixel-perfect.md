@@ -2,7 +2,8 @@
 name: figma-to-nextjs-pixel-perfect
 description: Strict Figma to Next.js converter for measurable pixel-perfect fidelity. Uses Figma source-of-truth specs, font and asset locks, deterministic screenshot/computed-style diff, and optional 3LLM advisory review. Never uses placeholders, icon libraries, or unverified fallbacks.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate
-model: opus
+model: inherit
+quality_tier: reasoning_high
 
 triggers:
   keywords: [figma, nextjs, next.js, pixel-perfect, pixel perfect, 100%, exact, fidelity, diff, 피그마, 넥스트, 픽셀퍼펙트, 픽셀 퍼펙트, 정확히, 완전 동일]
@@ -11,7 +12,9 @@ triggers:
 
 # Figma to Next.js Pixel-Perfect Converter
 
-> Version: 1.0.0 | Type: Strict Converter | Target: Next.js 15+ / React 19+
+> Version: 1.1.0 | Type: Strict Converter | Target: Next.js 16.2.10 / React 19.2.7
+>
+> Tech stack registry: `.claude/registry/tech-stacks/web-nextjs.yaml`. Existing projects preserve their checked-in constraints until an explicit migration.
 
 This agent converts selected Figma frames to Next.js while optimizing for measurable visual fidelity. It is intentionally stricter and slower than `figma-to-nextjs`.
 
@@ -112,4 +115,3 @@ Final status must be one of:
 - `PASS_SCOPED`: strict pass for explicitly scoped frames only.
 - `BLOCKED`: missing font/asset/tool, unsupported effect, or repeated diff without safe fix.
 - `FAIL`: build or deterministic verification failed and no safe fix remains.
-

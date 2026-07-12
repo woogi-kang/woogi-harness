@@ -1,92 +1,68 @@
-# Logo Design Reference
+# Logo design workflow
 
-AI-powered logo design with 55+ styles, 30 color palettes, 25 industry guides. Uses Gemini Nano Banana models.
+## Responsibilities
 
-## Scripts
-
-| Script | Purpose |
-|--------|---------|
-| `scripts/logo/search.py` | Search styles, colors, industries; generate design briefs |
-| `scripts/logo/generate.py` | Generate logos with Gemini Nano Banana |
-| `scripts/logo/core.py` | BM25 search engine for logo data |
-
-## Commands
-
-### Design Brief (Start Here)
+- Search local style/color/industry data and produce a design brief.
+- Route generative concepts through `logo-creator` and `image-prompt`.
+- Preserve source raster, user selection, and derived artifacts.
 
 ```bash
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech startup modern" --design-brief -p "BrandName"
+python3 .claude/skills/design/scripts/logo/search.py \
+  "tech startup modern" --design-brief -p "BrandName"
 ```
 
-### Search Domains
+The search result is evidence, not an image prompt. `image-prompt` owns prompt
+authoring and Codex `$imagegen` with `gpt-image-2` owns generation. This
+reference does not define local templates or model choices.
+
+After selection, deterministic crop, background processing, or vector tracing
+may create derived artifacts. Keep the original raster and provenance manifest.
+
+## Evidence lookup
 
 ```bash
-# Styles
-python3 ~/.claude/skills/design/scripts/logo/search.py "minimalist clean" --domain style
+# Style evidence
+python3 .claude/skills/design/scripts/logo/search.py \
+  "minimalist clean" --domain style
 
-# Color palettes
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech professional" --domain color
+# Palette evidence
+python3 .claude/skills/design/scripts/logo/search.py \
+  "tech professional" --domain color
 
-# Industry guidelines
-python3 ~/.claude/skills/design/scripts/logo/search.py "healthcare medical" --domain industry
+# Industry evidence
+python3 .claude/skills/design/scripts/logo/search.py \
+  "healthcare medical" --domain industry
 ```
 
-### Generate Logo
+The following axes are brief vocabulary, not prompt suffixes.
 
-**ALWAYS** use white background for output logos.
+| Axis | Options |
+|---|---|
+| Mark structure | Wordmark, lettermark, pictorial, abstract, mascot, emblem, combination |
+| Visual register | Minimal, corporate, luxury, playful, organic, editorial, vintage |
+| Geometry | Geometric, monoline, negative space, fragmented, responsive/adaptive |
+| Surface | Flat, line art, duotone, tactile, 3D/isometric, motion-ready |
 
-```bash
-python3 ~/.claude/skills/design/scripts/logo/generate.py --brand "TechFlow" --style minimalist --industry tech
-python3 ~/.claude/skills/design/scripts/logo/generate.py --prompt "coffee shop vintage badge" --style vintage
-```
+## Color and industry evidence
 
-Options: `--style`, `--industry`, `--prompt`
+| Color family | Common association | Typical domains |
+|---|---|---|
+| Blue/navy | Trust, stability | Finance, technology, healthcare |
+| Green | Growth, natural systems | Sustainability, wellness, food |
+| Red/orange | Energy, appetite, urgency | Food, sports, entertainment |
+| Gold/black | Premium, heritage | Luxury, hospitality, jewelry |
+| Purple | Creativity, innovation | Beauty, creative tools, technology |
 
-## Available Styles
+Treat these as hypotheses to validate against the actual brand. Do not let a
+generic industry default override project evidence or an existing identity.
 
-| Category | Styles |
-|----------|--------|
-| General | Minimalist, Wordmark, Lettermark, Pictorial Mark, Abstract Mark, Mascot, Emblem, Combination Mark |
-| Aesthetic | Vintage/Retro, Art Deco, Luxury, Playful, Corporate, Organic, Neon, Grunge, Watercolor |
-| Modern | Gradient, Flat Design, 3D/Isometric, Geometric, Line Art, Duotone, Motion-Ready |
-| Clever | Negative Space, Monoline, Split/Fragmented, Responsive/Adaptive |
+## Review sequence
 
-## Color Psychology
+1. Validate the brief against brand name, audience, use sizes, and trademark risk.
+2. Compile separate `image-prompt` records for materially different concepts.
+3. Review legibility at favicon, app-icon, header, and print sizes.
+4. Preserve the chosen raster and record every crop/vector derivative.
+5. Use `design-harness` for the selection gallery and independent visual QA.
 
-| Color | Psychology | Best For |
-|-------|------------|----------|
-| Blue | Trust, stability | Finance, tech, healthcare |
-| Green | Growth, natural | Eco, wellness, organic |
-| Red | Energy, passion | Food, sports, entertainment |
-| Gold | Luxury, premium | Fashion, jewelry, hotels |
-| Purple | Creative, innovative | Beauty, creative, tech |
-
-## Industry Defaults
-
-| Industry | Style | Colors | Typography |
-|----------|-------|--------|------------|
-| Tech | Minimalist, Abstract | Blues, purples, gradients | Geometric sans |
-| Healthcare | Professional, Line Art | Blues, greens, teals | Clean sans |
-| Finance | Corporate, Emblem | Navy, gold | Serif or clean sans |
-| Food | Vintage Badge, Mascot | Warm reds, oranges | Friendly, script |
-| Fashion | Wordmark, Luxury | Black, gold, white | Elegant serif |
-
-## Workflow
-
-1. Generate design brief → `scripts/logo/search.py --design-brief`
-2. Generate logo variations → `scripts/logo/generate.py --brand --style --industry`
-3. Ask user about HTML preview → `AskUserQuestion` tool
-4. If yes, invoke `design-harness` for HTML gallery direction and visual QA
-
-## Detailed References
-
-- `references/logo-style-guide.md` - Detailed style descriptions
-- `references/logo-color-psychology.md` - Color meanings and combinations
-- `references/logo-prompt-engineering.md` - AI generation prompts
-
-## Setup
-
-```bash
-export GEMINI_API_KEY="your-key"
-pip install google-genai
-```
+Detailed local evidence remains in `logo-style-guide.md` and
+`logo-color-psychology.md`; prompt construction remains exclusively upstream.

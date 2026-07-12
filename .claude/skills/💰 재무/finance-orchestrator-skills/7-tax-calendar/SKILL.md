@@ -1,7 +1,8 @@
 ---
 name: tax-calendar
 description: 한국 법인 세무 일정 관리 및 알림 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "세금 일정"
   - "신고"

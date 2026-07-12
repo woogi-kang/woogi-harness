@@ -8,7 +8,7 @@
 
 | Property | Value |
 |----------|-------|
-| Model | Opus |
+| Quality class | reasoning_high |
 | Verification | Self-assessment |
 | Max Iterations | 50 |
 | Target | 100% test pass |

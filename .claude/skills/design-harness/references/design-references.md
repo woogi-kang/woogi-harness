@@ -74,7 +74,7 @@ Do not borrow:
 - Linear logo geometry, exact dark canvas, or page composition.
 - Excessive darkness for non-technical audiences.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 7`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Vercel
 
@@ -93,7 +93,7 @@ Do not borrow:
 - Triangle mark, exact Geist/brand treatment, or signature gradient system as decoration.
 - Overusing gradient bands on pages that do not have launch-stage energy.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 6`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 6`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Raycast
 
@@ -112,7 +112,7 @@ Do not borrow:
 - Exact red stripe motif, logo shape, or Raycast command palette clone.
 - Hover-only discovery for mobile or accessibility-critical flows.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 8`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 8`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Warp
 
@@ -131,7 +131,7 @@ Do not borrow:
 - Decorative terminal windows without actual product content.
 - Serif accents unless the product has an editorial or educational need.
 
-Dial suggestion: `DISTINCTION 5`, `MOTION 3`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 5`, `MOTION 3`, `DENSITY 7`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### HashiCorp
 
@@ -150,7 +150,7 @@ Do not borrow:
 - Exact product colors or HashiCorp product architecture names.
 - Too many accents on one screen without a clear taxonomy.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 7`, `EVIDENCE 9`, `SYSTEMNESS 9`.
 
 ### ClickHouse
 
@@ -169,7 +169,7 @@ Do not borrow:
 - Hazard-tape yellow/black overload.
 - Unsupported performance numbers or fake benchmark visuals.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 8`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 8`, `EVIDENCE 10`, `SYSTEMNESS 9`.
 
 ## AI Products And Creative Tools
 
@@ -192,7 +192,7 @@ Do not borrow:
 - Anthropic mark, exact coral/cream pairing, or radial logo motifs.
 - Warmth that makes a technical product feel slow or soft.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`, `EVIDENCE 8`, `SYSTEMNESS 6`.
 
 ### Cursor
 
@@ -211,7 +211,7 @@ Do not borrow:
 - Exact orange identity color or code editor chrome.
 - Pastel timeline colors without real workflow states.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 7`, `EVIDENCE 9`, `SYSTEMNESS 7`.
 
 ### Mistral AI
 
@@ -229,7 +229,7 @@ Do not borrow:
 - Mountain/sunset imagery unless it belongs to the brand story.
 - Warm gradients used as generic AI atmosphere.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`, `EVIDENCE 8`, `SYSTEMNESS 6`.
 
 ### xAI
 
@@ -247,7 +247,7 @@ Do not borrow:
 - Empty black hero with no product proof.
 - Cosmic gradients or "frontier" language without substance.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 4`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 2`, `DENSITY 4`, `EVIDENCE 8`, `SYSTEMNESS 6`.
 
 ### Runway
 
@@ -266,7 +266,7 @@ Do not borrow:
 - Stock-like atmosphere without actual work examples.
 - Film-festival pacing for operational tools.
 
-Dial suggestion: `DISTINCTION 8`, `MOTION 5`, `DENSITY 3`.
+Dial suggestion: `DISTINCTION 8`, `MOTION 5`, `DENSITY 3`, `EVIDENCE 9`, `SYSTEMNESS 5`.
 
 ### ElevenLabs
 
@@ -285,7 +285,7 @@ Do not borrow:
 - Decorative orbs as generic AI color moments.
 - Thin typography where readability is already difficult.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 4`, `DENSITY 4`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 4`, `DENSITY 4`, `EVIDENCE 9`, `SYSTEMNESS 6`.
 
 ## Fintech, Trust, And Commerce
 
@@ -308,7 +308,7 @@ Do not borrow:
 - Signature gradient mesh as a shortcut.
 - Exact indigo palette, angled gradient bands, or Stripe-like dashboard clone.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 7`, `EVIDENCE 10`, `SYSTEMNESS 9`.
 
 ### Wise
 
@@ -327,7 +327,7 @@ Do not borrow:
 - Exact lime identity.
 - Oversized type where users need dense financial comparison.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 5`, `EVIDENCE 9`, `SYSTEMNESS 9`.
 
 ### Revolut
 
@@ -346,7 +346,7 @@ Do not borrow:
 - Over-saturated product palette without category rules.
 - Black luxury treatment that hides trust and fee details.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 5`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 5`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Mastercard
 
@@ -365,7 +365,7 @@ Do not borrow:
 - Mastercard red/yellow circles, orbital paths too close to the brand mark, or exact nav shape.
 - Extreme radius on dense operational UI.
 
-Dial suggestion: `DISTINCTION 8`, `MOTION 4`, `DENSITY 4`.
+Dial suggestion: `DISTINCTION 8`, `MOTION 4`, `DENSITY 4`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Apple
 
@@ -384,7 +384,7 @@ Do not borrow:
 - SF Pro + Apple blue + tile layout as a direct clone.
 - Minimalism that leaves the product value unexplained.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 4`, `DENSITY 3`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 4`, `DENSITY 3`, `EVIDENCE 10`, `SYSTEMNESS 8`.
 
 ### Airbnb
 
@@ -403,7 +403,7 @@ Do not borrow:
 - Exact pink/red accent or Airbnb search bar shape.
 - Friendly marketplace chrome for serious enterprise workflows.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 6`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 4`, `DENSITY 6`, `EVIDENCE 10`, `SYSTEMNESS 8`.
 
 ## Productivity, Collaboration, And SaaS Workflows
 
@@ -426,7 +426,7 @@ Do not borrow:
 - Exact Notion page chrome, emoji-heavy identity, or black-on-white clone.
 - Over-minimal UI where workflow needs explicit controls.
 
-Dial suggestion: `DISTINCTION 5`, `MOTION 2`, `DENSITY 6`.
+Dial suggestion: `DISTINCTION 5`, `MOTION 2`, `DENSITY 6`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Airtable
 
@@ -445,7 +445,7 @@ Do not borrow:
 - Random coral/green/navy blocks without information architecture.
 - Spreadsheet UI that hides object relationships.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 8`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 3`, `DENSITY 8`, `EVIDENCE 10`, `SYSTEMNESS 9`.
 
 ### Superhuman
 
@@ -464,7 +464,7 @@ Do not borrow:
 - Luxury newsletter feel for collaborative admin products.
 - Atmospheric hero if the speed workflow is not demonstrated.
 
-Dial suggestion: `DISTINCTION 6`, `MOTION 5`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 6`, `MOTION 5`, `DENSITY 7`, `EVIDENCE 9`, `SYSTEMNESS 8`.
 
 ### Figma
 
@@ -483,7 +483,7 @@ Do not borrow:
 - Figma logo colors, exact pill CTAs, or sticky-note panels as a gimmick.
 - Color blocks without interaction or creation meaning.
 
-Dial suggestion: `DISTINCTION 8`, `MOTION 5`, `DENSITY 6`.
+Dial suggestion: `DISTINCTION 8`, `MOTION 5`, `DENSITY 6`, `EVIDENCE 10`, `SYSTEMNESS 8`.
 
 ### PostHog
 
@@ -502,7 +502,7 @@ Do not borrow:
 - Mascot insertion when the product has no illustrated brand system.
 - Cream/yellow developer-tool cliche without real personality.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 7`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 7`, `EVIDENCE 10`, `SYSTEMNESS 8`.
 
 ### Sentry
 
@@ -521,7 +521,7 @@ Do not borrow:
 - Purple dark mode as generic devtool styling.
 - Sticker/mascot attitude for regulated or enterprise-conservative buyers.
 
-Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 8`.
+Dial suggestion: `DISTINCTION 7`, `MOTION 3`, `DENSITY 8`, `EVIDENCE 10`, `SYSTEMNESS 9`.
 
 ## Common Reference Bundles
 

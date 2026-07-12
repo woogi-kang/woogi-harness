@@ -1,18 +1,20 @@
 # Recent Flutter Changes Reference
 
-최신 Flutter/Dart 릴리스와 pub.dev 패키지 기준을 반영하기 위한 운영 레퍼런스입니다. 기준일은 2026-05-25입니다.
+최신 Flutter/Dart 릴리스와 pub.dev 패키지 기준을 반영하기 위한 운영 레퍼런스입니다. 기준일은 2026-07-13입니다.
+
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml` (`flutter@recommended`). 이 문서는 사람이 읽는 요약이며 버전의 단일 원본은 레지스트리다.
 
 ## SDK 기준선
 
 | 목적 | 권장 기준 |
 |------|-----------|
-| 최신 우선 신규 프로젝트 | Flutter `>=3.44.0`, Dart `>=3.12.0` |
+| 최신 우선 신규 프로젝트 | Flutter `3.44.6`, Dart `3.12.2` |
 | 최신 패키지 호환 최소선 | Flutter `>=3.38.1`, Dart `>=3.10.0` |
 | 레거시 유지보수 | 프로젝트 `flutter --version`, `pubspec.yaml`, CI SDK를 먼저 확인 |
 
-- Flutter stable 최신판은 `3.44.0`, 번들 Dart SDK는 `3.12.0`이다.
-- Widgetbook `3.23.x`는 Flutter `>=3.38.0`, `app_links 7.x`와 `flutter_local_notifications 21.x`는 Flutter `>=3.38.1`을 요구한다.
-- `go_router 17.x`, `local_auth 3.x`는 Flutter `>=3.35.0`을 요구한다.
+- Flutter stable 최신 hotfix는 `3.44.6`, 번들 Dart SDK는 `3.12.2`다.
+- Widgetbook `3.25.x`는 선택적 컴포넌트 카탈로그 기준이며, `flutter_local_notifications 22.x`는 Flutter `>=3.38.1`과 Dart `>=3.10.0`을 요구한다.
+- `go_router 17.3.x`는 Flutter `>=3.38.0`, Dart `>=3.10.0`을 요구한다.
 - 최신 Drift/SQLite 조합은 `sqlite3_flutter_libs` 대신 `sqlite3 3.x`를 우선 검토한다. `sqlite3_flutter_libs 0.6.0+eol`은 더 이상 실제 번들링 역할을 하지 않는다.
 
 ## Flutter 3.44 주요 반영점
@@ -38,6 +40,14 @@
 - Dart 3.10: dot shorthands를 사용할 수 있다. 문맥 타입이 명확하고 가독성이 좋아질 때만 적용한다.
 - Dart 3.10: analyzer plugins, build hooks stable, `@Deprecated.*` 세분화 어노테이션을 도구/패키지 작성 시 고려한다.
 
+## 패키지 family migration 주의점
+
+- Riverpod 3은 실패 provider 자동 재시도, 화면 밖 provider pause, `==` update filtering, `ProviderObserverContext`, 단순화된 `Ref`, `ProviderException`을 도입한다. 버전만 바꾸지 말고 retry·lifecycle·error contract 테스트를 갱신한다.
+- GoRouter 15~17은 URL case sensitivity, typed route API, ShellRoute observer 알림을 변경한다. redirect, browser history, restoration, nested navigation, back gesture를 함께 검증한다.
+- Freezed 3은 class modifier와 mixed mode를 반영한다. `when`/`map`은 3.1에서 복귀했으므로 제거됐다는 오래된 지침을 사용하지 않는다.
+- Pigeon 27은 `PigeonOptions.oneLanguage`를 제거한다. 생성물을 다시 만들고 Android/iOS/macOS compile을 통과시킨다.
+- Local notifications 21+는 Android API 24, 현재 compileSdk/AGP, iOS 13, UIScene-aware setup을 포함한 플랫폼 migration이다.
+
 ## DX 도구 정책
 
 - Flutter DevTools는 레이아웃, 성능, 네트워크, 메모리 문제의 1차 진단 도구다.
@@ -49,17 +59,19 @@
 
 | 영역 | 패키지 | 기준 버전 |
 |------|--------|-----------|
-| State | `flutter_riverpod` / `riverpod_annotation` / `riverpod_generator` | `3.3.1` / `4.0.2` / `4.0.3` |
-| Routing | `go_router` / `go_router_builder` | `17.2.3` / `4.3.0` |
-| Network | `dio` / `retrofit` / `retrofit_generator` | `5.9.2` / `4.9.2` / `10.2.6` |
-| Database | `drift` / `drift_dev` / `sqlite3` | `2.33.0` / `2.33.0` / `3.3.1` |
+| State | `flutter_riverpod` / `riverpod_annotation` / `riverpod_generator` | `3.3.2` / `4.0.3` / `4.0.4` |
+| Routing | `go_router` / `go_router_builder` | `17.3.0` / `4.3.0` |
+| Network | `dio` / `retrofit` / `retrofit_generator` | `5.10.0` / `4.9.2` / `10.2.7` |
+| Database | `drift` / `drift_dev` / `sqlite3` | `2.34.1` / `2.34.3` / `3.4.0` |
 | Codegen | `freezed` / `json_serializable` / `injectable` | `3.2.5` / `6.14.0` / `3.0.0` |
-| Platform | `pigeon` | `26.3.4` |
-| UI/DX | `widgetbook` / `flutter_screenutil` / `easy_localization` | `3.23.0` / `5.9.3` / `3.0.8` |
-| Test | `mocktail` / `checks` / `patrol` / `alchemist` | `1.0.5` / `0.3.1` / `4.6.0` / `0.14.0` |
-| Firebase | `firebase_core` / `firebase_auth` / `cloud_firestore` / `firebase_messaging` | `4.9.0` / `6.5.1` / `6.4.1` / `16.2.2` |
-| Security | `flutter_secure_storage` / `local_auth` | `10.3.0` / `3.0.1` |
-| Deep link | `app_links` | `7.0.0` |
+| Platform | `pigeon` | `27.1.1` |
+| UI/DX | `widgetbook` / `flutter_screenutil` / `easy_localization` | `3.25.0` / `5.9.3` / `3.0.8` |
+| Test | `mocktail` / `checks` / `patrol` / `alchemist` | `1.0.5` / `0.3.1` / `4.6.1` / `0.14.0` |
+| Firebase | `firebase_core` / `firebase_auth` / `cloud_firestore` / `firebase_messaging` | `4.11.0` / `6.5.4` / `6.6.0` / `16.4.1` |
+| Security | `flutter_secure_storage` / `local_auth` | `10.3.1` / `3.0.2` |
+| Deep link | `app_links` | `7.2.1` |
+| Backend alternative | `supabase_flutter` | `2.16.0` |
+| Local notification | `flutter_local_notifications` | `22.0.1` |
 
 ## 업데이트 체크리스트
 

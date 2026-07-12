@@ -56,4 +56,4 @@ case "$INSTALL_MODE" in
         ;;
 esac
 
-"$INSTALL_DIR/scripts/install.sh" "$MODE_ARG"
+"$INSTALL_DIR/scripts/install.sh" "$MODE_ARG" --apply

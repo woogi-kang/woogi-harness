@@ -6,14 +6,14 @@ Drift 로컬 데이터베이스 패턴 및 샘플 코드 레퍼런스입니다.
 
 ```yaml
 dependencies:
-  drift: ^2.33.0
-  sqlite3: ^3.3.1
-  path_provider: ^2.1.5
+  drift: ^2.34.1
+  sqlite3: ^3.4.0
+  path_provider: ^2.1.6
   path: ^1.9.1
 
 dev_dependencies:
-  drift_dev: ^2.33.0
-  build_runner: ^2.15.0
+  drift_dev: ^2.34.3
+  build_runner: ^2.15.1
 ```
 
 `sqlite3_flutter_libs`는 `sqlite3 3.x` 이후 obsolete 상태다. 새 프로젝트는 `sqlite3`를 우선 사용하고, 기존 프로젝트에서만 마이그레이션 범위를 확인한다.

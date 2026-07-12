@@ -9,7 +9,7 @@
 
 | Property | Value |
 |----------|-------|
-| Model | Opus |
+| Quality class | reasoning_high |
 | Verification | Dual Agent (Parallel) |
 | Max Iterations | 10 (5 per agent) |
 | Target Accuracy | 95%+ |

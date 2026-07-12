@@ -4,6 +4,7 @@ Use this before finalizing UI code, a redesign recommendation, or a design revie
 
 ## 1. Context Gate
 
+- [ ] `design-run-v3` exists for implementation/redesign work and the project fingerprint is current.
 - [ ] Design Read is stated.
 - [ ] Register is correct: product, brand, operational, editorial, public-sector, or campaign.
 - [ ] Dials are explicit: `DISTINCTION`, `MOTION`, `DENSITY`, `EVIDENCE`, `SYSTEMNESS`.
@@ -91,6 +92,14 @@ When code exists locally:
 - [ ] `detect-design-slop.mjs` was run on the focused UI paths, or the reason it could not run is stated.
 - [ ] Hard-fail detector findings are fixed or explicitly waived with reason.
 - [ ] Browser/screenshot QA was run when the project is runnable.
+- [ ] Planned route/screen, state, and viewport artifacts are hashed in `evidence-manifest.json`.
+- [ ] An external capture authority signed the canonical receipt, source fingerprint, and complete runtime-adapter evidence projection.
+- [ ] Web work includes accessibility-tree/equivalent evidence; Flutter work includes analyze/test and semantics-relevant evidence.
+- [ ] An independent critic cited evidence IDs and issued a decision.
+- [ ] Both capture and critic attestations authenticate against an active host trust-store authority pinned for their purposes.
+- [ ] Repair rounds did not exceed two.
+- [ ] The register-specific executable UI eval passed; a universal originality score was not substituted.
+- [ ] Local completion is reported as `ready_for_external_promotion`; `passed` is used only when an authenticated external provider/orchestrator actually recorded that promotion.
 - [ ] Build/type/lint/test commands were run when they are already part of the project workflow and relevant to the change.
 
 ## Final Report Format
@@ -100,7 +109,13 @@ When code exists locally:
 - Design read:
 - Dials:
 - Detector:
-- Browser/screenshot QA:
+- Platform build/test:
+- Route/state/viewport evidence:
+- Independent critic:
+- Register eval:
+- Local runtime status:
+- External promotion (provider/orchestrator ID or not performed):
 - Fixed:
+- Waivers:
 - Remaining risk:
 ```

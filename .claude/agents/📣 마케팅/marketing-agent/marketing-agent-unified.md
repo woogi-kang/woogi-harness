@@ -4,7 +4,8 @@ description: |
   마케팅 전략 수립부터 실행 가능한 산출물까지 제작하는 종합 Agent.
   리서치, 전략, 카피라이팅, 캠페인 기획 전 과정을 관리합니다.
   "마케팅 전략 세워줘", "광고 카피 써줘", "경쟁사 광고 분석", "랜딩페이지 기획" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 progressive_disclosure:
   enabled: true
   level_1_tokens: 200

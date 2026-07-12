@@ -1,251 +1,110 @@
-# Tailwind Integration
+# Tailwind CSS 4 Design-token Integration
 
-Map design system tokens to Tailwind CSS configuration.
+Use this only when the detected project already uses Tailwind or the design contract explicitly selects it. The recommended version is read from `.claude/registry/tech-stacks/web-nextjs.yaml`; this reference assumes the Tailwind 4 CSS-first model.
 
-## CSS Variables Setup
+## Install adapter
 
-### Base Layer
+- Vite: `tailwindcss` + `@tailwindcss/vite`.
+- PostCSS/Next: `tailwindcss` + `@tailwindcss/postcss` and a PostCSS config.
+- Do not add Tailwind to a project that already has a working token/styling system without approval.
 
-```css
-/* globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    /* Primitives */
-    --color-blue-600: 37 99 235;  /* HSL: 217 91% 60% */
-
-    /* Semantic */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 220 14% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
-  }
-}
-```
-
-## Tailwind Config
-
-### tailwind.config.ts
-
-```typescript
-import type { Config } from 'tailwindcss'
-
-const config: Config = {
-  darkMode: ['class'],
-  content: ['./src/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
-      colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-    },
-  },
-  plugins: [],
-}
-
-export default config
-```
-
-## HSL Format Benefits
-
-Using HSL without function allows opacity modifiers:
-
-```tsx
-// With HSL format (space-separated)
-<div className="bg-primary/50">   // 50% opacity
-<div className="text-primary/80"> // 80% opacity
-
-// CSS output
-background-color: hsl(217 91% 60% / 0.5);
-```
-
-## Component Classes
-
-### Button Example
+## CSS-first token map
 
 ```css
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center
-           rounded-md font-medium
-           transition-colors
-           focus-visible:outline-none focus-visible:ring-2
-           focus-visible:ring-ring focus-visible:ring-offset-2
-           disabled:pointer-events-none disabled:opacity-50;
-  }
+@import "tailwindcss";
 
-  .btn-default {
-    @apply bg-primary text-primary-foreground
-           hover:bg-primary/90;
-  }
+@custom-variant dark (&:where(.dark, .dark *));
 
-  .btn-secondary {
-    @apply bg-secondary text-secondary-foreground
-           hover:bg-secondary/80;
-  }
+:root {
+  --surface-canvas: oklch(0.985 0.004 250);
+  --surface-raised: oklch(1 0 0);
+  --content-primary: oklch(0.22 0.018 250);
+  --content-muted: oklch(0.48 0.02 250);
+  --action-primary: oklch(0.56 0.18 250);
+  --action-primary-content: oklch(0.99 0.003 250);
+  --stroke-subtle: oklch(0.9 0.012 250);
+  --focus-ring: oklch(0.65 0.17 250);
+  --shape-control: 0.625rem;
+  --motion-fast: 140ms;
+  --motion-normal: 200ms;
+}
 
-  .btn-outline {
-    @apply border border-input bg-background
-           hover:bg-accent hover:text-accent-foreground;
-  }
+.dark {
+  --surface-canvas: oklch(0.16 0.014 250);
+  --surface-raised: oklch(0.21 0.016 250);
+  --content-primary: oklch(0.95 0.008 250);
+  --content-muted: oklch(0.72 0.018 250);
+  --action-primary: oklch(0.7 0.15 250);
+  --action-primary-content: oklch(0.16 0.014 250);
+  --stroke-subtle: oklch(0.31 0.018 250);
+  --focus-ring: oklch(0.75 0.14 250);
+}
 
-  .btn-ghost {
-    @apply hover:bg-accent hover:text-accent-foreground;
-  }
-
-  .btn-destructive {
-    @apply bg-destructive text-destructive-foreground
-           hover:bg-destructive/90;
-  }
-
-  /* Sizes */
-  .btn-sm { @apply h-8 px-3 text-xs; }
-  .btn-md { @apply h-10 px-4 text-sm; }
-  .btn-lg { @apply h-12 px-6 text-base; }
+@theme inline {
+  --color-background: var(--surface-canvas);
+  --color-surface: var(--surface-raised);
+  --color-foreground: var(--content-primary);
+  --color-muted-foreground: var(--content-muted);
+  --color-primary: var(--action-primary);
+  --color-primary-foreground: var(--action-primary-content);
+  --color-border: var(--stroke-subtle);
+  --color-ring: var(--focus-ring);
+  --radius-control: var(--shape-control);
+  --default-transition-duration: var(--motion-normal);
 }
 ```
 
-## Spacing Integration
+`@theme inline` is important when one CSS variable references another; generated utilities resolve the current semantic token rather than baking a stale primitive.
 
-```typescript
-// tailwind.config.ts
-theme: {
-  extend: {
-    spacing: {
-      // Map to CSS variables if needed
-      'section': 'var(--spacing-section)',
-      'component': 'var(--spacing-component)',
-    }
+## Components
+
+Prefer project components. If a repeated class is truly stable, Tailwind 4 still supports `@utility` and `@apply`.
+
+```css
+@utility focus-contract {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  &:focus-visible {
+    outline-color: var(--focus-ring);
   }
 }
-```
 
-## Animation Tokens
-
-```typescript
-// tailwind.config.ts
-theme: {
-  extend: {
-    transitionDuration: {
-      fast: '150ms',
-      normal: '200ms',
-      slow: '300ms',
-    },
-    keyframes: {
-      'accordion-down': {
-        from: { height: '0' },
-        to: { height: 'var(--radix-accordion-content-height)' },
-      },
-      'accordion-up': {
-        from: { height: 'var(--radix-accordion-content-height)' },
-        to: { height: '0' },
-      },
-    },
-    animation: {
-      'accordion-down': 'accordion-down 0.2s ease-out',
-      'accordion-up': 'accordion-up 0.2s ease-out',
-    },
-  }
+.primary-action {
+  @apply inline-flex min-h-11 items-center justify-center rounded-control bg-primary px-4 text-primary-foreground;
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-duration: var(--motion-fast);
 }
 ```
 
-## Dark Mode Toggle
+Do not ship a default card/button grid as a design system. Component roles, state APIs, radius, elevation, and hierarchy still come from the product contract.
 
-```typescript
-// Toggle dark mode
-function toggleDarkMode() {
-  document.documentElement.classList.toggle('dark')
-}
+## Source detection and legacy config
 
-// System preference
-if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.documentElement.classList.add('dark')
-}
+Tailwind 4 detects source files automatically. Use `@source` only for packages or paths detection cannot see.
+
+```css
+@source "../node_modules/@company/ui/src";
 ```
 
-## shadcn/ui Alignment
+Keep a JavaScript `tailwind.config.*` only when a required legacy plugin/config cannot migrate yet. Load it explicitly with `@config`; record the compatibility reason and migration gate. Tailwind 3 directives (`@tailwind base/components/utilities`) are not valid generated defaults.
 
-This configuration aligns with shadcn/ui conventions:
+## Plugin migration
 
-- Same CSS variable naming
-- Same HSL format
-- Same color scale structure
-- Compatible with `npx shadcn@latest add` commands
+CSS plugins use `@plugin` when required.
 
-### Using with shadcn/ui
-
-```bash
-# Initialize (uses same token structure)
-npx shadcn@latest init
-
-# Add components (styled with these tokens)
-npx shadcn@latest add button card input
+```css
+@plugin "@tailwindcss/typography";
 ```
 
-Components will automatically use your design system tokens.
+Container queries are native in the Tailwind 4 family; do not retain the old container-query plugin by habit. Confirm every plugin's Tailwind 4 compatibility before adding it.
+
+## Migration gates from Tailwind 3
+
+1. Replace three `@tailwind` directives with `@import "tailwindcss"`.
+2. Use the correct Vite or PostCSS adapter package.
+3. Move theme tokens to CSS-first `@theme` where possible.
+4. Review changed border, ring, shadow, transform, gradient, variant, and arbitrary-value behavior.
+5. Verify browser floor, build output, dark mode, content detection, and dynamic classes.
+6. Run the official upgrade tool only on a clean branch and review every diff.
+
+Do not change version numbers without these gates. See `.claude/registry/tech-stacks/migrations/web-next16-typescript7.md`.

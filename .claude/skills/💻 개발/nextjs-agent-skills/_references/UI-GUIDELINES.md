@@ -835,8 +835,8 @@ export default function RootLayout({ children }) {
 ```
 
 ```tsx
-// Tailwind 커스텀
-// tailwind.config.ts
+// Tailwind 3 legacy project only. Tailwind 4 신규 프로젝트는 CSS `@utility`를 사용한다.
+// tailwind.config.ts (legacy input)
 module.exports = {
   plugins: [
     function({ addUtilities }) {

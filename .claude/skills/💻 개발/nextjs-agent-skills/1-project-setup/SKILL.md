@@ -12,6 +12,8 @@ Extends: `../../_shared/project-setup/SKILL.md` (공통 프로세스 참조)
 
 Next.js 프로젝트 초기 설정 및 의존성 구성을 수행합니다.
 
+> Tech stack registry: `.claude/registry/tech-stacks/web-nextjs.yaml` (`web-nextjs@recommended`). Latest와 recommended가 다르면 recommended를 생성하고 candidate는 별도 검증 lane에서만 사용한다.
+
 ## Triggers
 
 - "프로젝트 생성", "프로젝트 설정", "nextjs init", "nextjs create"
@@ -37,7 +39,7 @@ Next.js 프로젝트 초기 설정 및 의존성 구성을 수행합니다.
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=24.18.0 <25"
   },
   "scripts": {
     "dev": "next dev",
@@ -58,63 +60,63 @@ Next.js 프로젝트 초기 설정 및 의존성 구성을 수행합니다.
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "next": "^16.2.6",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "next-themes": "^0.4.6",
 
-    "@tanstack/react-query": "^5.100.14",
-    "@tanstack/react-query-devtools": "^5.100.14",
-    "zustand": "^5.0.13",
-    "nuqs": "^2.8.9",
+    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-query-devtools": "^5.101.2",
+    "zustand": "^5.0.14",
+    "nuqs": "^2.9.0",
 
     "drizzle-orm": "^0.45.2",
     "@neondatabase/serverless": "^1.1.0",
 
     "zod": "^4.4.3",
-    "react-hook-form": "^7.76.1",
+    "react-hook-form": "^7.81.0",
     "@hookform/resolvers": "^5.4.0",
-    "next-safe-action": "^8.5.3",
+    "next-safe-action": "^8.5.5",
 
-    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-slot": "^1.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.6.0",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.24.0",
     "sonner": "^2.0.7",
 
-    "framer-motion": "^12.40.0",
+    "framer-motion": "^12.42.2",
     "@t3-oss/env-nextjs": "^0.13.11"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "@types/node": "^20.19.41",
-    "@types/react": "^19.2.15",
+    "typescript": "^6.0.2",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
 
-    "tailwindcss": "^4.3.0",
-    "@tailwindcss/postcss": "^4.3.0",
-    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.2",
+    "@tailwindcss/postcss": "^4.3.2",
+    "postcss": "^8.5.17",
     "tw-animate-css": "^1.4.0",
 
     "drizzle-kit": "^0.31.10",
 
-    "vitest": "^4.1.7",
-    "@vitejs/plugin-react": "^6.0.2",
+    "vitest": "^4.1.10",
+    "@vitejs/plugin-react": "^6.0.3",
     "vite-tsconfig-paths": "^6.1.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "jsdom": "^29.1.1",
-    "msw": "^2.14.6",
+    "msw": "^2.15.0",
 
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.1",
 
-    "eslint": "^10.4.0",
-    "eslint-config-next": "^16.2.6",
-    "@eslint/eslintrc": "^3.3.5",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.2.10",
+    "@eslint/eslintrc": "^3.3.6",
 
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.0"
   }
 }
@@ -205,7 +207,7 @@ npx shadcn@latest add button card form input label
 ├── vitest.config.ts
 ├── playwright.config.ts
 ├── next.config.ts
-├── tailwind.config.ts           # (Tailwind v4는 선택적)
+├── postcss.config.mjs           # @tailwindcss/postcss
 ├── tsconfig.json
 ├── .env.local
 └── .env.example
@@ -248,14 +250,16 @@ export default defineConfig({
 });
 ```
 
-#### postcss.config.js (Tailwind v4 필수)
+#### postcss.config.mjs (Tailwind v4 필수)
 
 ```javascript
-export default {
+const config = {
   plugins: {
     '@tailwindcss/postcss': {},
   },
 };
+
+export default config;
 ```
 
 #### drizzle.config.ts
@@ -473,19 +477,19 @@ src/
 // ❌ Bad: 호환되지 않는 버전 조합
 {
   "dependencies": {
-    "next": "^15.0.0",
-    "react": "^18.0.0",  // ❌ Next.js 16 기준과 불일치
-    "@tanstack/react-query": "^4.0.0"  // ❌ v5 권장
+    "next": "<legacy-next-major>",
+    "react": "<incompatible-react-major>",
+    "@tanstack/react-query": "<legacy-query-major>"
   }
 }
 
 // ✅ Good: 호환되는 최신 버전
 {
   "dependencies": {
-    "next": "^16.2.6",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "@tanstack/react-query": "^5.100.14"
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "@tanstack/react-query": "^5.101.2"
   }
 }
 ```
@@ -524,7 +528,7 @@ const dbUrl = env.DATABASE_URL;  // string (validated!)
 
 ```javascript
 // ❌ Bad: Tailwind v4에서 잘못된 postcss 설정
-// postcss.config.js
+// postcss.config.js — legacy/wrong example
 module.exports = {
   plugins: {
     tailwindcss: {},  // ❌ v4에서는 이 방식 사용 안 함
@@ -533,12 +537,14 @@ module.exports = {
 };
 
 // ✅ Good: Tailwind v4 올바른 설정
-// postcss.config.js
-export default {
+// postcss.config.mjs
+const config = {
   plugins: {
     '@tailwindcss/postcss': {},
   },
 };
+
+export default config;
 ```
 
 ### 5. Test 설정 누락

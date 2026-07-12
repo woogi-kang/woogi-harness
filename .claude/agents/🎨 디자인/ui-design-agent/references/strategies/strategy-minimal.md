@@ -1,5 +1,7 @@
 # Minimal Strategy
 
+> INACTIVE LEGACY (2026-07-13): 이 category-to-style template은 Design Runtime v3에서 라우팅하거나 구현 근거로 사용하지 않는다. 실제 프로젝트의 Design Read, register, 5 dials, evidence를 사용한다.
+
 여백과 타이포그래피를 중심으로 한 미니멀 디자인 전략입니다.
 미디어, 갤러리, 웰니스, 럭셔리 브랜드에 최적화되어 있습니다.
 

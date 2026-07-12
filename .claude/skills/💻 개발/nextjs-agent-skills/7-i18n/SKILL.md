@@ -29,7 +29,7 @@ next-intl을 사용하여 다국어 지원을 설정합니다.
 ## 설치
 
 ```bash
-npm install next-intl@^4.12.0
+npm install next-intl@^4.13.2
 ```
 
 > **Note**: next-intl 4.x는 Next.js 16 App Router와 React 19 기준으로 사용합니다. Proxy 파일은 `proxy.ts`로 작성합니다.

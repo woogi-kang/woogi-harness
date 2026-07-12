@@ -22,7 +22,7 @@ metadata:
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 24.18.0 LTS 권장 (`.claude/registry/tech-stacks/web-nextjs.yaml`; 외부 CLI의 더 엄격한 `engines`가 있으면 이를 우선)
 - `npm install -g kleague-results`
 
 ## Inputs

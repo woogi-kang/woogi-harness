@@ -1,7 +1,8 @@
 ---
 name: revenue-analytics
 description: SaaS 수익 지표 분석 및 대시보드 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "MRR"
   - "ARR"

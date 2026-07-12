@@ -56,14 +56,15 @@ interface TokenCollection {
 /* src/styles/variables.css */
 :root {
   /* Colors */
-  --color-primary: #3B82F6;
-  --color-primary-foreground: #FFFFFF;
-  --color-secondary: #6B7280;
-  --color-background: #FFFFFF;
-  --color-foreground: #1F2937;
-  --color-muted: #F3F4F6;
-  --color-muted-foreground: #6B7280;
-  --color-border: #E5E7EB;
+  --figma-color-primary: #3B82F6;
+  --figma-color-primary-foreground: #FFFFFF;
+  --figma-color-secondary: #6B7280;
+  --figma-color-secondary-foreground: #FFFFFF;
+  --figma-color-background: #FFFFFF;
+  --figma-color-foreground: #1F2937;
+  --figma-color-muted: #F3F4F6;
+  --figma-color-muted-foreground: #6B7280;
+  --figma-color-border: #E5E7EB;
 
   /* Spacing */
   --spacing-1: 0.25rem;
@@ -81,58 +82,40 @@ interface TokenCollection {
   --spacing-24: 6rem;
 
   /* Typography */
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'Fira Code', monospace;
+  --figma-font-sans: 'Inter', sans-serif;
+  --figma-font-mono: 'Fira Code', monospace;
 
   /* Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --figma-radius-sm: 0.25rem;
+  --figma-radius-md: 0.5rem;
+  --figma-radius-lg: 0.75rem;
+  --figma-radius-xl: 1rem;
 }
 ```
 
-### Step 4: Tailwind 설정 업데이트
+### Step 4: Tailwind CSS 4 theme 업데이트
 
-```typescript
-// tailwind.config.ts
-import type { Config } from 'tailwindcss';
+```css
+/* src/app/globals.css */
+@import "tailwindcss";
 
-const config: Config = {
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: 'var(--color-primary)',
-          foreground: 'var(--color-primary-foreground)',
-        },
-        secondary: {
-          DEFAULT: 'var(--color-secondary)',
-          foreground: 'var(--color-secondary-foreground)',
-        },
-        background: 'var(--color-background)',
-        foreground: 'var(--color-foreground)',
-        muted: {
-          DEFAULT: 'var(--color-muted)',
-          foreground: 'var(--color-muted-foreground)',
-        },
-        border: 'var(--color-border)',
-      },
-      fontFamily: {
-        sans: ['var(--font-sans)'],
-        mono: ['var(--font-mono)'],
-      },
-      borderRadius: {
-        sm: 'var(--radius-sm)',
-        md: 'var(--radius-md)',
-        lg: 'var(--radius-lg)',
-        xl: 'var(--radius-xl)',
-      },
-    },
-  },
-};
-
-export default config;
+@theme inline {
+  --color-primary: var(--figma-color-primary);
+  --color-primary-foreground: var(--figma-color-primary-foreground);
+  --color-secondary: var(--figma-color-secondary);
+  --color-secondary-foreground: var(--figma-color-secondary-foreground);
+  --color-background: var(--figma-color-background);
+  --color-foreground: var(--figma-color-foreground);
+  --color-muted: var(--figma-color-muted);
+  --color-muted-foreground: var(--figma-color-muted-foreground);
+  --color-border: var(--figma-color-border);
+  --font-sans: var(--figma-font-sans);
+  --font-mono: var(--figma-font-mono);
+  --radius-sm: var(--figma-radius-sm);
+  --radius-md: var(--figma-radius-md);
+  --radius-lg: var(--figma-radius-lg);
+  --radius-xl: var(--figma-radius-xl);
+}
 ```
 
 ---
@@ -143,13 +126,13 @@ export default config;
 
 ```css
 :root {
-  --color-background: #FFFFFF;
-  --color-foreground: #1F2937;
+  --figma-color-background: #FFFFFF;
+  --figma-color-foreground: #1F2937;
 }
 
 .dark {
-  --color-background: #1F2937;
-  --color-foreground: #F9FAFB;
+  --figma-color-background: #1F2937;
+  --figma-color-foreground: #F9FAFB;
 }
 ```
 
@@ -223,5 +206,5 @@ src/
 │   ├── variables.css     # CSS 변수 정의
 │   └── tokens.json       # 원본 토큰 (참조용)
 │
-└── tailwind.config.ts    # Tailwind 설정 업데이트
+└── app/globals.css       # Tailwind CSS 4 theme 업데이트
 ```

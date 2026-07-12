@@ -4,7 +4,8 @@ description: |
   TDD agent using Ralph Wiggum methodology.
   Self-referential file-based learning loop that runs until all tests pass (100%).
   Supports Ralph Hybrid (score-based) and Ralph Pure (promise-based) strategies.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 triggers:
   - "tdd ralph"

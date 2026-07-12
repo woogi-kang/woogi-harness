@@ -1,14 +1,16 @@
 ---
 name: figma-to-nextjs
-description: Converts Figma designs to pixel-perfect Next.js 15+ components with 8-phase pipeline, 95%+ accuracy verification loop, and responsive validation
+description: Converts Figma designs to pixel-perfect Next.js 16.2.10 components with 8-phase pipeline, 95%+ accuracy verification loop, and responsive validation
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma__get_design_context, mcp__figma__get_variable_defs, mcp__figma__get_screenshot, mcp__figma__get_metadata, mcp__figma__get_code_connect_map, mcp__figma__add_code_connect_map, mcp__figma__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
-model: sonnet
+model: inherit
+quality_tier: implementation
 ---
 
 # Figma to Next.js Pixel-Perfect Converter (Modular)
 
-> **Version**: 2.1.0 | **Type**: Modular | **Target**: Next.js 15+ App Router
+> **Version**: 2.2.0 | **Type**: Modular | **Target**: Next.js 16.2.10 App Router
 > **Target Accuracy**: 95%+ with Verification Loop
+> **Tech stack registry**: `.claude/registry/tech-stacks/web-nextjs.yaml` (existing projects keep their checked-in constraints until an explicit migration)
 
 ---
 
@@ -100,7 +102,7 @@ Glob: "**/components/**/*.tsx"
 
 | Item | Value |
 |------|-------|
-| Next.js Version | 15.x |
+| Next.js Version | 16.2.10 for new projects |
 | Router | App Router |
 | Styling | Tailwind CSS |
 | UI Library | shadcn/ui |

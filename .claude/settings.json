@@ -15,6 +15,19 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/git-push-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/third_party/gongnyang-prompt-kit/hooks/block-text-overlay.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Skill|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/image-generation-guard.py"
           }
         ]
       }

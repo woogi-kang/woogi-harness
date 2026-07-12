@@ -858,9 +858,9 @@ class Settings(BaseSettings):
 # Add to pyproject.toml
 dependencies = [
     # ... existing ...
-    "aiofiles>=24.1.0",
-    "aioboto3>=13.0.0",
-    "pillow>=11.0.0",
+    "aiofiles>=25.1.0,<26",
+    "aioboto3>=15.5.0,<16",
+    "pillow>=12.3.0,<13",
     "python-magic>=0.4.27",
 ]
 ```

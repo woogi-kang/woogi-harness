@@ -1,3 +1,14 @@
+---
+paths:
+  - "**/test/**"
+  - "**/tests/**"
+  - "**/__tests__/**"
+  - "**/*_test.py"
+  - "**/*_test.dart"
+  - "**/*.test.*"
+  - "**/*.spec.*"
+---
+
 # Testing
 
 ## 원칙

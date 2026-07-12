@@ -1,122 +1,64 @@
-# Icon Design Reference
+# Icon workflow
 
-AI-powered SVG icon generation using Gemini 3.1 Pro Preview. 15 styles, 12 categories, multi-size export.
+Choose one production lane.
 
-## Scripts
+## Generated raster icon
 
-| Script | Purpose |
-|--------|---------|
-| `scripts/icon/generate.py` | Generate SVG icons with Gemini 3.1 Pro Preview |
+Use `image-prompt` C9, the upstream validator, and Codex `$imagegen`
+(`gpt-image-2`). The compiler owns every prompt decision.
 
-## Commands
+## Editable SVG icon
 
-### Generate Single Icon
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "settings gear" --style outlined
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "shopping cart" --style filled --color "#6366F1"
-python3 ~/.claude/skills/design/scripts/icon/generate.py --name "dashboard" --category navigation --style duotone
-```
-
-### Generate Batch Variations
+Use an existing icon library or deterministic code/vector tooling. The local
+`scripts/icon/generate.py` command only normalizes and validates an existing SVG
+source; it does not call a language or image model.
 
 ```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "cloud upload" --batch 4 --output-dir ./icons
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "notification bell" --batch 6 --style outlined --output-dir ./icons
+python3 .claude/skills/design/scripts/icon/generate.py \
+  --input icon.svg --output icon-normalized.svg --size 24 --color '#6366F1'
 ```
 
-### Generate Multiple Sizes
+Do not convert a generated raster into an allegedly source-quality SVG without
+human inspection. Preserve provenance for every derived artifact.
 
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile" --sizes "16,24,32,48" --output-dir ./icons
-```
+## Evidence axes
 
-### List Styles/Categories
+These labels guide brief classification and source-library lookup. They are not
+local prompt suffixes.
 
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --list-styles
-python3 ~/.claude/skills/design/scripts/icon/generate.py --list-categories
-```
+| Style | Typical use |
+|---|---|
+| Outlined / thin | Dense product UI, tables, toolbars |
+| Filled / glyph | Compact navigation and selected states |
+| Duotone | Marketing and onboarding support |
+| Rounded | Friendly consumer and health products |
+| Sharp / geometric | Technical and enterprise products |
+| Flat | Simple product and documentation graphics |
+| Tactile / 3D | Generated campaign or app-icon concept |
+| Pixel / hand-drawn | Deliberately expressive brand systems |
+| Animated-ready | Motion systems with explicit path constraints |
 
-## CLI Options
+| Category | Examples |
+|---|---|
+| Navigation | Arrow, menu, home, chevron |
+| Action | Edit, delete, save, download, upload |
+| Communication | Mail, chat, phone, notification |
+| Media | Play, pause, volume, camera |
+| File | Document, folder, archive, cloud |
+| User | Person, group, profile, settings |
+| Commerce | Cart, wallet, card, receipt |
+| Data | Chart, analytics, dashboard |
+| Development | Code, terminal, bug, git, API |
+| Social | Heart, star, bookmark, trophy |
+| Weather / map | Sun, cloud, rain, pin, compass, globe |
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--prompt, -p` | Icon description | required |
-| `--name, -n` | Icon name (for filename) | - |
-| `--style, -s` | Icon style (15 options) | - |
-| `--category, -c` | Icon category for context | - |
-| `--color` | Primary hex color | currentColor |
-| `--size` | Display size in px | 24 |
-| `--viewbox` | SVG viewBox size | 24 |
-| `--output, -o` | Output file path | auto |
-| `--output-dir` | Output directory (batch) | ./icons |
-| `--batch` | Number of variations | - |
-| `--sizes` | Comma-separated sizes | - |
+## SVG quality gate
 
-## Available Styles
-
-| Style | Stroke | Fill | Best For |
-|-------|--------|------|----------|
-| outlined | 2px | none | UI interfaces, web apps |
-| filled | 0 | solid | Mobile apps, nav bars |
-| duotone | 0 | dual | Marketing, landing pages |
-| thin | 1-1.5px | none | Luxury brands, editorial |
-| bold | 3px | none | Headers, hero sections |
-| rounded | 2px | none | Friendly apps, health |
-| sharp | 2px | none | Tech, fintech, enterprise |
-| flat | 0 | solid | Material design, Google-style |
-| gradient | 0 | gradient | Modern brands, SaaS |
-| glassmorphism | 1px | semi | Modern UI, overlays |
-| pixel | 0 | solid | Gaming, retro |
-| hand-drawn | varies | none | Artisan, creative |
-| isometric | 1-2px | partial | Tech docs, infographics |
-| glyph | 0 | solid | System UI, compact |
-| animated-ready | 2px | varies | Interactive UI, onboarding |
-
-## Icon Categories
-
-| Category | Icons |
-|----------|-------|
-| navigation | arrows, menus, home, chevrons |
-| action | edit, delete, save, download, upload |
-| communication | email, chat, phone, notification |
-| media | play, pause, volume, camera |
-| file | document, folder, archive, cloud |
-| user | person, group, profile, settings |
-| commerce | cart, bag, wallet, credit card |
-| data | chart, graph, analytics, dashboard |
-| development | code, terminal, bug, git, API |
-| social | heart, star, bookmark, trophy |
-| weather | sun, moon, cloud, rain |
-| map | pin, location, compass, globe |
-
-## SVG Best Practices
-
-- **ViewBox**: Use `0 0 24 24` (standard) or `0 0 16 16` (compact)
-- **Colors**: Use `currentColor` for CSS inheritance, avoid hardcoded colors
-- **Accessibility**: Always include `<title>` element
-- **Optimization**: Minimal path nodes, no embedded fonts or raster images
-- **Sizing**: Design at 24px, test at 16px and 48px for clarity
-- **Stroke**: Use `stroke-linecap="round"` and `stroke-linejoin="round"` for outlined styles
-
-## Model
-
-- **gemini-3.1-pro-preview**: Best thinking, token efficiency, factual consistency
-- Text-only output (SVG is XML text) — no image generation API needed
-- Supports structured output for consistent SVG formatting
-
-## Workflow
-
-1. Describe icon → `--prompt "settings gear"`
-2. Choose style → `--style outlined`
-3. Generate → script outputs .svg file
-4. Optionally batch → `--batch 4` for variations
-5. Multi-size export → `--sizes "16,24,32,48"`
-
-## Setup
-
-```bash
-export GEMINI_API_KEY="your-key"
-pip install google-genai
-```
+- Use a stable `viewBox` and test at the actual smallest size.
+- Prefer `currentColor` when the icon belongs to UI chrome.
+- Keep paths and nodes minimal; do not embed fonts, scripts, remote assets, or
+  raster data.
+- Provide an accessible label where the icon is not purely decorative.
+- Keep stroke width, cap, join, optical size, and bounding-box rhythm consistent
+  across the set.
+- Treat multi-size exports as deterministic derivatives of one reviewed source.

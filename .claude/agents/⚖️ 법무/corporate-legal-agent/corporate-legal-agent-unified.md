@@ -3,7 +3,8 @@ name: corporate-legal-agent
 description: |
   법인 운영, 등기, 주주총회/이사회, 정관 관리를 지원하는 법무 Agent.
   "법인 설립해줘", "주총 의사록 작성해줘", "등기 변경해야 해" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 skills:
   - corporate-registration
   - shareholder-meeting

@@ -1,121 +1,79 @@
-# CIP Design Reference
+# CIP design workflow
 
-Corporate Identity Program design with 50+ deliverables, 20 styles, 20 industries. Generate mockups with Gemini Nano Banana (Flash/Pro).
+## Responsibilities
 
-## Scripts
-
-| Script | Purpose |
-|--------|---------|
-| `scripts/cip/search.py` | Search deliverables, styles, industries; generate CIP briefs |
-| `scripts/cip/generate.py` | Generate CIP mockups with Gemini (Flash/Pro) |
-| `scripts/cip/render-html.py` | Render HTML presentation from CIP mockups |
-| `scripts/cip/core.py` | BM25 search engine for CIP data |
-
-## Commands
-
-### CIP Brief (Start Here)
+- Search deliverable, industry, style, and mockup context data.
+- Collect the real logo/source files and brand constraints.
+- Route generative mockups through `image-prompt` C8 and Codex `gpt-image-2`.
+- Render already-produced assets into a reviewable HTML presentation.
 
 ```bash
-python3 ~/.claude/skills/design/scripts/cip/search.py "tech startup" --cip-brief -b "BrandName"
+python3 .claude/skills/design/scripts/cip/search.py \
+  "business card consulting" --cip-brief -b "BrandName"
 ```
 
-### Search Domains
+The brief is compiler evidence, not a prompt. Use `scripts/cip/generate.py` only
+to validate a Gongnyang JSONL plan and create output directories; the script
+does not call an image model.
 
 ```bash
-# Deliverables
-python3 ~/.claude/skills/design/scripts/cip/search.py "business card letterhead" --domain deliverable
-
-# Design styles
-python3 ~/.claude/skills/design/scripts/cip/search.py "luxury premium elegant" --domain style
-
-# Industry guidelines
-python3 ~/.claude/skills/design/scripts/cip/search.py "hospitality hotel" --domain industry
-
-# Mockup contexts
-python3 ~/.claude/skills/design/scripts/cip/search.py "office reception" --domain mockup
+python3 .claude/skills/design/scripts/cip/generate.py \
+  --manifest prompts.jsonl --output assets/cip
 ```
 
-### Generate Mockups
+Use deterministic templates when exact source-logo fidelity or editable text is
+required. Do not overlay native text onto a generated raster.
+
+## Evidence lookup
 
 ```bash
-# With logo (RECOMMENDED - uses image editing)
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --deliverable "business card" --industry "consulting"
-
-# Full CIP set with logo
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --industry "consulting" --set
-
-# Pro model for 4K text rendering
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo logo.png --deliverable "business card" --model pro
-
-# Custom deliverables with aspect ratio
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "GreenLeaf" --logo logo.png --industry "organic food" --deliverables "letterhead,packaging,vehicle" --ratio 16:9
-
-# Without logo (AI generates interpretation)
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TechFlow" --deliverable "business card" --no-logo-prompt
+python3 .claude/skills/design/scripts/cip/search.py \
+  "business card letterhead" --domain deliverable
+python3 .claude/skills/design/scripts/cip/search.py \
+  "luxury premium elegant" --domain style
+python3 .claude/skills/design/scripts/cip/search.py \
+  "hospitality hotel" --domain industry
+python3 .claude/skills/design/scripts/cip/search.py \
+  "office reception" --domain mockup
 ```
 
-### Render HTML Presentation
+Search results are structured evidence only. Do not concatenate them into a
+local image prompt.
+
+## Deliverable families
+
+| Family | Examples |
+|---|---|
+| Core identity | Primary mark, lockup, monochrome and small-size variants |
+| Stationery | Business card, letterhead, envelope, folder, notebook |
+| Access | ID badge, lanyard, access card |
+| Environment | Reception sign, wayfinding, wall graphic, meeting-room sign |
+| Apparel | Shirt, jacket, cap, apron |
+| Promotional | Tote, gift box, bottle, mug, umbrella |
+| Vehicle | Sedan, van, truck livery |
+| Digital | Social profile, email signature, slide/document template |
+| Product | Packaging, label, tag, retail display |
+| Event | Booth, banner stand, table cover, backdrop |
+
+## Production decision
+
+- Use deterministic templates for business cards, letterheads, labels, legal
+  copy, dimensions, and any deliverable that must remain editable.
+- Use `image-prompt` C8 for concept visualization or contextual mockups where
+  the generated raster itself is the approved artifact.
+- Never claim pixel-faithful logo reproduction from a generated mockup. When
+  fidelity is required, place the real source logo in a deterministic layout.
+- Keep print production requirements such as bleed, color space, stock, and
+  finishing in the deliverable specification, outside the image prompt.
+
+## Review presentation
 
 ```bash
-python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --industry "consulting" --images /path/to/cip-output
-python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --industry "consulting" --images ./topgroup-cip --output presentation.html
+python3 .claude/skills/design/scripts/cip/render-html.py \
+  --brand "TopGroup" --industry "consulting" \
+  --images assets/cip --output presentation.html
 ```
 
-## Models
-
-- `flash` (default): `gemini-2.5-flash-image` - Fast, cost-effective
-- `pro`: `gemini-3-pro-image-preview` - Quality, 4K text rendering
-
-## Deliverable Categories
-
-| Category | Items |
-|----------|-------|
-| Core Identity | Logo, Logo Variations |
-| Stationery | Business Card, Letterhead, Envelope, Folder, Notebook, Pen |
-| Security/Access | ID Badge, Lanyard, Access Card |
-| Office Environment | Reception Signage, Wayfinding, Meeting Room Signs, Wall Graphics |
-| Apparel | Polo Shirt, T-Shirt, Cap, Jacket, Apron |
-| Promotional | Tote Bag, Gift Box, USB Drive, Water Bottle, Mug, Umbrella |
-| Vehicle | Car Sedan, Van, Truck |
-| Digital | Social Media, Email Signature, PowerPoint, Document Templates |
-| Product | Packaging Box, Labels, Tags, Retail Display |
-| Events | Trade Show Booth, Banner Stand, Table Cover, Backdrop |
-
-## Design Styles
-
-| Style | Colors | Best For |
-|-------|--------|----------|
-| Corporate Minimal | Navy, White, Blue | Finance, Legal, Consulting |
-| Modern Tech | Purple, Cyan, Green | Tech, Startups, SaaS |
-| Luxury Premium | Black, Gold, White | Fashion, Jewelry, Hotels |
-| Warm Organic | Brown, Green, Cream | Food, Organic, Artisan |
-| Bold Dynamic | Red, Orange, Black | Sports, Entertainment |
-
-## HTML Presentation Features
-
-- Hero section with brand name, industry, style, mood
-- Deliverable cards with mockup images
-- Descriptions: concept, purpose, specifications
-- Responsive desktop/mobile, dark theme
-- Images embedded as base64 (single-file portable)
-
-## Workflow
-
-1. Generate CIP brief → `scripts/cip/search.py --cip-brief`
-2. Generate mockups with logo → `scripts/cip/generate.py --brand --logo --industry --set`
-3. Render HTML presentation → `scripts/cip/render-html.py --brand --industry --images`
-
-**Tip:** If no logo exists, use Logo Design (built-in) to generate one first.
-
-## Detailed References
-
-- `references/cip-deliverable-guide.md` - Deliverable specifications
-- `references/cip-style-guide.md` - Design style descriptions
-- `references/cip-prompt-engineering.md` - AI generation prompts
-
-## Setup
-
-```bash
-export GEMINI_API_KEY="your-key"
-pip install google-genai pillow
-```
+The HTML presentation is a review surface, not proof that source files are
+print-ready. Check the detailed specifications in `cip-deliverable-guide.md`
+and art-direction evidence in `cip-style-guide.md`.

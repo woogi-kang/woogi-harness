@@ -1,6 +1,6 @@
 # Workflows
 
-Use this file to choose the right operating mode. Every workflow starts with a Design Read and ends with the relevant gate from `preflight.md`.
+Use this file to choose the right operating mode. Implementation workflows create a `design-run-v3`, start with a project fingerprint and Design Read, then end with hashed evidence, an independent critic, and the relevant gate from `preflight.md`.
 
 ## Shape
 
@@ -27,16 +27,18 @@ Use when building a page/screen/component.
 
 Steps:
 
-1. Inspect existing stack, tokens, components, and package dependencies.
-2. Write design read, dials, and main slop risk.
+1. Inspect existing stack, tokens, components, package dependencies, and representative surfaces.
+2. Create a design run with fingerprint, Design Read, five dials, routes/states/viewports, and main slop risk.
 3. Read `design-system-map.md` when an official system may apply.
 4. Translate borrowed reference grammar into local tokens, components, and layout rules.
 5. Identify the one visual idea or product usability goal.
-6. Implement with existing primitives where they fit.
-7. Add necessary states and responsive behavior.
-8. Run mechanical detector.
-9. Run browser/screenshot QA when possible.
-10. Run final preflight.
+6. Implement with the detected Web/Flutter adapter and existing primitives.
+7. Add necessary states, accessibility, and responsive behavior.
+8. Run the JSON detector and project build/analyze/test.
+9. Capture and hash route/state/viewport evidence.
+10. Obtain an independent evidence-linked critic result; repair at most twice.
+11. Run the register-specific executable eval and final preflight.
+12. Report local `ready_for_external_promotion`; use `passed` only after an authenticated external provider/orchestrator records the promotion.
 
 ## Measure
 
@@ -105,6 +107,7 @@ Use for existing projects. Read `redesign-protocol.md` first.
 5. Fix in low-risk order: typography, spacing, color tokens, component states, surface geometry, key-section recomposition, evidence, motion.
 6. Preserve URL structure, form field names, legal copy, analytics hooks, and product behavior unless explicitly requested.
 7. Run detector, browser QA when possible, and final preflight.
+8. Register comparable baseline/result artifacts, obtain an independent critic result, and run the register-specific eval.
 
 ## Harden
 

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.project-profile.v1",
+  "type": "object",
+  "required": ["schema_version", "id", "pack", "selected_provider", "default_quality_tier", "capabilities", "context_budget_bytes"],
+  "properties": {
+    "schema_version": {"const": "harness.project-profile.v1"},
+    "id": {"type": "string", "minLength": 1},
+    "pack": {"type": "string", "minLength": 1},
+    "pack_overlays": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "providers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "selected_provider": {"type": "string", "minLength": 1},
+    "default_quality_tier": {"enum": ["reasoning_high", "implementation", "fast_scan", "independent_critic"]},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "context_budget_bytes": {"type": "integer", "minimum": 1024},
+    "protected_paths": {"type": "array", "items": {"type": "string"}},
+    "overlays": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

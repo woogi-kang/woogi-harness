@@ -82,8 +82,14 @@ infographic_evergreen_pricing-comparison_20251209.png
   "tags": ["campaign", "hero", "launch"],
   "status": "approved",
   "source": {
-    "model": "imagen-4",
-    "prompt": "...",
+    "compiler": "image-prompt@2.3.0",
+    "generator": "image_gen__imagegen",
+    "required_model": "gpt-image-2",
+    "model_binding": "trusted-host-fixed",
+    "local_model_verification": "unavailable",
+    "host_reported_model": null,
+    "generation_assurance": "generated_under_trusted_host_contract",
+    "promptRecord": "prompts.jsonl#C5-CAMPAIGN-001",
     "createdAt": "2025-12-09T10:30:00Z"
   },
   "version": 2,
@@ -114,10 +120,15 @@ infographic_evergreen_pricing-comparison_20251209.png
 | platform | instagram, twitter, linkedin, facebook, youtube, email, web |
 | content-type | promotional, educational, brand, product, testimonial |
 | format | 1x1, 4x5, 9x16, 16x9, story, reel, banner |
-| source | imagen-4, veo-3, user-upload, canva, figma |
+| source | codex-imagegen-trusted-host, deterministic-renderer, user-upload, canva, figma |
 
 ### Tag Usage
 - Each asset should have: status + platform + content-type
+- Generated assets additionally require `required_model: gpt-image-2`,
+  `model_binding: trusted-host-fixed`, `local_model_verification: unavailable`,
+  `host_reported_model: null`, and
+  `generation_assurance: generated_under_trusted_host_contract`; a `model`
+  field is forbidden because the Codex host does not expose model identity.
 - Optional: format, source, campaign
 
 ## File Organization Best Practices

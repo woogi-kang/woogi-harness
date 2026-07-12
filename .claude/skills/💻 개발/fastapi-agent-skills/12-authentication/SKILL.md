@@ -4,11 +4,13 @@ description: |
   OAuth2 Password flow, JWT access/refresh 토큰을 구현합니다.
 metadata:
   category: "💻 개발"
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 # Authentication Skill
 
 OAuth2 Password flow, JWT access/refresh 토큰을 구현합니다.
+
+> Tech stack registry: `.claude/registry/tech-stacks/python-fastapi.yaml`. 신규 구현은 PyJWT + `pwdlib[argon2]`를 사용하고, Passlib는 기존 해시를 읽는 한시적 마이그레이션 어댑터에서만 허용합니다.
 
 ## Triggers
 
@@ -36,22 +38,22 @@ from typing import Any
 
 import jwt
 from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 from app.core.config import settings
 
-# Password hashing - Argon2 preferred, bcrypt as fallback
-pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
+# Password hashing - pwdlib's recommended Argon2 configuration
+password_hash = PasswordHash.recommended()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    return password_hash.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Hash a password."""
-    return pwd_context.hash(password)
+    return password_hash.hash(password)
 
 
 def create_access_token(

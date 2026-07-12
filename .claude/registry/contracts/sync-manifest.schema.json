@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.sync-manifest.v1",
+  "type": "object",
+  "required": ["schema_version", "run_id", "generated_at", "source_root", "mode", "packs", "actions", "summary"],
+  "properties": {
+    "schema_version": {"const": "harness.sync-manifest.v1"},
+    "run_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string"},
+    "source_root": {"type": "string"},
+    "mode": {"enum": ["dry-run", "apply"]},
+    "canary": {"type": "boolean"},
+    "packs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["project_id", "project_path", "path", "before", "desired", "operation", "applied"],
+        "properties": {
+          "project_id": {"type": "string"},
+          "project_path": {"type": "string"},
+          "path": {"type": "string"},
+          "operation": {"type": "string"},
+          "applied": {"type": "boolean"},
+          "before": {"type": "object"},
+          "after": {"type": "object"},
+          "desired": {"type": "object"}
+        }
+      }
+    },
+    "summary": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+  }
+}

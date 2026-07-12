@@ -4,7 +4,8 @@ description: |
   빌드/타입 에러를 최소 diff로 수정하는 전문 에이전트.
   TypeScript, Python, Flutter 빌드 에러에 반응.
   "빌드 에러", "build failed", "type error", "컴파일 에러" 요청에 반응.
-model: sonnet
+model: inherit
+quality_tier: implementation
 tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
 ---
 

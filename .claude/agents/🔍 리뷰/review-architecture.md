@@ -4,7 +4,8 @@ description: |
   아키텍처 리뷰 전문 에이전트. 시스템 설계, ERD, API 스펙의 품질을 평가합니다.
   review-orchestrator에 의해 호출됩니다.
 tools: Read, Grep, Glob
-model: opus
+model: inherit
+quality_tier: independent_critic
 ---
 
 # Review Architecture - 아키텍처 리뷰 전문가

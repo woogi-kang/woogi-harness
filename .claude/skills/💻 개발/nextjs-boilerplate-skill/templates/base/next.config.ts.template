@@ -15,11 +15,8 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Experimental features
-  experimental: {
-    // Enable Server Actions (stable in Next.js 15)
-    // typedRoutes: true, // Enable if you want type-safe routes
-  },
+  // Server Actions are stable. Typed routes are also a top-level option in Next.js 16.
+  // typedRoutes: true,
 }
 
 export default nextConfig

@@ -4,7 +4,8 @@ description: |
   계약 검토, 위험 분석, 문서 생성을 지원하는 법무 Agent.
   NDA, 서비스 계약, 라이선스 계약 등 다양한 계약 유형을 처리합니다.
   "계약서 검토해줘", "NDA 초안 작성해줘", "위험 조항 찾아줘" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 skills:
   - legal-context
   - legal-document-analysis

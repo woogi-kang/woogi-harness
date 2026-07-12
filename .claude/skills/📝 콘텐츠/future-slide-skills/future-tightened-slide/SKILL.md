@@ -27,7 +27,7 @@ Future Slide의 `tightened-slide`를 우리 환경에 맞게 감싼 HTML 덱 생
 
 ## Vendor 위치
 
-원본 Future Slide 스킬은 아래 경로에 보존합니다.
+Future Slide에서 가져온 deterministic `tightened-slide` layout/validator 부분만 아래 경로에 보존합니다. 원본의 GPT image slide/prompt 서브스킬은 단일 이미지 경로와 충돌하므로 배포 표면에서 제거되었습니다.
 
 ```text
 .claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/
@@ -61,6 +61,7 @@ sed -n '1,220p' ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/futur
 
 5. 이미지 asset 적용
    - 새 이미지가 필요하면 `future-slide-asset-gen`을 사용합니다.
+   - 생성형 raster는 `image-prompt` → upstream validator → Codex `$imagegen` → `gpt-image-2`로만 만듭니다.
    - 생성 이미지는 전체 슬라이드가 아니라 `S22`, `S15`, `S16` 등의 slot에 들어갈 보조 asset이어야 합니다.
    - 모든 로컬 이미지는 `images/` 아래에 저장하고 `data-image-slot`과 `alt`를 넣습니다.
 

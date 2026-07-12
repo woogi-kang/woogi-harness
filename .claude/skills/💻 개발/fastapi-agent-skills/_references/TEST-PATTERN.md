@@ -165,14 +165,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app.main import create_app
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    import asyncio
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
 @pytest_asyncio.fixture
 async def session(engine) -> AsyncSession:
     """Create session with rollback after each test."""

@@ -7,35 +7,31 @@ Reads .claude/logs/usage.jsonl and generates a summary:
   - Usage by tool type
   - Usage over time (daily)
 
-Log format (written by .claude/hooks/usage-tracker.sh via PostToolUse hook):
-  {"timestamp":"...","session_id":"...","tool":"agent|skill","name":"...","subagent_type":"..."}
+Current log format (written by .claude/hooks/usage-tracker.sh):
+  {"schema_version":"harness.telemetry.v1", "subject_type":"agent|skill", ...}
+
+The loader also accepts the legacy pretty-printed concatenated JSON format.
 
 Requires no external dependencies (stdlib only).
 """
 
-import json
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
+
+from harness_runtime_lib import (
+    HarnessError,
+    normalize_telemetry_event,
+    read_json_stream,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LOG_FILE = PROJECT_ROOT / ".claude" / "logs" / "usage.jsonl"
 
 
-def load_entries() -> list[dict]:
-    """Load all entries from the JSONL log file."""
-    if not LOG_FILE.exists():
-        return []
-    entries = []
-    for line in LOG_FILE.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            entries.append(json.loads(line))
-        except json.JSONDecodeError:
-            continue
-    return entries
+def load_entries(path: Path = LOG_FILE) -> list[dict]:
+    """Load v1 JSONL and the legacy concatenated pretty-JSON format."""
+    return [normalize_telemetry_event(entry) for entry in read_json_stream(path)]
 
 
 def generate_report(entries: list[dict]) -> None:
@@ -67,8 +63,8 @@ def generate_report(entries: list[dict]) -> None:
     agent_types: Counter = Counter()
 
     for entry in entries:
-        tool = entry.get("tool", "unknown")
-        name = entry.get("name", "unknown")
+        tool = entry.get("subject_type", entry.get("tool", "unknown"))
+        name = entry.get("subject_id", entry.get("name", "unknown"))
         timestamp = entry.get("timestamp", "")
 
         by_tool[tool] += 1
@@ -76,7 +72,9 @@ def generate_report(entries: list[dict]) -> None:
         tool_names[tool][name] += 1
 
         if tool == "agent":
-            subtype = entry.get("subagent_type", "general-purpose")
+            subtype = entry.get("metadata", {}).get(
+                "subagent_type", entry.get("subagent_type", "general-purpose")
+            )
             agent_types[subtype] += 1
 
         if timestamp:
@@ -143,7 +141,11 @@ def generate_report(entries: list[dict]) -> None:
 
 
 def main() -> int:
-    entries = load_entries()
+    try:
+        entries = load_entries()
+    except HarnessError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
     generate_report(entries)
     return 0
 

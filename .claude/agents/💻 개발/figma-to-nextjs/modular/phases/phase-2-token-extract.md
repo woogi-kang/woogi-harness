@@ -111,13 +111,13 @@ get_variable_defs({
 @layer base {
   :root {
     /* Colors */
-    --color-primary: 59 130 246;        /* #3B82F6 */
-    --color-primary-hover: 37 99 235;   /* #2563EB */
-    --color-secondary: 16 185 129;      /* #10B981 */
-    --color-background: 255 255 255;    /* #FFFFFF */
-    --color-foreground: 31 41 55;       /* #1F2937 */
-    --color-muted: 156 163 175;         /* #9CA3AF */
-    --color-border: 229 231 235;        /* #E5E7EB */
+    --figma-color-primary: 59 130 246;        /* #3B82F6 */
+    --figma-color-primary-hover: 37 99 235;   /* #2563EB */
+    --figma-color-secondary: 16 185 129;      /* #10B981 */
+    --figma-color-background: 255 255 255;    /* #FFFFFF */
+    --figma-color-foreground: 31 41 55;       /* #1F2937 */
+    --figma-color-muted: 156 163 175;         /* #9CA3AF */
+    --figma-color-border: 229 231 235;        /* #E5E7EB */
 
     /* Spacing */
     --spacing-xs: 4px;
@@ -140,62 +140,40 @@ get_variable_defs({
   }
 
   .dark {
-    --color-background: 17 24 39;       /* #111827 */
-    --color-foreground: 249 250 251;    /* #F9FAFB */
+    --figma-color-background: 17 24 39;       /* #111827 */
+    --figma-color-foreground: 249 250 251;    /* #F9FAFB */
   }
 }
 ```
 
 ---
 
-## Step 2-3: Tailwind Config 확장
+## Step 2-3: Tailwind CSS 4 theme 확장
 
-```typescript
-// tailwind.config.ts
-import type { Config } from 'tailwindcss';
+```css
+/* src/app/globals.css — CSS-first configuration */
+@import "tailwindcss";
 
-const config: Config = {
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
-          hover: 'rgb(var(--color-primary-hover) / <alpha-value>)',
-        },
-        secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
-        background: 'rgb(var(--color-background) / <alpha-value>)',
-        foreground: 'rgb(var(--color-foreground) / <alpha-value>)',
-        muted: 'rgb(var(--color-muted) / <alpha-value>)',
-        border: 'rgb(var(--color-border) / <alpha-value>)',
-      },
-      spacing: {
-        'figma-xs': 'var(--spacing-xs)',
-        'figma-sm': 'var(--spacing-sm)',
-        'figma-md': 'var(--spacing-md)',
-        'figma-lg': 'var(--spacing-lg)',
-        'figma-xl': 'var(--spacing-xl)',
-        'figma-2xl': 'var(--spacing-2xl)',
-      },
-      borderRadius: {
-        'figma-sm': 'var(--radius-sm)',
-        'figma-md': 'var(--radius-md)',
-        'figma-lg': 'var(--radius-lg)',
-        'figma-xl': 'var(--radius-xl)',
-      },
-      boxShadow: {
-        'figma-sm': 'var(--shadow-sm)',
-        'figma-md': 'var(--shadow-md)',
-        'figma-lg': 'var(--shadow-lg)',
-      },
-    },
-  },
-  plugins: [],
-};
-
-export default config;
+@theme inline {
+  --color-primary: rgb(var(--figma-color-primary));
+  --color-primary-hover: rgb(var(--figma-color-primary-hover));
+  --color-secondary: rgb(var(--figma-color-secondary));
+  --color-background: rgb(var(--figma-color-background));
+  --color-foreground: rgb(var(--figma-color-foreground));
+  --color-muted: rgb(var(--figma-color-muted));
+  --color-border: rgb(var(--figma-color-border));
+  --spacing-figma-xs: var(--spacing-xs);
+  --spacing-figma-sm: var(--spacing-sm);
+  --spacing-figma-md: var(--spacing-md);
+  --spacing-figma-lg: var(--spacing-lg);
+  --spacing-figma-xl: var(--spacing-xl);
+  --radius-figma-sm: var(--radius-sm);
+  --radius-figma-md: var(--radius-md);
+  --radius-figma-lg: var(--radius-lg);
+  --shadow-figma-sm: var(--shadow-sm);
+  --shadow-figma-md: var(--shadow-md);
+  --shadow-figma-lg: var(--shadow-lg);
+}
 ```
 
 ---
@@ -263,8 +241,8 @@ export const typography = {
 
 | Figma | Tailwind Class | CSS Variable |
 |-------|---------------|--------------|
-| `primary` | `bg-primary`, `text-primary` | `--color-primary` |
-| `secondary` | `bg-secondary` | `--color-secondary` |
+| `primary` | `bg-primary`, `text-primary` | `--figma-color-primary` → `--color-primary` |
+| `secondary` | `bg-secondary` | `--figma-color-secondary` → `--color-secondary` |
 | `#FFFFFF` | `bg-white` | - |
 | `#000000` | `bg-black` | - |
 | `#F3F4F6` | `bg-gray-100` | - |
@@ -326,7 +304,7 @@ export const typography = {
 
 ## Files Created/Modified
 - [x] `globals.css` - CSS 변수 추가
-- [x] `tailwind.config.ts` - theme 확장
+- [x] `globals.css` - Tailwind CSS 4 `@theme inline` 확장
 - [x] `types/design-tokens.ts` - 타입 정의
 
 ## Token Mapping

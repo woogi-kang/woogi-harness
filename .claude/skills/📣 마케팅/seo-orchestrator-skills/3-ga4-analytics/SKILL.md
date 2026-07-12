@@ -1,7 +1,8 @@
 ---
 name: ga4-analytics
 description: Google Analytics 4 분석 및 리포팅 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "GA4"
   - "analytics"

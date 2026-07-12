@@ -1,17 +1,19 @@
 # Riverpod 3 Pattern Reference
 
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml` (`flutter@recommended`). Riverpod 3의 retry, pause, equality filtering, `Ref`, observer, error wrapping은 migration contract의 일부다.
+
 Riverpod 3.x 상태관리 패턴 및 샘플 코드 레퍼런스입니다.
 
 ## 버전 정보
 
 ```yaml
 dependencies:
-  flutter_riverpod: ^3.3.1
-  riverpod_annotation: ^4.0.2
+  flutter_riverpod: ^3.3.2
+  riverpod_annotation: ^4.0.3
 
 dev_dependencies:
-  riverpod_generator: ^4.0.3
-  build_runner: ^2.15.0
+  riverpod_generator: ^4.0.4
+  build_runner: ^2.15.1
 ```
 
 ---
@@ -155,7 +157,7 @@ class UserNotifier extends _$UserNotifier {
   }
 
   Future<void> updateName(String name) async {
-    final currentUser = state.valueOrNull;
+    final currentUser = state.value;
     if (currentUser == null) return;
 
     state = const AsyncLoading();
@@ -236,7 +238,7 @@ class ProductDetail extends _$ProductDetail {
   }
 
   Future<void> addToCart() async {
-    final product = state.valueOrNull;
+    final product = state.value;
     if (product == null) return;
 
     await ref.read(cartNotifierProvider.notifier).addItem(product);
@@ -380,7 +382,7 @@ class TimerWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timerValue = ref.watch(timerProvider);
-    return Text('Timer: ${timerValue.valueOrNull ?? 0}');
+    return Text('Timer: ${timerValue.value ?? 0}');
   }
 }
 ```

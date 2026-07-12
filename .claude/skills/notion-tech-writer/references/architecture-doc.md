@@ -22,8 +22,8 @@
 
 | 영역 | 기술 | 버전 | 비고 |
 |------|------|------|------|
-| Frontend | Flutter | 3.x | 모바일/웹/데스크톱 |
-| Backend | Node.js | 20.x | Express |
+| Frontend | Flutter | 3.44.6 | 신규 기준; 실제 프로젝트 constraint 기록 |
+| Backend | Node.js | 24.18.0 LTS | 신규 기준; 실제 `engines` 기록 |
 | Database | PostgreSQL | 15.x | 메인 DB |
 | Cache | Redis | 7.x | 세션, 캐시 |
 | Cloud | GCP | - | 프로덕션 환경 |

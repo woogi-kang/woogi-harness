@@ -76,9 +76,9 @@ Widget loadingButtonPreview() {
 
 ```yaml
 dev_dependencies:
-  widgetbook: ^3.23.0
+  widgetbook: ^3.25.0
   widgetbook_annotation: ^3.11.0
-  widgetbook_generator: ^3.23.0
+  widgetbook_generator: ^3.24.0
 ```
 
 ### 디렉토리 구조
@@ -105,7 +105,7 @@ description: Component catalog for {project_name}
 
 environment:
   sdk: '>=3.12.0 <4.0.0'
-  flutter: '>=3.44.0'
+  flutter: '>=3.44.6'
 
 dependencies:
   flutter:
@@ -114,9 +114,9 @@ dependencies:
     path: ../
 
 dev_dependencies:
-  widgetbook: ^3.23.0
+  widgetbook: ^3.25.0
   widgetbook_annotation: ^3.11.0
-  widgetbook_generator: ^3.23.0
+  widgetbook_generator: ^3.24.0
 ```
 
 ### 2. Widgetbook Main
@@ -562,7 +562,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.0'
+          flutter-version: '3.44.6'
 
       - name: Build Widgetbook
         run: |

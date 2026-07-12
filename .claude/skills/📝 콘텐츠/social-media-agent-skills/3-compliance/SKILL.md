@@ -120,9 +120,7 @@ safe_image_sources:
     - Adobe Stock
 
   ai_generated:
-    - DALL-E (OpenAI 이용약관 확인)
-    - Midjourney (상업용 유료 플랜)
-    - Stable Diffusion (모델별 상이)
+    - image-prompt → Codex gpt-image-2 (OpenAI 이용약관과 실제 배포 권리 확인)
 ```
 
 ## 3. 상표권 (Trademark)

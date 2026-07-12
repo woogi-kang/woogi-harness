@@ -1,7 +1,8 @@
 ---
 name: cash-flow-tracker
 description: 현금흐름 추적 및 런웨이 분석 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "현금흐름"
   - "런웨이"

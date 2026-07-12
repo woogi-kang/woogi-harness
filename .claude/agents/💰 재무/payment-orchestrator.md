@@ -4,7 +4,8 @@ description: |
   1인 유니콘을 위한 결제 자동화 Agent.
   글로벌 결제(Lemon Squeezy), 한국 결제(포트원), 구독 관리, 수익 분석까지 통합 관리합니다.
   "결제", "구독", "매출", "수익" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 triggers:
   - "결제"
   - "구독"

@@ -318,14 +318,14 @@ SafeInput.displayName = 'SafeInput';
 ### Form Submission Security
 
 ```tsx
-// CSRF protection with Server Actions (Next.js 15+)
+// CSRF protection with Server Actions (Next.js 16.2)
 'use server';
 
 import { headers } from 'next/headers';
 
 export async function submitForm(formData: FormData) {
   // Validate origin
-  const headersList = headers();
+  const headersList = await headers();
   const origin = headersList.get('origin');
   const host = headersList.get('host');
 
@@ -454,11 +454,10 @@ const flaggedPatterns = [
 ```json
 {
   "dependencies": {
-    "dompurify": "^3.0.0"
+    "dompurify": "^3.4.12"
   },
   "devDependencies": {
-    "eslint-plugin-security": "^2.1.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0"
+    "eslint-plugin-security": "^4.0.1"
   }
 }
 ```
@@ -466,18 +465,22 @@ const flaggedPatterns = [
 ### ESLint Security Configuration
 
 ```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['security'],
-  extends: ['plugin:security/recommended'],
-  rules: {
-    'security/detect-object-injection': 'warn',
-    'security/detect-non-literal-fs-filename': 'warn',
-    'security/detect-unsafe-regex': 'error',
-    'security/detect-buffer-noassert': 'error',
-    'security/detect-eval-with-expression': 'error',
-    'security/detect-no-csrf-before-method-override': 'error',
-    'security/detect-possible-timing-attacks': 'warn',
+// eslint.config.mjs — ESLint 10 flat config
+import security from 'eslint-plugin-security';
+
+export default [
+  {
+    plugins: { security },
+    rules: {
+      ...security.configs.recommended.rules,
+      'security/detect-object-injection': 'warn',
+      'security/detect-non-literal-fs-filename': 'warn',
+      'security/detect-unsafe-regex': 'error',
+      'security/detect-buffer-noassert': 'error',
+      'security/detect-eval-with-expression': 'error',
+      'security/detect-no-csrf-before-method-override': 'error',
+      'security/detect-possible-timing-attacks': 'warn',
+    },
   },
-};
+];
 ```

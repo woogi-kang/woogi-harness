@@ -21,8 +21,8 @@
 |------|----------|----------|------------|
 | OS | macOS 12+ / Ubuntu 22.04+ / Windows 11 | Latest | - |
 | Git | 2.30+ | 2.40+ | `git --version` |
-| Node.js | 18.x | 20.x LTS | `node -v` |
-| Flutter | 3.19+ | 3.22+ | `flutter --version` |
+| Node.js | 프로젝트 `engines` | 24.18.0 LTS (신규 기준) | `node -v` |
+| Flutter | 프로젝트 SDK constraint | 3.44.6 / Dart 3.12.2 (신규 기준) | `flutter --version` |
 
 ### 선택 요구사항
 

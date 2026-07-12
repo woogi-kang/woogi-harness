@@ -2,7 +2,8 @@
 description: "팀 오케스트레이션 — 자연어로 멀티 에이전트 팀을 구성하고 DAG 실행"
 argument-hint: "[task description or --status/--cleanup session]"
 allowed-tools: Bash, Read, Write, Glob, Grep, AskUserQuestion
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context

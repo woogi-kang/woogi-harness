@@ -1,0 +1,425 @@
+schema_version: 1
+id: web-nextjs
+display_name: Next.js web application baseline
+verified_at: 2026-07-13
+policy:
+  default_channel: recommended
+  upgrade_rule: Current and prerelease channels are recorded but never replace the production baseline without compatibility evidence.
+migration:
+  guide: migrations/web-next16-typescript7.md
+  summary: Keep Next.js 16 on Node LTS and promote TypeScript 7 only after compiler-API consumers are compatible.
+promotion_gates: &stack_gates
+  - package-resolution
+  - next-typegen
+  - typescript-check
+  - eslint
+  - unit-test
+  - playwright
+  - production-build
+consumers: &stack_consumers
+  - .claude/agents/💻 개발/figma-to-nextjs/shared/templates/security-guidelines.md
+  - .claude/agents/💻 개발/flutter-to-nextjs.md
+  - .claude/agents/💻 개발/nextjs-agent.md
+  - .claude/skills/💻 개발/flutter-to-nextjs-skills/2-mapping/SKILL.md
+  - .claude/skills/💻 개발/flutter-to-nextjs-skills/6-routing/SKILL.md
+  - .claude/skills/💻 개발/nextjs-agent-skills/1-project-setup/SKILL.md
+  - .claude/skills/💻 개발/nextjs-agent-skills/27-monorepo/SKILL.md
+  - .claude/skills/💻 개발/nextjs-agent-skills/_references/NEXT16-ZUSTAND5-UPDATE.md
+  - .claude/skills/💻 개발/nextjs-boilerplate-skill/SKILL.md
+  - .claude/skills/💻 개발/nextjs-boilerplate-skill/templates/base/package.json.template
+  - .claude/skills/💻 개발/nextjs-boilerplate-skill/templates/base/postcss.config.mjs.template
+  - .claude/skills/💻 개발/nextjs-boilerplate-skill/templates/testing/package.json.additions.template
+  - .claude/skills/💻 개발/nextjs-boilerplate-skill/templates/drizzle/package.json.additions.template
+  - .claude/skills/💻 개발/nextjs-agent-skills/7-i18n/SKILL.md
+  - .claude/skills/💻 개발/nextjs-agent-skills/20-unit-test/SKILL.md
+  - .claude/skills/💻 개발/nextjs-agent-skills/29-email/SKILL.md
+  - .claude/skills/💻 개발/flutter-to-nextjs-skills/3-scaffold/SKILL.md
+  - .claude/skills/design-system/SKILL.md
+  - .claude/skills/📝 콘텐츠/presentation-agent-skills/10-export-pptx/SKILL.md
+  - .claude/skills/📝 콘텐츠/presentation-agent-skills/11-export-pdf/SKILL.md
+
+components:
+  node:
+    latest_observed: { version: 26.5.0, channel: current }
+    recommended: { version: 24.18.0, channel: lts, reason: "Production applications use the latest supported LTS line, not Current." }
+    compatibility_floor: { version: 20.9.0, channel: stable, reason: Next.js 16 technical minimum; Node 20 is EOL and is not the generated default. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: official-release, url: "https://nodejs.org/dist/index.json" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Replace EOL Node 18/20 defaults and verify native dependencies on Node 24 LTS. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  next:
+    latest_observed: { version: 16.2.10, channel: stable }
+    recommended: { version: 16.2.10, channel: stable, reason: Current Next.js 16 stable patch. }
+    compatibility_floor: { version: 16.2.0, channel: stable, reason: Harness guidance assumes the 16.2 agent and debugging improvements. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/next" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Apply proxy, async request API, Turbopack, cache, image, and lint migrations." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  react:
+    latest_observed: { version: 19.2.7, channel: stable }
+    recommended: { version: 19.2.7, channel: stable, reason: Current React 19.2 stable patch. }
+    compatibility_floor: { version: 19.2.0, channel: stable, reason: Harness uses React 19.2 server and activity semantics. }
+    prerelease: { version: 19.3.0-canary-c0c39a6b-20260709, channel: candidate, reason: npm canary tag; inventory-only and never a project default. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/react" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify SSR, Suspense reveal, useId snapshots, and hooks linting." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  react-dom:
+    latest_observed: { version: 19.2.7, channel: stable }
+    recommended: { version: 19.2.7, channel: stable, reason: Must remain aligned with React. }
+    compatibility_floor: { version: 19.2.0, channel: stable, reason: Match the React 19.2 family. }
+    prerelease: { version: 19.3.0-canary-c0c39a6b-20260709, channel: candidate, reason: npm canary tag; inventory-only and never a project default. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/react-dom" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Keep React and React DOM exact family versions aligned. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  typescript:
+    latest_observed: { version: 7.0.2, channel: stable }
+    recommended: { version: 6.0.2, channel: stable, reason: TypeScript 7.0 has no programmatic compiler API; current typescript-eslint supports less than 6.1. }
+    compatibility_floor: { version: 5.9.3, channel: stable, reason: Existing projects may remain on the final TypeScript 5 line while migrating through 6. }
+    prerelease: { version: 7.1.0-dev.20260712.1, channel: candidate, reason: Nightly inventory only. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/typescript" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Run TypeScript 6 and 7 side by side; promote 7 only when API consumers and editor tooling pass. }
+    promotion_gates:
+      - typescript-6-check
+      - typescript-7-check
+      - typescript-eslint-peer-support
+      - editor-lsp
+      - next-production-build
+    consumers: *stack_consumers
+  typescript-eslint:
+    latest_observed: { version: 8.63.0, channel: stable }
+    recommended: { version: 8.63.0, channel: stable, reason: "Current unified parser and plugin package; keep it on the verified ESLint 9 default lane while ESLint 10 remains inventory-only." }
+    compatibility_floor: { version: 8.63.0, channel: stable, reason: "Its TypeScript peer range remains >=4.8.4 and <6.1.0, which is why TypeScript 6.0.2 is the generated default." }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/typescript-eslint" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Keep the unified package aligned with ESLint 9.39.5, and re-check both its ESLint and TypeScript peer ranges before promoting ESLint 10 or TypeScript 7." }
+    promotion_gates:
+      - eslint-flat-config
+      - eslint-9-default
+      - eslint-10-candidate
+      - typescript-peer-range
+      - editor-lsp
+    consumers: *stack_consumers
+  tailwindcss:
+    latest_observed: { version: 4.3.2, channel: stable }
+    recommended: { version: 4.3.2, channel: stable, reason: Current Tailwind CSS 4 stable patch. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: Generated templates use the CSS-first Tailwind 4 contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/tailwindcss" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Use @tailwindcss/postcss, CSS imports, modern browser floors, and v4 utility semantics." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  zod:
+    latest_observed: { version: 4.4.3, channel: stable }
+    recommended: { version: 4.4.3, channel: stable, reason: Current Zod 4 stable patch. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: "Harness schemas use Zod 4 errors, defaults, records, and enums." }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/zod" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Snapshot errors and parsed output because defaults and issue APIs changed. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  zustand:
+    latest_observed: { version: 5.0.14, channel: stable }
+    recommended: { version: 5.0.14, channel: stable, reason: Current Zustand 5 stable patch. }
+    compatibility_floor: { version: 5.0.0, channel: stable, reason: Harness assumes stable selectors and Zustand 5 persistence semantics. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/zustand" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Audit equality functions, selector references, replace typing, and persisted initialization." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  tanstack-query:
+    latest_observed: { version: 5.101.2, channel: stable }
+    recommended: { version: 5.101.2, channel: stable, reason: Current TanStack Query 5 stable patch. }
+    compatibility_floor: { version: 5.0.0, channel: stable, reason: Server state stays on the Query 5 API family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40tanstack%2Freact-query" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify hydration, RSC boundaries, invalidation, retry, and optimistic mutations." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  nuqs:
+    latest_observed: { version: 2.9.0, channel: stable }
+    recommended: { version: 2.9.0, channel: stable, reason: Current stable URL-state package. }
+    compatibility_floor: { version: 2.0.0, channel: stable, reason: URL state remains on nuqs 2. }
+    prerelease: { version: 2.9.1-beta.2, channel: beta, reason: Inventory-only beta. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/nuqs" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Exercise parsers, shallow updates, history behavior, and server adapters." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  drizzle-orm:
+    latest_observed: { version: 0.45.2, channel: stable }
+    recommended: { version: 0.45.2, channel: stable, reason: Current stable Drizzle release. }
+    compatibility_floor: { version: 0.40.0, channel: stable, reason: Existing generated schemas use the supported 0.x family. }
+    prerelease: { version: 1.0.0-rc.4, channel: rc, reason: Current npm rc tag; do not cross the 1.0 boundary without migration fixtures. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/drizzle-orm" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Generate migrations and run them against a disposable database. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  motion:
+    latest_observed: { version: 12.42.2, channel: stable }
+    recommended: { version: 12.42.2, channel: stable, reason: Current Motion and framer-motion stable patch. }
+    compatibility_floor: { version: 12.0.0, channel: stable, reason: Keep the Motion 12 API family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/framer-motion" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify reduced motion, layout animation, SSR, and bundle boundaries." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  react-hook-form:
+    latest_observed: { version: 7.81.0, channel: stable }
+    recommended: { version: 7.81.0, channel: stable, reason: Current React Hook Form 7 stable patch. }
+    compatibility_floor: { version: 7.0.0, channel: stable, reason: Keep the stable v7 API while v8 remains beta. }
+    prerelease: { version: 8.0.0-beta.3, channel: beta, reason: Do not use in default templates. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/react-hook-form" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Preserve v7 form-state and resolver behavior until v8 is stable and verified. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  next-safe-action:
+    latest_observed: { version: 8.5.5, channel: stable }
+    recommended: { version: 8.5.5, channel: stable, reason: Current stable action wrapper. }
+    compatibility_floor: { version: 8.0.0, channel: stable, reason: Keep the v8 server-action contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/next-safe-action" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Exercise validation, auth middleware, action errors, and cache invalidation." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  next-auth:
+    latest_observed: { version: 4.24.14, channel: stable }
+    recommended: { version: 4.24.14, channel: stable, reason: npm latest remains v4; Auth.js v5 is still beta and cannot be labeled stable. }
+    compatibility_floor: { version: 4.24.0, channel: stable, reason: Maintain the supported stable v4 line unless the project explicitly accepts beta risk. }
+    prerelease: { version: 5.0.0-beta.31, channel: beta, reason: Explicit opt-in only with a dedicated migration and auth integration suite. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/next-auth" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Never silently translate v5 examples into the stable v4 API or vice versa. }
+    promotion_gates:
+      - explicit-prerelease-approval
+      - oauth-integration-tests
+      - session-cookie-tests
+      - adapter-migration-tests
+    consumers: *stack_consumers
+  vitest:
+    latest_observed: { version: 4.1.10, channel: stable }
+    recommended: { version: 4.1.10, channel: stable, reason: Current Vitest 4 stable patch. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: Generated tests use the Vitest 4 contract. }
+    prerelease: { version: 5.0.0-beta.6, channel: beta, reason: Inventory-only beta. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/vitest" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify fake timers, module mocks, coverage, and worker isolation." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  playwright:
+    latest_observed: { version: 1.61.1, channel: stable }
+    recommended: { version: 1.61.1, channel: stable, reason: Current Playwright stable patch. }
+    compatibility_floor: { version: 1.60.0, channel: stable, reason: Selected browser-test baseline. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40playwright%2Ftest" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Install matching browsers and run desktop and mobile projects. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  eslint:
+    latest_observed: { version: 10.7.0, channel: stable }
+    recommended: { version: 9.39.5, channel: stable, reason: "Materialized Next.js 16.2 templates are install, lint, typecheck, and build verified on the final ESLint 9 line; ESLint 10 stays observed until the complete plugin graph passes." }
+    compatibility_floor: { version: 9.0.0, channel: stable, reason: "Generated configuration uses the supported flat-config contract and does not require ESLint 10 APIs." }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/eslint" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Run ESLint 9.39.5 directly because next lint was removed; promote ESLint 10 only after a materialized template and every loaded plugin pass." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  prettier:
+    latest_observed: { version: 3.9.5, channel: stable }
+    recommended: { version: 3.9.5, channel: stable, reason: Current Prettier 3 stable patch. }
+    compatibility_floor: { version: 3.8.0, channel: stable, reason: Keep the Prettier 3 formatter contract. }
+    prerelease: { version: 4.0.0-alpha.13, channel: beta, reason: Alpha is inventory-only. }
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/prettier" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Format generated fixtures and require an empty second diff. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  testing-library-jest-dom:
+    latest_observed: { version: 6.9.1, channel: stable }
+    recommended: { version: 6.9.1, channel: stable, reason: Current DOM matcher package. }
+    compatibility_floor: { version: 6.9.0, channel: stable, reason: Keep the v6 matcher contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40testing-library%2Fjest-dom" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Verify Vitest matcher registration and types. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  testing-library-react:
+    latest_observed: { version: 16.3.2, channel: stable }
+    recommended: { version: 16.3.2, channel: stable, reason: Current React Testing Library. }
+    compatibility_floor: { version: 16.3.0, channel: stable, reason: Align with React 19. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40testing-library%2Freact" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Run async rendering and user-event fixtures. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  vite-plugin-react:
+    latest_observed: { version: 6.0.3, channel: stable }
+    recommended: { version: 6.0.3, channel: stable, reason: Current Vite React plugin. }
+    compatibility_floor: { version: 6.0.0, channel: stable, reason: Selected v6 transform contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40vitejs%2Fplugin-react" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Verify JSX transform and Vitest startup. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  vitest-coverage-v8:
+    latest_observed: { version: 4.1.10, channel: stable }
+    recommended: { version: 4.1.10, channel: stable, reason: Match Vitest 4.1.10. }
+    compatibility_floor: { version: 4.1.10, channel: stable, reason: Keep coverage plugin exact with Vitest. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40vitest%2Fcoverage-v8" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Snapshot coverage thresholds and include/exclude behavior. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  jsdom:
+    latest_observed: { version: 29.1.1, channel: stable }
+    recommended: { version: 29.1.1, channel: stable, reason: Current stable DOM runtime. }
+    compatibility_floor: { version: 29.0.0, channel: stable, reason: Generated test environments target v29. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/jsdom" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify URL, storage, DOM, and timer mocks." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  resend:
+    latest_observed: { version: 6.17.2, channel: stable }
+    recommended: { version: 6.17.2, channel: stable, reason: Current Resend Node SDK. }
+    compatibility_floor: { version: 6.0.0, channel: stable, reason: Generated email examples target v6. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/resend" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Exercise send, batch, errors, idempotency, and webhook types." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  react-email-components:
+    latest_observed: { version: 1.0.12, channel: stable }
+    recommended: { version: 1.0.12, channel: stable, reason: Current React Email components package. }
+    compatibility_floor: { version: 1.0.0, channel: stable, reason: Selected stable v1 component contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40react-email%2Fcomponents" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Render representative templates and snapshot HTML. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  react-email:
+    latest_observed: { version: 6.7.0, channel: stable }
+    recommended: { version: 6.7.0, channel: stable, reason: Current React Email CLI. }
+    compatibility_floor: { version: 6.0.0, channel: stable, reason: Generated preview/build workflow targets v6. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/react-email" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Verify dev preview and production export. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  turbo:
+    latest_observed: { version: 2.10.4, channel: stable }
+    recommended: { version: 2.10.4, channel: stable, reason: Current Turborepo release. }
+    compatibility_floor: { version: 2.10.0, channel: stable, reason: Generated monorepos target current v2. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/turbo" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify task graph, cache keys, and remote cache." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pnpm:
+    latest_observed: { version: 11.12.0, channel: stable }
+    recommended: { version: 11.12.0, channel: stable, reason: Current pnpm compatible with Node 24 LTS. }
+    compatibility_floor: { version: 11.12.0, channel: stable, reason: Generated packageManager field pins the current tool. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/pnpm" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Recreate the lock in a branch and validate peer resolution. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  neon-serverless:
+    latest_observed: { version: 1.1.0, channel: stable }
+    recommended: { version: 1.1.0, channel: stable, reason: Current Neon serverless driver. }
+    compatibility_floor: { version: 1.0.0, channel: stable, reason: Generated database clients target v1. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/%40neondatabase%2Fserverless" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Verify HTTP/WebSocket modes and pooled transactions. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  drizzle-kit:
+    latest_observed: { version: 0.31.10, channel: stable }
+    recommended: { version: 0.31.10, channel: stable, reason: Current Drizzle migration CLI. }
+    compatibility_floor: { version: 0.31.0, channel: stable, reason: Keep CLI aligned with Drizzle ORM 0.45 runtime. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/drizzle-kit" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Generate and run migrations on a disposable database. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  postgres-js:
+    latest_observed: { version: 3.4.9, channel: stable }
+    recommended: { version: 3.4.9, channel: stable, reason: Current Postgres.js stable patch. }
+    compatibility_floor: { version: 3.4.0, channel: stable, reason: Maintain the v3 query contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/postgres" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Test transactions, prepared statements, and shutdown." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  next-intl:
+    latest_observed: { version: 4.13.2, channel: stable }
+    recommended: { version: 4.13.2, channel: stable, reason: Current Next.js 16 i18n package. }
+    compatibility_floor: { version: 4.13.0, channel: stable, reason: Generated proxy and App Router examples target this line. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/next-intl" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: "Verify routing, proxy, messages, and server/client boundaries." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  chart-js:
+    latest_observed: { version: 4.5.1, channel: stable }
+    recommended: { version: 4.5.1, channel: stable, reason: Current Chart.js v4 patch. }
+    compatibility_floor: { version: 4.5.0, channel: stable, reason: Generated slide templates use the v4 UMD bundle. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/chart.js" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Render every chart fixture and inspect labels and responsiveness. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pptxgenjs:
+    latest_observed: { version: 4.0.1, channel: stable }
+    recommended: { version: 4.0.1, channel: stable, reason: Current PptxGenJS major. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: Export skills target the v4 contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/pptxgenjs" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Export PPTX and visually inspect every slide after the v4 migration. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  sharp:
+    latest_observed: { version: 0.35.3, channel: stable }
+    recommended: { version: 0.35.3, channel: stable, reason: Current Sharp stable patch. }
+    compatibility_floor: { version: 0.35.0, channel: stable, reason: Export tools target the 0.35 native binary family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: npm, url: "https://registry.npmjs.org/sharp" }
+    migration: { guide: migrations/web-next16-typescript7.md, note: Verify native install and image output on supported platforms. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers

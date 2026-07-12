@@ -1,0 +1,88 @@
+{
+  "schema_version": "harness.project-pack.v1",
+  "id": "default",
+  "description": "Shared Claude Craft assets. Apply is additive/update-only; target-only files are never deleted.",
+  "paths": [
+    "CLAUDE.md",
+    "contexts",
+    ".claude/agents",
+    ".claude/commands",
+    ".claude/hooks",
+    ".claude/rules",
+    ".claude/skills",
+    ".claude/templates",
+    ".claude/evals",
+    ".claude/registry",
+    ".claude/project-packs",
+    ".claude/statusline.py",
+    "scripts/harness_runtime_lib.py",
+    "scripts/harness-registry.py",
+    "scripts/harness-context.py",
+    "scripts/harness-provider.py",
+    "scripts/harness-execution.py",
+    "scripts/harness-telemetry.py",
+    "scripts/harness-doctor.py",
+    "scripts/harness-sync.py",
+    "scripts/brain-memory.sh",
+    "scripts/brain-memory-qa.sh",
+    "scripts/brain-pilot.sh",
+    "scripts/context-pack-gate.py",
+    "scripts/orchestrate-worktrees.py",
+    "scripts/sprint-reset-loop.sh",
+    "scripts/verify-stack-registry.py",
+    "scripts/usage-report.py",
+    "scripts/sync-to-projects.sh"
+  ],
+  "links": {
+    "AGENTS.md": "CLAUDE.md",
+    "GEMINI.md": "CLAUDE.md",
+    ".agents/skills": "../.claude/skills"
+  },
+  "settings_merges": [
+    {
+      "target": ".claude/settings.json",
+      "format": "json",
+      "operation": "append-if-missing",
+      "path": ["hooks", "PreToolUse"],
+      "match": {"matcher": "Bash"},
+      "append_path": ["hooks"],
+      "value": {
+        "type": "command",
+        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/git-push-guard.sh"
+      }
+    },
+    {
+      "target": ".claude/settings.json",
+      "format": "json",
+      "operation": "append-if-missing",
+      "path": ["hooks", "PostToolUse"],
+      "match": {"matcher": "Agent|Skill"},
+      "append_path": ["hooks"],
+      "value": {
+        "type": "command",
+        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/usage-tracker.sh"
+      }
+    },
+    {
+      "target": ".claude/settings.json",
+      "format": "json",
+      "operation": "append-if-missing",
+      "path": ["hooks", "PostToolUse"],
+      "match": {"matcher": "Edit|Write"},
+      "append_path": ["hooks"],
+      "value": {
+        "type": "command",
+        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/quality-gate.sh"
+      }
+    }
+  ],
+  "exclude": [
+    "**/.git/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    ".claude/logs/**",
+    ".claude/settings*.json",
+    ".mcp.json",
+    ".env*"
+  ]
+}

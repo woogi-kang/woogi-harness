@@ -1,0 +1,25 @@
+{
+  "schema": "design-flutter-capture-v1",
+  "test_targets": ["test/review_queue_golden_test.dart"],
+  "generated_artifact_root": "build/design-evidence",
+  "artifacts": [
+    {
+      "id": "review-empty-phone",
+      "kind": "result-screenshot",
+      "path": "build/design-evidence/review-empty-phone.png",
+      "screen": "review-queue",
+      "state": "empty",
+      "viewport": "phone",
+      "supports": ["visual-qa", "state-coverage"]
+    },
+    {
+      "id": "review-semantics-phone",
+      "kind": "accessibility-tree",
+      "path": "build/design-evidence/review-semantics.txt",
+      "screen": "review-queue",
+      "state": "default",
+      "viewport": "phone",
+      "supports": ["accessibility"]
+    }
+  ]
+}

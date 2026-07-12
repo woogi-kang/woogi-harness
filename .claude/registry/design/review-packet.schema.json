@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-review-packet-v1.json",
+  "title": "Frozen Design Independent Review Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "run_id", "implementation_actor_id", "source_fingerprint_digest", "evidence_manifest", "evidence_manifest_sha256", "detector", "detector_sha256", "capture_receipt_sha256", "capture_attestation_sha256", "trusted_evidence_ids", "public_key_sha256", "prepared_at"],
+  "properties": {
+    "schema": {"const": "design-review-packet-v1"},
+    "run_id": {"type": "string", "minLength": 6},
+    "implementation_actor_id": {"type": "string", "minLength": 3},
+    "source_fingerprint_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_manifest": {"type": "string", "minLength": 1},
+    "evidence_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "detector": {"type": "string", "minLength": 1},
+    "detector_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capture_receipt_sha256": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "uniqueItems": true},
+    "capture_attestation_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "trusted_evidence_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "public_key_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "prepared_at": {"type": "string", "format": "date-time"}
+  }
+}

@@ -1,372 +1,59 @@
-# Tech Stack
+# UI Agent Platform and Stack Policy
 
-Frontend Design Agent가 사용하는 기술 스택 상세 정보입니다.
+UI agent는 고정 stack을 소유하지 않는다. 현재 프로젝트 profile과 `.claude/registry/tech-stacks/`의 recommended baseline이 source of truth다.
 
----
+## Detection
 
-## Core Stack
-
-| 영역 | 기술 | 버전 | 용도 |
-|------|------|------|------|
-| **Framework** | Next.js (App Router) | 15+ | React 기반 풀스택 |
-| **Styling** | Tailwind CSS | v4 | 유틸리티 기반 스타일링 |
-| **Animation** | tw-animate-css | latest | Tailwind 애니메이션 유틸리티 |
-| **Animation** | Framer Motion | 12+ | 선언적 애니메이션 |
-| **Components** | shadcn/ui | latest | 재사용 가능한 컴포넌트 |
-| **Components** | Motion Primitives | latest | 애니메이션 컴포넌트 |
-
----
-
-## Design Tokens
-
-### Color Space: oklch
-
-```css
-/* oklch(lightness chroma hue) */
-/* 인간 지각에 기반한 균일한 색상 공간 */
-
-:root {
-  /* Primary */
-  --primary: oklch(55% 0.15 250);
-  --primary-foreground: oklch(98% 0 0);
-
-  /* Background */
-  --background: oklch(99% 0 0);
-  --foreground: oklch(15% 0 0);
-
-  /* Muted */
-  --muted: oklch(96% 0.005 250);
-  --muted-foreground: oklch(45% 0.01 250);
-
-  /* Border */
-  --border: oklch(92% 0.005 250);
-
-  /* Accent */
-  --accent: oklch(96% 0.01 250);
-  --accent-foreground: oklch(15% 0.01 250);
-}
-```
-
-### Typography: Variable Fonts
-
-```css
-/* Variable font axes */
-/* wght: 100-900 */
-/* wdth: 75-125 (some fonts) */
-
-@font-face {
-  font-family: 'Geist';
-  src: url('/fonts/GeistVF.woff2') format('woff2');
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-.heading {
-  font-family: 'Geist', sans-serif;
-  font-weight: 600;
-  font-variation-settings: 'wght' 600;
-}
-```
-
-### Spacing System
-
-```css
-/* 4px base, rem units */
-:root {
-  --spacing-0: 0;
-  --spacing-1: 0.25rem;  /* 4px */
-  --spacing-2: 0.5rem;   /* 8px */
-  --spacing-3: 0.75rem;  /* 12px */
-  --spacing-4: 1rem;     /* 16px */
-  --spacing-5: 1.25rem;  /* 20px */
-  --spacing-6: 1.5rem;   /* 24px */
-  --spacing-8: 2rem;     /* 32px */
-  --spacing-10: 2.5rem;  /* 40px */
-  --spacing-12: 3rem;    /* 48px */
-  --spacing-16: 4rem;    /* 64px */
-  --spacing-20: 5rem;    /* 80px */
-  --spacing-24: 6rem;    /* 96px */
-}
-```
-
----
-
-## Tailwind v4 Configuration
-
-### CSS-first Configuration
-```css
-/* app/globals.css */
-@import "tailwindcss";
-
-@theme {
-  --color-primary: oklch(55% 0.15 250);
-  --color-background: oklch(99% 0 0);
-  --color-foreground: oklch(15% 0 0);
-
-  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-}
-```
-
-### Dark Mode
-```css
-@theme dark {
-  --color-primary: oklch(75% 0.15 250);
-  --color-background: oklch(12% 0.01 250);
-  --color-foreground: oklch(98% 0 0);
-}
-```
-
----
-
-## Animation Patterns
-
-### Framer Motion Variants
-
-```tsx
-// Fade In Up
-export const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
-}
-
-// Stagger Container
-export const staggerContainer = {
-  initial: {},
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1
-    }
-  }
-}
-
-// Scale on Hover
-export const scaleOnHover = {
-  whileHover: { scale: 1.02 },
-  whileTap: { scale: 0.98 },
-  transition: { type: "spring", stiffness: 400, damping: 17 }
-}
-```
-
-### Easing Functions
-
-```tsx
-// Custom easing curves
-export const easings = {
-  // Apple-like smooth
-  smooth: [0.25, 0.46, 0.45, 0.94],
-
-  // Sharp in, smooth out
-  easeOut: [0, 0, 0.2, 1],
-
-  // Smooth in, sharp out
-  easeIn: [0.4, 0, 1, 1],
-
-  // Bounce effect
-  bounce: [0.68, -0.55, 0.265, 1.55],
-
-  // Elastic
-  elastic: [0.68, -0.6, 0.32, 1.6]
-}
-```
-
-### tw-animate-css Classes
-
-```html
-<!-- Entrance animations -->
-<div class="animate-fade-in">Fade In</div>
-<div class="animate-slide-up">Slide Up</div>
-<div class="animate-slide-down">Slide Down</div>
-<div class="animate-scale-in">Scale In</div>
-
-<!-- With delays -->
-<div class="animate-fade-in animation-delay-100">Delayed 100ms</div>
-<div class="animate-fade-in animation-delay-200">Delayed 200ms</div>
-
-<!-- With duration -->
-<div class="animate-fade-in animation-duration-500">500ms</div>
-<div class="animate-fade-in animation-duration-700">700ms</div>
-```
-
----
-
-## shadcn/ui Integration
-
-### Component Installation
 ```bash
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add input
-npx shadcn@latest add dialog
+python3 .claude/skills/design-harness/scripts/design-runtime.py plan --root .
 ```
 
-### Custom Variants
-```tsx
-// components/ui/button.tsx
-const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        outline: "border border-input bg-background hover:bg-accent",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        // Custom variants
-        gradient: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-        glass: "bg-white/10 backdrop-blur-lg border border-white/20",
-      },
-      size: {
-        sm: "h-9 px-3",
-        default: "h-10 px-4 py-2",
-        lg: "h-11 px-8",
-        xl: "h-14 px-10 text-base",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-```
+그다음 실제 manifest를 읽는다.
 
----
+- Web: `package.json`, lockfile, framework config, CSS/token files, component registry.
+- Flutter: `pubspec.yaml`, `analysis_options.yaml`, Theme/ColorScheme, navigation/state/localization pattern.
+- 새 dependency가 필요하면 tech-stack registry의 source, migration note, promotion gate를 확인한다.
 
-## Performance Optimization
+## Web policy
 
-### Font Loading
-```tsx
-// app/layout.tsx
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
+- 현재 framework/rendering mode/package manager를 유지한다.
+- 이미 설치된 component primitive와 token model을 우선한다.
+- Tailwind, shadcn/Radix, Motion, CSS Modules, styled system 중 하나를 하네스 기본값으로 강제하지 않는다.
+- Official design system이 제품 맥락에 맞으면 공식 package/docs를 우선한다.
+- Build/type/lint/test와 실제 browser evidence로 검증한다.
 
-export default function RootLayout({ children }) {
-  return (
-    <html className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body>{children}</body>
-    </html>
-  )
-}
-```
+## Flutter policy
 
-### Image Optimization
-```tsx
-import Image from 'next/image'
+- Flutter/Dart와 package 권장은 `tech-stacks/flutter.yaml`을 따른다.
+- 기존 Material/Cupertino/brand Theme를 보존하며 raw token 복제를 피한다.
+- Responsive, text scale, SafeArea, keyboard inset, semantics, state, golden/integration evidence를 확인한다.
+- package major migration은 UI 작업 안에서 몰래 수행하지 않는다.
 
-<Image
-  src="/hero.jpg"
-  alt="Hero image"
-  width={1920}
-  height={1080}
-  priority // LCP image
-  placeholder="blur"
-  blurDataURL="data:image/jpeg;base64,..."
-/>
-```
+## Typography
 
-### Animation Performance
-```tsx
-// Use transform and opacity only
-const goodAnimation = {
-  initial: { opacity: 0, x: -20 },
-  animate: { opacity: 1, x: 0 }
-}
+- 설치/라이선스/언어 glyph/brand role을 먼저 확인한다.
+- font name matrix와 category 추천표를 사용하지 않는다.
+- Korean surface는 `korean-typography`; project font asset이 있으면 그것이 우선한다.
 
-// Avoid layout-triggering properties
-const badAnimation = {
-  initial: { width: 0 },
-  animate: { width: 200 } // Causes layout recalculation
-}
-```
+## Animation
 
-### Code Splitting
-```tsx
-import dynamic from 'next/dynamic'
+- project가 이미 채택한 API를 사용한다.
+- Web은 CSS/Web Animations/framework library, Flutter는 implicit/explicit animation 중 목적과 기존 pattern에 맞는 것을 선택한다.
+- reduced motion과 interruption을 evidence로 확인한다.
 
-// Heavy components
-const HeavyChart = dynamic(() => import('./Chart'), {
-  loading: () => <Skeleton className="h-[400px]" />,
-  ssr: false
-})
+## Components
 
-// Modal components
-const Dialog = dynamic(() => import('./Dialog'))
-```
+- Library component는 behavior/accessibility 시작점이지 visual truth가 아니다.
+- Default Card/Button styling, equal card grid, decorative status dot를 그대로 출하하지 않는다.
+- 필요한 state API부터 설계한 뒤 project tokens를 적용한다.
 
----
+## Version policy
 
-## Responsive Breakpoints
+문서에 떠다니는 `latest`나 임의 버전 번호를 복사하지 않는다. 다음을 분리한다.
 
-```css
-/* Tailwind v4 default breakpoints */
---breakpoint-sm: 640px;
---breakpoint-md: 768px;
---breakpoint-lg: 1024px;
---breakpoint-xl: 1280px;
---breakpoint-2xl: 1536px;
-```
+- `latest_observed`: 공식 registry에서 관찰한 최신값.
+- `recommended`: 현재 toolchain과 fixture를 통과한 생성 기본값.
+- `compatibility_floor`: 기존 프로젝트 지원 하한.
+- `candidate`: migration 검증 중인 major.
 
-### Mobile-First Pattern
-```tsx
-<div className="
-  grid
-  grid-cols-1
-  md:grid-cols-2
-  lg:grid-cols-3
-  xl:grid-cols-4
-  gap-4
-  md:gap-6
-  lg:gap-8
-">
-  {items.map(item => <Card key={item.id} {...item} />)}
-</div>
-```
-
-### Container Queries
-```tsx
-<div className="@container">
-  <div className="@md:flex @md:gap-8">
-    <div className="@md:w-1/2">Content</div>
-    <div className="@md:w-1/2">Sidebar</div>
-  </div>
-</div>
-```
-
----
-
-## Z-Index Scale
-
-```css
-:root {
-  --z-base: 0;
-  --z-dropdown: 10;
-  --z-sticky: 20;
-  --z-fixed: 30;
-  --z-modal-backdrop: 40;
-  --z-modal: 50;
-  --z-popover: 60;
-  --z-tooltip: 70;
-  --z-toast: 80;
-}
-```
-
----
-
-## Reference Documents
-
-| 문서 | 설명 |
-|------|------|
-| `TYPOGRAPHY-RECIPES.md` | 50+ 폰트 조합, 금지 목록 |
-| `COLOR-SYSTEM.md` | oklch 팔레트, 다크모드 |
-| `MOTION-PATTERNS.md` | Framer Motion 레시피 30+ |
-| `BACKGROUND-EFFECTS.md` | 그래디언트, 노이즈, 글래스 |
-| `LAYOUT-TECHNIQUES.md` | 비대칭, 오버랩, Bento |
-| `ANTI-PATTERNS.md` | AI Slop 체크리스트 |
-| `ACCESSIBILITY-CHECKLIST.md` | WCAG 2.2, 신경다양성 |
+구체 값과 차이는 `.claude/registry/tech-stacks/`와 해당 `migrations/` 문서를 읽는다.

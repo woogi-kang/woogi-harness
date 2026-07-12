@@ -56,7 +56,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
@@ -71,7 +71,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
@@ -86,7 +86,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:coverage
@@ -109,7 +109,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
@@ -141,7 +141,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
@@ -265,7 +265,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: Run migrations
@@ -350,7 +350,7 @@ commit_parsers = [
 
 ```dockerfile
 # Dockerfile
-FROM node:20-alpine AS base
+FROM node:24.18.0-alpine AS base
 RUN corepack enable
 
 FROM base AS deps
@@ -516,7 +516,7 @@ describe('Docker Configuration', () => {
   it('multi-stage 빌드를 사용한다', () => {
     const dockerfile = readFileSync('Dockerfile', 'utf-8');
 
-    expect(dockerfile).toContain('FROM node:20-alpine AS base');
+    expect(dockerfile).toContain('FROM node:24.18.0-alpine AS base');
     expect(dockerfile).toContain('FROM base AS deps');
     expect(dockerfile).toContain('FROM base AS builder');
     expect(dockerfile).toContain('FROM base AS runner');
@@ -561,7 +561,7 @@ describe('Docker Configuration', () => {
     version: 9
 - uses: actions/setup-node@v4
   with:
-    node-version: 20
+    node-version: 24.18.0
     cache: 'pnpm'
 - run: pnpm install --frozen-lockfile
 ```

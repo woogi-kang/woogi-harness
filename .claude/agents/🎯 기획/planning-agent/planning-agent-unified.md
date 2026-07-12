@@ -4,7 +4,8 @@ description: |
   아이디어부터 출시 가능한 서비스까지 전 과정을 기획하는 종합 Agent.
   시장조사, 검증, PRD, 공수 산정, 로드맵까지 체계적으로 관리합니다.
   "서비스 기획해줘", "아이디어 검증해줘", "PRD 작성해줘" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 progressive_disclosure:
   enabled: true
   level_1_tokens: 200

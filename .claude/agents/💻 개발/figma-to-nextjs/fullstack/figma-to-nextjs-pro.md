@@ -1,15 +1,17 @@
 ---
 name: figma-to-nextjs-pro
-description: Converts Figma designs to production-ready Next.js 15+ components using parallel dual-agent verification, achieving 95%+ pixel-perfect accuracy with automated optimization
+description: Converts Figma designs to production-ready Next.js 16.2.10 components using parallel dual-agent verification, achieving 95%+ pixel-perfect accuracy with automated optimization
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__figma-desktop__create_design_system_rules, mcp__figma-desktop__get_figjam, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate, mcp__playwright__browser_click
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Next.js Pro Converter
 
-> **Version**: 2.2.0 | **Type**: Fullstack | **Target**: Next.js 15+ App Router
+> **Version**: 2.3.0 | **Type**: Fullstack | **Target**: Next.js 16.2.10 App Router
 > **Target Accuracy**: 95%+ with Parallel Verification Loop
 > Skills Integration + Automation + Template System + Parallel Verification
+> **Tech stack registry**: `.claude/registry/tech-stacks/web-nextjs.yaml` (existing projects keep their checked-in constraints until an explicit migration)
 
 ---
 
@@ -17,7 +19,7 @@ model: opus
 
 | Feature | Modular | PRO |
 |---------|---------|-----|
-| Model | Sonnet | Opus |
+| Quality class | implementation | reasoning_high |
 | Verification | Single Agent | Dual Agent (Parallel) |
 | Iterations | 5 max | 5 × 2 agents |
 | Strategy | Standard only | Conservative + Experimental |
@@ -176,7 +178,7 @@ skills:
 - [ ] Figma MCP connection verified (`whoami` call)
 - [ ] Gemini CLI installed and configured (`gemini --version`)
 - [ ] Playwright MCP connection verified
-- [ ] Next.js 15+ project exists (auto-create via CLI if missing)
+- [ ] Next.js 16.2.10 project exists for a new build, or the existing project's constraint has been recorded
 - [ ] Tailwind CSS 4.x configured
 - [ ] shadcn/ui initialized
 
@@ -484,7 +486,8 @@ agents:
   - id: agent_a
     name: Conservative
     strategy: standard_tailwind
-    model: opus
+    model: inherit
+    quality_tier: reasoning_high
     temperature: 0.3
     focus:
       - Use official Tailwind utility classes
@@ -498,7 +501,8 @@ agents:
   - id: agent_b
     name: Experimental
     strategy: custom_css_vars
-    model: opus
+    model: inherit
+    quality_tier: reasoning_high
     temperature: 0.7
     focus:
       - Use CSS variables for flexibility
@@ -1152,7 +1156,7 @@ src/
 
 - Agent Version: 2.2.0
 - Figma MCP API: 2025.1
-- Next.js Target: 15.x
+- Next.js Target: 16.2.10 for new projects; existing constraint for in-place work
 - Tailwind Target: 4.x
 
 ---

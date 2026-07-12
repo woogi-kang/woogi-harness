@@ -31,7 +31,7 @@ metadata:
 ```dockerfile
 # Dockerfile
 # Stage 1: Build
-FROM python:3.12-slim as builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /app
 
@@ -51,7 +51,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Stage 2: Runtime
-FROM python:3.12-slim as runtime
+FROM python:3.14-slim AS runtime
 
 WORKDIR /app
 
@@ -99,7 +99,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ```dockerfile
 # Dockerfile.dev
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 

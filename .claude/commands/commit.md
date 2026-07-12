@@ -3,7 +3,8 @@ description: "Smart commit - Analyze changes and create logical commits"
 argument-hint: "[message]"
 type: utility
 allowed-tools: AskUserQuestion, Bash, Read, Glob, Grep
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context
@@ -112,7 +113,7 @@ git commit -m "$(cat <<'EOF'
 
 <body if needed>
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Craft <noreply@anthropic.com>
 EOF
 )"
 ```

@@ -30,8 +30,8 @@ Use `AskUserQuestion` to collect:
 - Color name (e.g., "Emerald", "Neon Mint")
 - Hex code
 
-**Brand Mood (for AI image generation):**
-- Mood keywords (e.g., "professional, trustworthy, premium" or "bold, creative, energetic")
+**Image compiler evidence:**
+- Visual register, required characteristics, prohibited characteristics, and source references for `image-prompt`
 
 ### Step 2: Update Brand Guidelines
 
@@ -40,7 +40,7 @@ Edit `docs/brand-guidelines.md`:
 1. **Quick Reference table** - Update color names and hex codes
 2. **Brand Concept section** - Update theme name and description
 3. **Color Palette section** - Update Primary, Secondary, Accent colors with shades
-4. **AI Image Generation section** - Update base prompt, keywords, mood descriptors
+4. **Image Generation Context section** - Update structured evidence consumed by `image-prompt`
 
 ### Step 3: Sync to Design Tokens
 
@@ -115,4 +115,4 @@ If user specifies a preset name, use these defaults:
 
 - **Always sync all three files** - Never update just brand-guidelines.md alone
 - **Verify extraction** - Run inject-brand-context.cjs after update to confirm
-- **Test image generation** - Optionally generate a test image to verify brand application
+- **Test image generation** - Optionally compile with `image-prompt`, validate, and generate through Codex `gpt-image-2`

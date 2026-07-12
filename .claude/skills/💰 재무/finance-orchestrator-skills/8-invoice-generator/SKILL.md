@@ -1,7 +1,8 @@
 ---
 name: invoice-generator
 description: 청구서/인보이스/견적서 생성 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "청구서"
   - "인보이스"

@@ -2,12 +2,15 @@
 name: figma-to-flutter-ralph-hybrid
 description: Hybrid approach combining Ralph Wiggum self-referential loop with dual verification system. Achieves 99%+ accuracy through file-based context persistence and iterative self-correction for Flutter.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__figma-desktop__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate, mcp__playwright__browser_click
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Flutter Ralph Hybrid Converter
 
-> **Version**: 3.1.0 | **Type**: Ralph Hybrid | **Target**: Flutter 3.24+ / Dart 3.5+
+> **Version**: 3.2.0 | **Type**: Ralph Hybrid | **Target**: `flutter@recommended`
+>
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml`. Existing project constraints win; apply the registry migration and build gates before changing a package family.
 > **Target Accuracy**: 99%+ with Self-Referential Feedback Loop
 > **Method**: Ralph Loop + Dual Verification (Code + Visual via Playwright)
 
@@ -304,15 +307,15 @@ category_thresholds:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.0.10+1      # REQUIRED for Figma SVG icons
-  flutter_riverpod: ^2.5.1     # State management (if needed)
-  go_router: ^14.2.0           # Routing (if needed)
-  cached_network_image: ^3.3.1 # Image caching (optional)
+  flutter_svg: ^2.3.0          # REQUIRED for Figma SVG icons
+  flutter_riverpod: ^3.3.2     # State management (if needed)
+  go_router: ^17.3.0           # Routing (if needed)
+  cached_network_image: ^3.4.1 # Image caching (optional)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 ```
 
 ---
@@ -326,8 +329,8 @@ Before starting the Ralph Hybrid loop, verify:
 │                    PRE-EXECUTION CHECKLIST                               │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  [ ] Flutter SDK 3.24+ installed (`flutter --version`)                  │
-│  [ ] Dart SDK 3.5+ installed                                            │
+│  [ ] Flutter SDK 3.44.6 installed for a new project                     │
+│  [ ] Dart SDK 3.12.2 installed (bundled with Flutter)                   │
 │  [ ] Chrome/Chromium available for web testing                          │
 │  [ ] Figma file URL/node-id ready                                       │
 │  [ ] Figma MCP server connected (mcp__figma-desktop__*)                 │
@@ -351,7 +354,7 @@ Before starting the Ralph Hybrid loop, verify:
 
 ### Input
 - Figma URL: [URL]
-- Target: Flutter 3.24+ with Dart 3.5+
+- Target: Flutter 3.44.6 with bundled Dart 3.12.2 for new projects; preserve and inspect existing project constraints
 - Styling: ThemeData + Custom Theme Extensions
 - State: Riverpod 3.x (if needed)
 
@@ -1203,11 +1206,11 @@ class HomeNotifier extends _$HomeNotifier {
 
 // Simple sync provider with @riverpod annotation
 @riverpod
-int counter(CounterRef ref) => 0;
+int counter(Ref ref) => 0;
 
 // Async provider
 @riverpod
-Future<User> user(UserRef ref) async {
+Future<User> user(Ref ref) async {
   return await ref.read(userRepositoryProvider).getUser();
 }
 
@@ -1239,14 +1242,14 @@ class HomeScreen extends ConsumerWidget {
 ```yaml
 # pubspec.yaml - REQUIRED for Riverpod 3.x code generation
 dependencies:
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5       # For @riverpod annotation
+  flutter_riverpod: ^3.3.2
+  riverpod_annotation: ^4.0.3       # For @riverpod annotation
+  freezed_annotation: ^3.1.0
 
 dev_dependencies:
-  riverpod_generator: ^2.4.0        # REQUIRED for code generation
-  build_runner: ^2.4.9
-  freezed: ^2.5.2                   # For state classes
-  freezed_annotation: ^2.4.1
+  riverpod_generator: ^4.0.4        # REQUIRED for code generation
+  build_runner: ^2.15.1
+  freezed: ^3.2.5                   # For state classes
 ```
 
 ```bash
@@ -1262,7 +1265,7 @@ dart run build_runner build --delete-conflicting-outputs
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| **SVG not rendering** | Missing flutter_svg | Add `flutter_svg: ^2.0.10+1` to pubspec.yaml |
+| **SVG not rendering** | Missing flutter_svg | Add the `flutter_svg` version from `flutter@recommended` to pubspec.yaml |
 | **Asset not found** | Path mismatch | Check pubspec.yaml assets section matches actual paths |
 | **2x/3x images not loading** | Directory structure | Ensure `assets/images/2.0x/` and `assets/images/3.0x/` exist |
 | **Playwright connection failed** | MCP not running | Start Playwright MCP server |
@@ -1295,8 +1298,8 @@ flutter clean && flutter pub get && flutter build web
 - Method: Ralph Hybrid (Loop + Dual Verification)
 - Max Iterations: 30
 - Target Accuracy: 99%+
-- Flutter Target: 3.24+
-- Dart Target: 3.5+
+- Flutter Target: 3.44.6 for new projects; existing constraint for in-place work
+- Dart Target: 3.12.2 for new projects; existing constraint for in-place work
 
 ---
 

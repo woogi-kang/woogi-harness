@@ -171,7 +171,7 @@ output:
 
 **추천 스택 (2025)**
 ```
-Frontend:  Next.js 15 + TanStack Query + Zustand + shadcn/ui
+Frontend:  Next.js 16.2.10 + TanStack Query 5.101.2 + Zustand 5.0.14 + shadcn/ui
 Backend:   Next.js API Routes (또는 FastAPI)
 Database:  PostgreSQL (Supabase/Neon)
 Auth:      Auth.js v5 또는 Clerk

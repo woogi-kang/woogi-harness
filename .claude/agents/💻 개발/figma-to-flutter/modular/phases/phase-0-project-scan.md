@@ -48,9 +48,9 @@ dependencies:
     sdk: flutter
 
 # 권장 의존성
-  flutter_svg: ^2.0.0      # SVG 지원
-  cached_network_image: ^3.3.0  # 이미지 캐싱
-  google_fonts: ^6.0.0     # 구글 폰트
+  flutter_svg: ^2.3.0      # SVG 지원
+  cached_network_image: ^3.4.1  # 이미지 캐싱
+  google_fonts: ^8.1.0     # 구글 폰트
 ```
 
 ### 권장 dev 의존성
@@ -59,8 +59,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  build_runner: ^2.4.0
+  flutter_lints: ^6.0.0
+  build_runner: ^2.15.1
 ```
 
 ---
@@ -162,8 +162,8 @@ flutter:
 
 ## Project Info
 - Name: my_app
-- Flutter Version: 3.24.0
-- Dart Version: 3.5.0
+- Flutter Version: 3.44.6 (new-project registry baseline)
+- Dart Version: 3.12.2 (bundled with Flutter)
 
 ## Structure
 - Architecture: Clean Architecture
@@ -182,8 +182,8 @@ flutter:
 - [ ] 폰트 설정 필요
 
 ## Dependencies to Add
-- flutter_svg: ^2.0.0
-- cached_network_image: ^3.3.0
+- flutter_svg: ^2.3.0
+- cached_network_image: ^3.4.1
 
 ## Next Phase
 Phase 1: Design Scan 진행 가능

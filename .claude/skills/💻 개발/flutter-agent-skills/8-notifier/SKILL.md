@@ -114,7 +114,7 @@ class {Entity}ListNotifier extends _${Entity}ListNotifier {
       (_) {
         // 목록에서 제거
         state = AsyncData(
-          state.valueOrNull?.where((e) => e.id != id).toList() ?? [],
+          state.value?.where((e) => e.id != id).toList() ?? [],
         );
       },
     );

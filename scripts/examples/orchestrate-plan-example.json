@@ -1,7 +1,8 @@
 {
   "session": "feature-auth",
   "base_ref": "HEAD",
-  "launcher": "claude --dangerously-skip-permissions -p '{task}' --cwd {worktree}",
+  "provider": "claude",
+  "quality_tier": "implementation",
   "workers": [
     {
       "name": "Backend",

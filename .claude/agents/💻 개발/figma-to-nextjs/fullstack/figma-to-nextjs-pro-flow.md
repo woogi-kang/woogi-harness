@@ -5,7 +5,7 @@ description: 8-phase pipeline flow documentation for figma-to-nextjs-pro agent w
 
 # Figma → Next.js Pro 컨버터 플로우
 
-> **버전**: 2.2.0 | **에이전트**: figma-to-nextjs-pro | **모델**: Opus
+> **버전**: 2.2.0 | **에이전트**: figma-to-nextjs-pro | **품질 클래스**: `reasoning_high`
 
 ---
 
@@ -429,7 +429,7 @@ src/
 
 | 기능 | Modular | PRO |
 |------|---------|-----|
-| **모델** | Sonnet | Opus |
+| **품질 클래스** | `implementation` | `reasoning_high` |
 | **검증** | 단일 에이전트 | 이중 에이전트 (병렬) |
 | **최대 반복** | 5 | 5 × 2 에이전트 |
 | **전략** | 표준만 | 보수적 + 실험적 |

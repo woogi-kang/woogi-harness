@@ -219,7 +219,7 @@ System calculates pattern breaks at 1/3 and 2/3 positions.
 ### Chart.js Integration
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 
 <canvas id="revenueChart"></canvas>
 <script>

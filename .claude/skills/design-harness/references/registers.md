@@ -52,7 +52,7 @@ Use when the user asks for tokens, CSS variables, component specs, theming, or r
 - Define primitive, semantic, and component tokens.
 - Use OKLCH or existing project token conventions.
 - Keep one radius, shadow, spacing, and type scale system unless a documented exception exists.
-- Hand implementation to `design-system` and `ui-styling` after design decisions are clear.
+- Hand implementation to `design-system` and `ckm:ui-styling` after design decisions are clear.
 
 ## Asset Register
 

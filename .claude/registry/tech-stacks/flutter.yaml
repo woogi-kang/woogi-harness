@@ -1,0 +1,447 @@
+schema_version: 1
+id: flutter
+display_name: Flutter application baseline
+verified_at: 2026-07-13
+policy:
+  default_channel: recommended
+  upgrade_rule: Major SDK or package-family upgrades require generated-code, analyzer, test, and platform-build evidence.
+migration:
+  guide: migrations/flutter-3.24-to-3.44.md
+  summary: Migrate the SDK and behavior-changing package families as one verified application baseline.
+promotion_gates: &stack_gates
+  - pub-resolution
+  - generated-code-clean
+  - flutter-analyze
+  - flutter-test
+  - android-release-build
+  - ios-no-codesign-build
+consumers: &stack_consumers
+  - .claude/agents/💻 개발/flutter-agent.md
+  - .claude/agents/💻 개발/figma-to-flutter/fullstack/figma-to-flutter-ralph-hybrid.md
+  - .claude/skills/💻 개발/flutter-agent-skills/1-project-setup/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/_references/RECENT-FLUTTER-CHANGES.md
+  - .claude/skills/💻 개발/flutter-agent-skills/_references/RIVERPOD-PATTERN.md
+  - .claude/agents/💻 개발/tdd-loop-agent/frameworks/flutter/config.md
+  - .claude/agents/💻 개발/figma-to-flutter/modular/phases/phase-0-project-scan.md
+  - .claude/agents/💻 개발/figma-to-flutter/modular/phases/phase-5-asset-process.md
+  - .claude/skills/💻 개발/flutter-agent-skills/17-e2e-test/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/23-widgetbook/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/25-flavor/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/26-firebase/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/28-security/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/29-deeplink/SKILL.md
+  - .claude/skills/💻 개발/flutter-agent-skills/_references/DATABASE-PATTERN.md
+  - .claude/skills/💻 개발/flutter-agent-skills/_references/NETWORK-PATTERN.md
+  - .claude/skills/💻 개발/flutter-agent-skills/_references/TEST-PATTERN.md
+
+components:
+  flutter:
+    latest_observed: { version: 3.44.6, channel: stable }
+    recommended: { version: 3.44.6, channel: stable, reason: Latest stable hotfix line. }
+    compatibility_floor: { version: 3.38.1, channel: stable, reason: Floor required by the selected notifications and routing family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: official-release, url: "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Upgrade platform templates and run every platform build gate. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  dart:
+    latest_observed: { version: 3.12.2, channel: stable }
+    recommended: { version: 3.12.2, channel: stable, reason: Bundled with Flutter 3.44.6. }
+    compatibility_floor: { version: 3.10.0, channel: stable, reason: "Required by the selected GoRouter, Drift, SQLite, and Pigeon versions." }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: official-release, url: "https://dart.dev/changelog" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Run dart fix and review language-versioned formatter and analyzer changes. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  flutter_riverpod:
+    latest_observed: { version: 3.3.2, channel: stable }
+    recommended: { version: 3.3.2, channel: stable, reason: Current Riverpod 3 runtime. }
+    compatibility_floor: { version: 3.0.0, channel: stable, reason: Riverpod 3 behavior is the supported harness contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/flutter_riverpod" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Review retry, pause, equality filtering, Ref, and ProviderException behavior." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  riverpod_annotation:
+    latest_observed: { version: 4.0.3, channel: stable }
+    recommended: { version: 4.0.3, channel: stable, reason: Matches Riverpod generator 4.0.4. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: Riverpod 3 code-generation family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/riverpod_annotation" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Keep annotation and generator majors aligned. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  riverpod_generator:
+    latest_observed: { version: 4.0.4, channel: stable }
+    recommended: { version: 4.0.4, channel: stable, reason: Matches Riverpod annotation 4.0.3. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: Riverpod 3 code-generation family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/riverpod_generator" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate and require a clean generated diff. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  go_router:
+    latest_observed: { version: 17.3.0, channel: stable }
+    recommended: { version: 17.3.0, channel: stable, reason: Current stable typed-routing line. }
+    compatibility_floor: { version: 17.0.0, channel: stable, reason: Harness assumes v17 ShellRoute observer semantics. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/go_router" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify URL case sensitivity, typed routes, redirects, and ShellRoute observers." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  go_router_builder:
+    latest_observed: { version: 4.3.0, channel: stable }
+    recommended: { version: 4.3.0, channel: stable, reason: Current compatible typed-route generator. }
+    compatibility_floor: { version: 4.0.0, channel: stable, reason: GoRouter 17 typed route family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/go_router_builder" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate route mixins after migration. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  dio:
+    latest_observed: { version: 5.10.0, channel: stable }
+    recommended: { version: 5.10.0, channel: stable, reason: Current Dio 5 stable release. }
+    compatibility_floor: { version: 5.9.0, channel: stable, reason: Keep the supported Dio 5 API family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/dio" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Exercise interceptors, cancellation, retry, and upload/download tests." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  retrofit:
+    latest_observed: { version: 4.9.2, channel: stable }
+    recommended: { version: 4.9.2, channel: stable, reason: Current stable runtime. }
+    compatibility_floor: { version: 4.9.0, channel: stable, reason: Keep runtime and generator in the selected family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/retrofit" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate clients and compile response/error adapters. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  retrofit_generator:
+    latest_observed: { version: 10.2.7, channel: stable }
+    recommended: { version: 10.2.7, channel: stable, reason: Current generator for Retrofit 4.9.2. }
+    compatibility_floor: { version: 10.0.0, channel: stable, reason: Selected generator major. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/retrofit_generator" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Generated client output must remain clean after a second run. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  drift:
+    latest_observed: { version: 2.34.1, channel: stable }
+    recommended: { version: 2.34.1, channel: stable, reason: Current Drift stable runtime. }
+    compatibility_floor: { version: 2.33.0, channel: stable, reason: Existing schema APIs remain in the Drift 2 line. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/drift" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Validate schema snapshots and every step-by-step migration. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  sqlite3:
+    latest_observed: { version: 3.4.0, channel: stable }
+    recommended: { version: 3.4.0, channel: stable, reason: Current sqlite3 3.x runtime. }
+    compatibility_floor: { version: 3.3.0, channel: stable, reason: Replaces the EOL sqlite3_flutter_libs bundling path. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/sqlite3" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Verify native and web database initialization separately. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pigeon:
+    latest_observed: { version: 27.1.1, channel: stable }
+    recommended: { version: 27.1.1, channel: stable, reason: Current stable platform-channel generator. }
+    compatibility_floor: { version: 27.0.0, channel: stable, reason: Harness no longer uses removed PigeonOptions.oneLanguage. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/pigeon" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Remove oneLanguage and compile generated Android and Apple bindings. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  freezed:
+    latest_observed: { version: 3.2.5, channel: stable }
+    recommended: { version: 3.2.5, channel: stable, reason: Current stable code generator. }
+    compatibility_floor: { version: 3.1.0, channel: stable, reason: Includes restored when/map APIs and Freezed 3 class semantics. }
+    prerelease: { version: 4.0.0-dev.3, channel: beta, reason: Never use in generated projects without an explicit experiment. }
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/freezed" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Apply class modifiers and regenerate equality, unions, and copyWith code." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  build_runner:
+    latest_observed: { version: 2.15.1, channel: stable }
+    recommended: { version: 2.15.1, channel: stable, reason: Current stable build runner. }
+    compatibility_floor: { version: 2.15.0, channel: stable, reason: Selected generator family baseline. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/build_runner" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Run generation twice and require an empty second diff. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_core:
+    latest_observed: { version: 4.11.0, channel: stable }
+    recommended: { version: 4.11.0, channel: stable, reason: Current FlutterFire core. }
+    compatibility_floor: { version: 4.9.0, channel: stable, reason: Maintain the FlutterFire 4 core family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_core" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Resolve the FlutterFire family together and verify generated platform configuration. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_auth:
+    latest_observed: { version: 6.5.4, channel: stable }
+    recommended: { version: 6.5.4, channel: stable, reason: Current FlutterFire Auth. }
+    compatibility_floor: { version: 6.5.0, channel: stable, reason: Maintain the Auth 6 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_auth" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Exercise sign-in, token refresh, emulator, and logout flows." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  cloud_firestore:
+    latest_observed: { version: 6.6.0, channel: stable }
+    recommended: { version: 6.6.0, channel: stable, reason: Current FlutterFire Firestore. }
+    compatibility_floor: { version: 6.4.0, channel: stable, reason: Maintain the Firestore 6 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/cloud_firestore" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify converters, offline persistence, indexes, and emulator integration." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_messaging:
+    latest_observed: { version: 16.4.1, channel: stable }
+    recommended: { version: 16.4.1, channel: stable, reason: Current FlutterFire Messaging. }
+    compatibility_floor: { version: 16.2.0, channel: stable, reason: Maintain the Messaging 16 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_messaging" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Exercise foreground, background, terminated, and permission flows on real devices." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  supabase_flutter:
+    latest_observed: { version: 2.16.0, channel: stable }
+    recommended: { version: 2.16.0, channel: stable, reason: Current stable Supabase Flutter integration. }
+    compatibility_floor: { version: 2.14.0, channel: stable, reason: Includes immutable headers and current key terminology. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/supabase_flutter" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Verify auth lifecycle reconnection and publishable-key terminology. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  widgetbook:
+    latest_observed: { version: 3.25.0, channel: stable }
+    recommended: { version: 3.25.0, channel: stable, reason: Current stable component catalog. }
+    compatibility_floor: { version: 3.23.0, channel: stable, reason: Compatible with the Flutter 3.38+ baseline. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/widgetbook" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Build the catalog and snapshot representative use cases. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  flutter_local_notifications:
+    latest_observed: { version: 22.0.1, channel: stable }
+    recommended: { version: 22.0.1, channel: stable, reason: Current stable cross-platform notifications plugin. }
+    compatibility_floor: { version: 21.0.0, channel: stable, reason: "Requires Flutter 3.38.1, Dart 3.10, Android API 24, and current Apple floors." }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/flutter_local_notifications" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify named APIs, Android compileSdk, UIScene, permissions, scheduling, and launch callbacks." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  app_links:
+    latest_observed: { version: 7.2.1, channel: stable }
+    recommended: { version: 7.2.1, channel: stable, reason: Current stable deep-link plugin. }
+    compatibility_floor: { version: 7.0.0, channel: stable, reason: Selected app_links 7 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/app_links" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Exercise cold-start, warm-start, Android App Links, and iOS Universal Links." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  cached_network_image:
+    latest_observed: { version: 3.4.1, channel: stable }
+    recommended: { version: 3.4.1, channel: stable, reason: Current stable image cache package. }
+    compatibility_floor: { version: 3.4.0, channel: stable, reason: Keep the 3.x cache contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/cached_network_image" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify placeholders, errors, cache keys, and web behavior." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  google_fonts:
+    latest_observed: { version: 8.1.0, channel: stable }
+    recommended: { version: 8.1.0, channel: stable, reason: Current stable Google Fonts package. }
+    compatibility_floor: { version: 8.0.0, channel: stable, reason: Generated examples use the v8 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/google_fonts" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Verify bundled/offline fonts and license assets. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  flutter_gen_runner:
+    latest_observed: { version: 5.14.1, channel: stable }
+    recommended: { version: 5.14.1, channel: stable, reason: Current stable generator. }
+    compatibility_floor: { version: 5.14.0, channel: stable, reason: Keep generator output deterministic. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/flutter_gen_runner" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate assets and require an empty second diff. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  mocktail:
+    latest_observed: { version: 1.0.5, channel: stable }
+    recommended: { version: 1.0.5, channel: stable, reason: Current stable mocking library. }
+    compatibility_floor: { version: 1.0.0, channel: stable, reason: Maintain the v1 matcher contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/mocktail" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Run unit tests and fallback registration checks. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  alchemist:
+    latest_observed: { version: 0.14.0, channel: stable }
+    recommended: { version: 0.14.0, channel: stable, reason: Current stable golden-test helper. }
+    compatibility_floor: { version: 0.14.0, channel: stable, reason: Treat the 0.x minor upgrade as breaking. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/alchemist" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Rebaseline only after reviewed golden diffs. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  patrol:
+    latest_observed: { version: 4.6.1, channel: stable }
+    recommended: { version: 4.6.1, channel: stable, reason: Current stable native E2E runner. }
+    compatibility_floor: { version: 4.6.0, channel: stable, reason: Keep the selected Patrol 4 contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/patrol" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Run Android and iOS device flows with current CLI tooling. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  fake_async:
+    latest_observed: { version: 1.3.3, channel: stable }
+    recommended: { version: 1.3.3, channel: stable, reason: Current deterministic time helper. }
+    compatibility_floor: { version: 1.3.3, channel: stable, reason: Align tests on the current patch. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/fake_async" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify timers, microtasks, and elapsed-time assertions." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  clock:
+    latest_observed: { version: 1.1.2, channel: stable }
+    recommended: { version: 1.1.2, channel: stable, reason: Current injectable clock package. }
+    compatibility_floor: { version: 1.1.2, channel: stable, reason: Align test-time behavior. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/clock" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Exercise time-zone and fake-clock fixtures. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_crashlytics:
+    latest_observed: { version: 5.2.4, channel: stable }
+    recommended: { version: 5.2.4, channel: stable, reason: Current FlutterFire Crashlytics. }
+    compatibility_floor: { version: 5.2.0, channel: stable, reason: Maintain the v5 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_crashlytics" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Verify fatal/nonfatal capture and symbol upload. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_analytics:
+    latest_observed: { version: 12.4.3, channel: stable }
+    recommended: { version: 12.4.3, channel: stable, reason: Current FlutterFire Analytics. }
+    compatibility_floor: { version: 12.4.0, channel: stable, reason: Maintain the v12 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_analytics" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Validate event names, consent, and debug-view delivery." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_storage:
+    latest_observed: { version: 13.4.3, channel: stable }
+    recommended: { version: 13.4.3, channel: stable, reason: Current FlutterFire Storage. }
+    compatibility_floor: { version: 13.4.0, channel: stable, reason: Maintain the v13 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_storage" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Exercise uploads, retries, metadata, and rules." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  firebase_remote_config:
+    latest_observed: { version: 6.5.3, channel: stable }
+    recommended: { version: 6.5.3, channel: stable, reason: Current FlutterFire Remote Config. }
+    compatibility_floor: { version: 6.5.0, channel: stable, reason: Maintain the v6 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/firebase_remote_config" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Verify defaults, fetch cadence, activation, and realtime updates." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  path_provider:
+    latest_observed: { version: 2.1.6, channel: stable }
+    recommended: { version: 2.1.6, channel: stable, reason: Current stable platform path plugin. }
+    compatibility_floor: { version: 2.1.5, channel: stable, reason: Maintain the v2 contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/path_provider" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Exercise every supported platform path. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  drift_dev:
+    latest_observed: { version: 2.34.3, channel: stable }
+    recommended: { version: 2.34.3, channel: stable, reason: Current Drift generator aligned with Drift 2.34. }
+    compatibility_floor: { version: 2.34.0, channel: stable, reason: Keep runtime and generator aligned. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/drift_dev" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate schema code and test database migrations. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  local_auth:
+    latest_observed: { version: 3.0.2, channel: stable }
+    recommended: { version: 3.0.2, channel: stable, reason: Current stable local authentication plugin. }
+    compatibility_floor: { version: 3.0.0, channel: stable, reason: Maintain the v3 platform contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/local_auth" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: "Test enrolled, locked-out, fallback, and cancellation states." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  envied:
+    latest_observed: { version: 1.3.8, channel: stable }
+    recommended: { version: 1.3.8, channel: stable, reason: Current stable environment generator runtime. }
+    compatibility_floor: { version: 1.3.0, channel: stable, reason: Maintain the 1.3 contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/envied" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate and verify secrets remain uncommitted. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  envied_generator:
+    latest_observed: { version: 1.3.8, channel: stable }
+    recommended: { version: 1.3.8, channel: stable, reason: Match envied runtime. }
+    compatibility_floor: { version: 1.3.0, channel: stable, reason: Keep runtime and generator aligned. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/envied_generator" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Require an empty second generated-code diff. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  widgetbook_generator:
+    latest_observed: { version: 3.24.0, channel: stable }
+    recommended: { version: 3.24.0, channel: stable, reason: Current generator compatible with Widgetbook 3.25. }
+    compatibility_floor: { version: 3.24.0, channel: stable, reason: Use the current generator line. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pub, url: "https://pub.dev/api/packages/widgetbook_generator" }
+    migration: { guide: migrations/flutter-3.24-to-3.44.md, note: Regenerate use cases and build the catalog. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers

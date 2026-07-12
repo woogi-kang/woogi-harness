@@ -9,7 +9,10 @@ Status: Shadow Mode
 근거:
 - HTML locked layout 품질은 샘플 3종에서 양호했습니다.
 - overflow, padding, Korean word breaking 자동 QA는 동작했습니다.
-- Product/brand visual deck은 Codex native image generation/CLI 기반 hero asset, manifest gate, semantic review까지 통과했습니다.
+- 기존 product/brand visual deck의 layout/semantic review는 통과했지만, 과거
+  자체 prompt와 CLI provenance는 현재 gate의 통과 증거가 아닙니다. 현행
+  `image-prompt` → validator → Codex `$imagegen` trusted-host 계약으로 다시
+  생성·검증해야 replacement evidence로 승격할 수 있습니다.
 - PPTX/PDF export parity, 리서치/검증 파이프라인 parity, 나머지 archetype은 아직 충분히 검증되지 않았습니다.
 
 ## 평가 단계
@@ -32,7 +35,8 @@ Status: Shadow Mode
 
 3. Product/brand visual deck
    - hero image, icon set, 제품/브랜드 메시지가 중심인 덱
-   - current: layout QA pass; manifest gate pass; semantic graphic quality pass; CLI/native image generation pass
+   - current: layout QA pass; semantic graphic quality pass; legacy image
+     provenance는 current manifest gate에서 재검증 필요
 
 4. Dense data/chart deck
    - Chart.js 또는 표/그래프가 중심인 분석 덱
@@ -48,6 +52,12 @@ Status: Shadow Mode
 - vendor validator: error 0건
 - QA screenshot/contact sheet 생성
 - 한국어 제목 줄바꿈 major issue 0건
+- 생성형 raster의 `image-prompt@2.3.0`, `image_gen__imagegen`, `prompt_record`,
+  `required_model: gpt-image-2`, `model_binding: trusted-host-fixed`,
+  `local_model_verification: unavailable`, `host_reported_model: null`,
+  `generation_assurance: generated_under_trusted_host_contract` 누락 0건이며
+  로컬 attestation으로 오인되는 `model` 필드 0건
+- product screenshot, reference photo, deterministic chart/SVG는 명시적 `kind` 및 `source` provenance 누락 0건
 - 생성 이미지 내 읽어야 하는 텍스트 0건
 - 의미 없는 decorative/filler graphic 0건
 - 모든 이미지에 visual contract 존재

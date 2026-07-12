@@ -3,7 +3,8 @@ description: "Monthly financial report - Generate P&L, balance sheet, and cash f
 argument-hint: "[YYYY-MM]"
 type: utility
 allowed-tools: AskUserQuestion, Bash, Read, Write, Glob, Grep, Task
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context

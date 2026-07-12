@@ -1,6 +1,8 @@
 # Flutter Framework Configuration
 
-> **Version**: 2.0.0 | Flutter 3.24+ / Dart 3.5+ | Full Test Support
+> **Version**: 2.1.0 | Flutter 3.44.6 / Dart 3.12.2 | Full Test Support
+>
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml`. Existing projects keep their checked-in SDK constraint; the registry is the new-project default.
 
 ---
 
@@ -64,7 +66,7 @@
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
 ```
 
 ### Full Testing Stack
@@ -76,19 +78,19 @@ dev_dependencies:
     sdk: flutter
 
   # Mocking
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
 
   # Golden Tests
-  alchemist: ^0.13.0
+  alchemist: ^0.14.0
 
   # E2E Tests
-  patrol: ^4.1.0
+  patrol: ^4.6.1
   integration_test:
     sdk: flutter
 
   # Utilities
-  fake_async: ^1.3.1
-  clock: ^1.1.1
+  fake_async: ^1.3.3
+  clock: ^1.1.2
 ```
 
 ---

@@ -270,13 +270,10 @@ class AccessibleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-
+    // Text가 MediaQuery의 비선형 TextScaler를 그대로 사용하도록 둔다.
     return Text(
       text,
       style: style,
-      // 텍스트 스케일 제한 (레이아웃 깨짐 방지)
-      textScaler: TextScaler.linear(textScaleFactor.clamp(0.8, 1.5)),
     );
   }
 }
@@ -289,8 +286,8 @@ class AccessibleText extends StatelessWidget {
 class AccessibleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final isLargeText = textScaleFactor > 1.3;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final isLargeText = textScaler.scale(14) >= 18.2;
 
     return Card(
       child: isLargeText

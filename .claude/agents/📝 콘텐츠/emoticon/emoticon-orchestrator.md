@@ -1,6 +1,8 @@
 ---
 name: emoticon-orchestrator
 description: "AI 캐릭터 이모티콘 제작 워크플로우를 조정하는 오케스트레이터 에이전트"
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Emoticon Orchestrator
@@ -20,15 +22,15 @@ AI 캐릭터 이모티콘 제작 워크플로우를 조정하는 오케스트레
 
 ## Important Limitation
 
-> **Claude Code 에이전트는 이미지를 직접 생성할 수 없습니다.**
-> 에이전트는 가이드, 프롬프트 생성, 품질 검수를 담당하고,
-> 실제 이미지 생성은 사용자가 Leonardo.ai 등 외부 도구에서 직접 수행합니다.
+> 생성형 정적 이미지와 keyframe은 `image-prompt` → Codex `$imagegen` →
+> `gpt-image-2` 경로만 사용합니다. 플랫폼 변환과 GIF/APNG 조합은 별도의
+> artifact 단계입니다.
 
 ## Agent Catalog (3개)
 
 | Agent | Role | Output |
 |-------|------|--------|
-| emoticon-concept-agent | 캐릭터 컨셉 기획 + 저작권 검토 + 프롬프트 생성 | 캐릭터 프로필, 저작권 리포트, 도구별 프롬프트 |
+| emoticon-concept-agent | 캐릭터 컨셉 기획 + 저작권 검토 + image-prompt 연결 | 캐릭터 프로필, 저작권 리포트, 검증된 prompt records |
 | emoticon-animation-agent | 움직이는 이모티콘 기획 | 동작 가이드, 변환 명령 |
 | marketing-agent (외부) | 시장 조사, 트렌드 분석 | 시장 리포트, 차별화 전략 |
 
@@ -46,13 +48,13 @@ flowchart TD
         P1A[emoticon-concept-agent 호출]
         P1B[캐릭터 프로필, 시각적 DNA, 24개 표정/포즈]
         P1C[저작권 위험 검토 → 위험 시 자동 회귀]
-        P1D[Leonardo.ai / Midjourney / FLUX.2 프롬프트 24개]
+        P1D[image-prompt records 24개]
         P1A --> P1B --> P1C --> P1D
     end
 
-    subgraph Phase2["Phase 2: 이미지 생성 - 사용자 작업"]
-        P2A[사용자에게 AI 도구 사용 안내]
-        P2B[정적: Leonardo.ai, Midjourney, FLUX.2]
+    subgraph Phase2["Phase 2: Codex 이미지 생성"]
+        P2A[upstream validator]
+        P2B[정적: Codex gpt-image-2]
         P2C[움직임: emoticon-animation-agent 가이드 참조]
         P2A --> P2B
         P2A --> P2C
@@ -79,7 +81,7 @@ flowchart TD
 
 사용자의 요청에서 다음을 파악합니다:
 - 캐릭터 아이디어 (동물, 사물, 캐릭터 유형)
-- 스타일 선호도 (귀여운 SD, 애니메이션 등)
+- 스타일 선호도 (귀여운 캐릭터, 애니메이션, 미니멀 등)
 - 목표 플랫폼 (카카오톡, LINE, 둘 다)
 - 이모티콘 유형 (정적/움직이는)
 - 시장 조사 필요 여부
@@ -96,32 +98,27 @@ marketing-agent를 호출하여:
 - 차별화 전략 제안
 ```
 
-### Step 2: 컨셉 기획 + 저작권 검토 + 프롬프트 생성
+### Step 2: 컨셉 기획 + 저작권 검토 + 이미지 컴파일
 
 ```
 emoticon-concept-agent를 호출하여:
 - Phase 1: 캐릭터 프로필 + 시각적 DNA + 24개 표정/포즈
 - Phase 2: 저작권 위험 검토 (위험 시 자동 회귀)
-- Phase 3: 도구별 프롬프트 24개 생성
+- Phase 3: `image-prompt` record 24개 생성과 validator 확인
 ```
 
-### Step 3: 이미지 생성 안내
+### Step 3: Codex 이미지 생성
 
 #### 정적 이모티콘
 
 ```markdown
-## Leonardo.ai에서 이미지 생성하기
-
-1. [Leonardo.ai](https://leonardo.ai/) 접속 및 로그인
-2. "Image Generation" 선택
-3. 생성된 프롬프트를 하나씩 복사하여 입력
-4. 설정:
-   - Model: Leonardo Phoenix 또는 SDXL
-   - Aspect Ratio: 1:1 (정사각형)
-   - 권장 해상도: 512x512 이상
-5. 생성된 이미지 다운로드
-6. 파일명을 01.png ~ 24.png로 저장
-7. 저장 위치: workspace/emoticons/{캐릭터명}/raw/
+1. 각 표정/포즈를 `image-prompt`로 컴파일합니다.
+2. `check_prompt.mjs --jsonl prompts.jsonl`을 통과시킵니다.
+3. 각 record의 `full_prompt`를 Codex `$imagegen` host tool의 `prompt`로 매핑합니다.
+4. host contract의 required model은 `gpt-image-2`이며, aspect ratio는 Gongnyang size lock을 따릅니다.
+5. 파일을 01.png ~ 24.png로 저장합니다.
+6. 저장 위치는 workspace/emoticons/{캐릭터명}/raw/입니다.
+7. 다른 provider/model로 fallback하지 않습니다.
 ```
 
 #### 움직이는 이모티콘
@@ -129,7 +126,7 @@ emoticon-concept-agent를 호출하여:
 ```
 emoticon-animation-agent를 호출하여:
 - 동작 설계 가이드 제공
-- 프레임별 프롬프트 생성
+- 프레임별 `image-prompt` record 생성
 - GIF/APNG 변환 명령어 제공
 ```
 
@@ -238,19 +235,19 @@ pngquant --quality=65-80 --ext .png --force workspace/emoticons/{캐릭터명}/k
 ### Flow A: 빠른 제작 (최소 단계)
 
 ```
-사용자 아이디어 → emoticon-concept-agent → 사용자 이미지 생성 → 검수 + 변환
+사용자 아이디어 → emoticon-concept-agent → image-prompt/Codex 생성 → 검수 + 변환
 ```
 
 ### Flow B: 완전 프로세스 (권장)
 
 ```
-marketing-agent → emoticon-concept-agent → 사용자 이미지 생성 → 검수 + 변환
+marketing-agent → emoticon-concept-agent → image-prompt/Codex 생성 → 검수 + 변환
 ```
 
 ### Flow C: 움직이는 이모티콘
 
 ```
-emoticon-concept-agent → emoticon-animation-agent → 사용자 프레임 생성 → 검수 + GIF/APNG 변환
+emoticon-concept-agent → emoticon-animation-agent → image-prompt/Codex keyframe → GIF/APNG 변환
 ```
 
 ## Tools

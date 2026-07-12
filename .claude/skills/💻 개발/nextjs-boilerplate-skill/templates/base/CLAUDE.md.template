@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-**{{PROJECT_NAME}}** - Next.js 15 프로젝트
+**{{PROJECT_NAME}}** - Next.js 16.2 프로젝트
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16.2.10 (App Router)
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Linting**: ESLint + Prettier

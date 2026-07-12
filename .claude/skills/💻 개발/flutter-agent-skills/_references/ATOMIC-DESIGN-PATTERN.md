@@ -745,7 +745,7 @@ class AppInput extends StatelessWidget {
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdBorder,
-          borderSide: BorderSide(color: AppColors.border.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
         ),
       ),
     );

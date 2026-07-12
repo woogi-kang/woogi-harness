@@ -1,0 +1,103 @@
+{
+  "schema_version": "harness.capabilities.v1",
+  "capabilities": [
+    {
+      "id": "kernel.core",
+      "kind": "kernel",
+      "aliases": ["core"],
+      "intent": "Load the minimum cross-provider execution contract and project profile.",
+      "source": ".claude/registry/contracts/execution-outcome.schema.json",
+      "context_files": [
+        ".claude/registry/contracts/project-profile.schema.json",
+        ".claude/registry/providers/core.yaml"
+      ],
+      "required_context": true,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.registry",
+      "kind": "workflow",
+      "aliases": ["registry"],
+      "intent": "Validate canonical capability identities, aliases, sources, and frontmatter names.",
+      "source": "scripts/harness-registry.py",
+      "context_files": [
+        ".claude/registry/capabilities/core.json",
+        ".claude/registry/contracts/asset-inventory.schema.json"
+      ],
+      "required_context": true,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.context",
+      "kind": "workflow",
+      "aliases": ["context-compiler"],
+      "intent": "Compile a bounded context manifest from a project profile and requested capabilities.",
+      "source": "scripts/harness-context.py",
+      "context_files": [".claude/registry/contracts/context-manifest.schema.json"],
+      "required_context": true,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.provider",
+      "kind": "workflow",
+      "aliases": ["provider-binding"],
+      "intent": "Resolve a provider-native quality class only when its capability and tool requirements are satisfied.",
+      "source": "scripts/harness-provider.py",
+      "context_files": [".claude/registry/providers/core.yaml"],
+      "required_context": true,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.execution",
+      "kind": "workflow",
+      "aliases": ["execution-state"],
+      "intent": "Manage typed execution transitions and evidence-bearing outcomes.",
+      "source": "scripts/harness-execution.py",
+      "context_files": [".claude/registry/contracts/execution-outcome.schema.json"],
+      "required_context": true,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.telemetry",
+      "kind": "workflow",
+      "aliases": ["telemetry"],
+      "intent": "Normalize append-only JSONL telemetry across providers and legacy logs.",
+      "source": "scripts/harness-telemetry.py",
+      "context_files": [".claude/registry/contracts/telemetry-event.schema.json"],
+      "required_context": false,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.doctor",
+      "kind": "workflow",
+      "aliases": ["doctor"],
+      "intent": "Check harness links, rules, registry, hooks, provider policy, and eval presence.",
+      "source": "scripts/harness-doctor.py",
+      "context_files": [],
+      "required_context": false,
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "id": "runtime.sync",
+      "kind": "workflow",
+      "aliases": ["sync-v2"],
+      "intent": "Plan, apply, canary, back up, and roll back non-destructive harness synchronization.",
+      "source": "scripts/harness-sync.py",
+      "context_files": [
+        ".claude/project-packs/default/pack.json",
+        ".claude/registry/contracts/project-pack.schema.json",
+        ".claude/registry/contracts/sync-manifest.schema.json"
+      ],
+      "required_context": false,
+      "status": "stable",
+      "version": "1.0.0"
+    }
+  ]
+}

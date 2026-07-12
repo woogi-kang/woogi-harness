@@ -1,17 +1,13 @@
-# UI Styling Skill Dependencies
-# Python 3.10+ required
+# UI Styling helper test environment
+# Python 3.14 recommended by `.claude/registry/tech-stacks/python-fastapi.yaml`.
 
-# No Python package dependencies - uses only standard library
+# Runtime helpers use only the Python standard library.
 
-# Testing dependencies (dev)
-pytest>=8.0.0
-pytest-cov>=4.1.0
-pytest-mock>=3.12.0
+# Test-only dependencies
+pytest==9.1.1
+pytest-cov==7.1.0
+pytest-mock==3.15.1
 
-# Note: This skill works with shadcn/ui and Tailwind CSS
-# Requires Node.js and package managers:
-#   - Node.js 18+: https://nodejs.org/
-#   - npm (comes with Node.js)
-#
-# shadcn/ui CLI is installed per-project:
-#   npx shadcn-ui@latest init
+# Web tooling is project-owned. When a project selects Tailwind, use the
+# recommended web baseline: Node.js 24.18.0 LTS and Tailwind CSS 4.3.2.
+# Never install shadcn/Tailwind globally from this requirements file.

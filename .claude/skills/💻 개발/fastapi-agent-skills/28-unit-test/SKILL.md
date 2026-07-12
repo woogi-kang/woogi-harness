@@ -83,17 +83,17 @@ show_missing = true
 # pyproject.toml
 [project.optional-dependencies]
 test = [
-    "pytest>=8.3.0",
-    "pytest-asyncio>=0.24.0",
-    "pytest-cov>=6.0.0",
-    "pytest-xdist>=3.6.0",
-    "pytest-mock>=3.14.0",
-    "pytest-timeout>=2.3.0",
-    "httpx>=0.28.0",
-    "factory-boy>=3.3.0",
-    "faker>=30.0.0",
-    "freezegun>=1.4.0",
-    "respx>=0.21.0",
+    "pytest>=9.1.1,<10.0",
+    "pytest-asyncio>=1.4.0,<2.0",
+    "pytest-cov>=7.1.0,<8.0",
+    "pytest-xdist>=3.8.0,<4.0",
+    "pytest-mock>=3.15.1,<4.0",
+    "pytest-timeout>=2.4.0,<3.0",
+    "httpx>=0.28.1,<0.29",
+    "factory-boy>=3.3.3,<4.0",
+    "faker>=40.28.1,<41.0",
+    "freezegun>=1.5.5,<2.0",
+    "respx>=0.23.1,<0.24",
 ]
 ```
 

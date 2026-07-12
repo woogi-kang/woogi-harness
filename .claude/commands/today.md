@@ -3,7 +3,8 @@ description: "Daily command - Context-aware task execution with auto skill routi
 argument-hint: "[instruction]"
 type: utility
 allowed-tools: AskUserQuestion, Bash, Read, Write, Edit, Glob, Grep, Task, Skill
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context

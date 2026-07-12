@@ -149,10 +149,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     "build:all": "npm run build && npm run build:pdf"
   },
   "dependencies": {
-    "pptxgenjs": "^3.12.0",
-    "playwright": "^1.40.0",
+    "pptxgenjs": "^4.0.1",
+    "playwright": "^1.61.1",
     "pdf-lib": "^1.17.1",
-    "sharp": "^0.33.0"
+    "sharp": "^0.35.3"
   }
 }
 ```

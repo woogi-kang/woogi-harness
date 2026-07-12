@@ -45,10 +45,10 @@ metadata:
 ```yaml
 dependencies:
   # Deep Link handling
-  app_links: ^7.0.0
+  app_links: ^7.2.1
 
   # GoRouter (already included)
-  go_router: ^17.2.3
+  go_router: ^17.3.0
 ```
 
 ---
@@ -460,56 +460,14 @@ xcrun simctl openurl booted "https://example.com/app/product/123"
 
 ---
 
-## 8. Firebase Dynamic Links (Alternative)
+## 8. 종료된 Firebase Dynamic Links 금지
 
-```yaml
-# Firebase Dynamic Links 사용시
-dependencies:
-  firebase_dynamic_links: ^6.0.8
-```
-
-```dart
-// Firebase Dynamic Links 핸들러
-class FirebaseDynamicLinkHandler {
-  final FirebaseDynamicLinks _dynamicLinks = FirebaseDynamicLinks.instance;
-
-  Future<void> initialize() async {
-    // Cold start
-    final initialLink = await _dynamicLinks.getInitialLink();
-    if (initialLink != null) {
-      _handleDynamicLink(initialLink);
-    }
-
-    // Warm start
-    _dynamicLinks.onLink.listen(_handleDynamicLink);
-  }
-
-  void _handleDynamicLink(PendingDynamicLinkData data) {
-    final deepLink = data.link;
-    // Navigate based on deep link
-  }
-
-  // Create dynamic link
-  Future<Uri> createProductLink(String productId) async {
-    final parameters = DynamicLinkParameters(
-      uriPrefix: 'https://myapp.page.link',
-      link: Uri.parse('https://example.com/product/$productId'),
-      androidParameters: const AndroidParameters(
-        packageName: 'com.example.myapp',
-        minimumVersion: 1,
-      ),
-      iosParameters: const IOSParameters(
-        bundleId: 'com.example.myapp',
-        minimumVersion: '1.0.0',
-        appStoreId: '123456789',
-      ),
-    );
-
-    final shortLink = await _dynamicLinks.buildShortLink(parameters);
-    return shortLink.shortUrl;
-  }
-}
-```
+Firebase Dynamic Links는 2025-08-25에 종료되어 `.page.link` 링크는 404,
+Short Links API는 400/403을 반환한다. 신규 코드와 마이그레이션 모두
+`firebase_dynamic_links`를 추가하지 않는다. Android App Links와 iOS Universal
+Links를 `app_links`로 처리한다. Deferred deep linking이 반드시 필요하면 현재
+운영 중인 별도 provider를 명시적으로 선정하고 provider 전용 capability와
+마이그레이션 검증을 추가한다.
 
 ---
 

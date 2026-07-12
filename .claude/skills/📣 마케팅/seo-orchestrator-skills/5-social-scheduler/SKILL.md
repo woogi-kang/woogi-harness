@@ -1,7 +1,8 @@
 ---
 name: social-scheduler
 description: 소셜 미디어 스케줄링 및 자동화 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "소셜"
   - "스케줄"
@@ -450,7 +451,7 @@ kpis:
   },
 
   "next_actions": [
-    "Instagram 캐러셀 이미지 생성 필요",
+    "Instagram 캐러셀 생성형 asset 필요: social-visual → image-prompt → Codex gpt-image-2",
     "LinkedIn 포스트 검토 대기"
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "schema": "design-web-capture-v1",
+  "base_url": "http://127.0.0.1:3000",
+  "cases": [
+    {
+      "id": "review-default-mobile",
+      "path": "/reviews",
+      "state": "default",
+      "viewport": {"name": "mobile", "width": 390, "height": 844, "device_scale_factor": 1},
+      "wait_for_selector": "main",
+      "actions": [],
+      "supports": ["visual-qa", "responsive"],
+      "capture_aria": true
+    }
+  ]
+}

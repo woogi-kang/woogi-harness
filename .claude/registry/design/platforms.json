@@ -1,0 +1,35 @@
+{
+  "schema": "design-platform-registry-v1",
+  "platforms": {
+    "web": {
+      "detect": ["package.json", "next.config.*", "vite.config.*", "src/**/*.tsx", "app/**/*.tsx"],
+      "adapter": "browser-evidence-v1",
+      "adapter_cli": ".claude/skills/design-harness/scripts/capture-web-evidence.mjs",
+      "required_evidence": ["source-scan", "result-screenshot", "accessibility-tree"],
+      "recommended_viewports": [
+        { "name": "mobile", "width": 390, "height": 844, "device_scale_factor": 1 },
+        { "name": "desktop", "width": 1440, "height": 1000, "device_scale_factor": 1 }
+      ],
+      "verification": ["project build/typecheck", "detector", "browser flow", "fixed-viewport screenshots", "accessibility tree"]
+    },
+    "flutter": {
+      "detect": ["pubspec.yaml", "lib/**/*.dart"],
+      "adapter": "flutter-evidence-v1",
+      "adapter_cli": ".claude/skills/design-harness/scripts/capture-flutter-evidence.py",
+      "required_evidence": ["source-scan", "result-screenshot", "test-log"],
+      "recommended_viewports": [
+        { "name": "phone", "width": 390, "height": 844, "device_scale_factor": 1 },
+        { "name": "tablet", "width": 1024, "height": 1366, "device_scale_factor": 1 }
+      ],
+      "verification": ["flutter analyze", "flutter test", "golden/integration screenshot", "semantics or accessibility audit"]
+    },
+    "unknown": {
+      "detect": [],
+      "adapter": "manual-evidence-v1",
+      "adapter_cli": null,
+      "required_evidence": ["source-scan"],
+      "recommended_viewports": [],
+      "verification": ["declare platform", "attach reproducible evidence"]
+    }
+  }
+}

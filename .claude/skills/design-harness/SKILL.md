@@ -1,163 +1,220 @@
 ---
 name: design-harness
-description: "차세대 프론트엔드 디자인 실행 하네스 v2. UI/UX 디자인, 랜딩/대시보드/앱/포트폴리오/브랜드 페이지, 리디자인, UX 리뷰, visual QA, anti-slop, reference translation, 디자인 시스템 선택, 접근성/반응형/상태 하드닝에 사용한다. AI Slop이 의심되는 모든 프론트엔드 산출물에는 반드시 이 스킬을 사용하고, design read → control dials → anti-slop gate → detector/preflight 검증까지 수행한다."
+description: "증거 기반 Design Runtime v3. UI/UX 설계·구현·리디자인·감사·폴리시 작업에서 project fingerprint, design contract, 5개 control dial, platform adapter, route/state/viewport evidence, anti-slop detector, 독립 critic, 최대 2회 repair, executable eval을 강제한다. 웹과 Flutter 디자인 변경 또는 AI Slop 위험이 있는 모든 작업에 사용한다."
 license: MIT
 metadata:
   category: "🎨 디자인"
-  version: "0.2.0"
-  tags: "frontend-design, ui-ux, anti-slop, visual-qa, redesign, design-system, interface-polish, preflight"
+  version: "0.3.0"
+  tags: "design-runtime, frontend-design, flutter-design, anti-slop, visual-qa, evidence, independent-critic, executable-eval"
 ---
 
-# Design Harness v2
+# Design Harness — Runtime v3
 
-Use this as the primary UI/UX design execution harness. The goal is not to make a page look "designed". The goal is to read the product, choose the right design register, block predictable AI slop, implement or review with evidence, and verify the result before handoff.
-
-This harness replaces loose taste advice with an execution contract:
+좋은 취향을 주장하는 대신, 제품 맥락을 고정하고 실제 화면으로 증명한다.
 
 ```text
-Design Read → Control Dials → Mode + References → Execute → Detector → Final Preflight
+Project Fingerprint
+→ Design Contract
+→ Baseline Evidence
+→ Platform Execution
+→ Source + Visual Gates
+→ Independent Critic
+→ Bounded Repair (max 2)
+→ Register-specific Eval
 ```
 
-If a frontend task can affect layout, styling, UX, motion, copy, accessibility, responsive behavior, or visual QA, use this skill.
+UI 코드, 레이아웃, 스타일, UX, motion, copy, 상태, 접근성, 반응형 결과가 바뀌는 작업은 이 runtime을 먼저 연다. 단순 설명이나 읽기 전용 질문은 run artifact 없이 답할 수 있지만, 구현 완료를 선언하려면 evidence contract를 통과해야 한다.
 
-## Non-Negotiable Operating Rules
+## Completion contract
 
-1. **Do not start from style. Start from the product scene.**
-   A medical workflow, Korean dating recommendation app, developer tool, public-sector service, and campaign page must not share the same visual reflex.
-2. **Name the main slop risk before acting.**
-   Examples: category reflex, centered hero reflex, shadcn default state, fake dashboard evidence, generic AI copy, missing product states.
-3. **Use evidence, not decoration.**
-   Prefer real screenshots, generated raster assets, actual component previews, charts, maps, photos, or data views. Do not substitute abstract blobs or div-based fake UIs when proof is needed.
-4. **Official systems beat imitation.**
-   If the brief maps to Material, Fluent, Carbon, Polaris, Atlassian, Primer, GOV.UK, USWDS, or another official system, use the official package or explain why not.
-5. **The task is not complete until the gate passes.**
-   Run the detector when code is available. Run browser/screenshot QA when the project is runnable. Use `references/preflight.md` before finalizing.
+다음이 모두 참이어야 로컬 runtime이 `ready_for_external_promotion`을 기록할 수 있다.
 
-## Core Flow
+1. `design-run-v3`에 Design Read, register, 5 dials, slop risk, 대상 route/state/viewport가 있다.
+2. 전체 non-empty project fingerprint가 현재 candidate set과 일치하며 drift bypass가 없다.
+3. 플랫폼 adapter가 생성한 capture index와 실제 PNG/접근성/테스트 artifact의 해시가 일치하고, 외부 capture authority가 canonical receipt와 전체 evidence projection을 서명했다.
+4. finalizer가 변경 source 전체에 detector를 재실행했고 hard-fail이 0이다. waiver로 승격할 수 없다.
+5. 구현 actor와 다른 critic actor가 해시된 context manifest와 trusted evidence ID를 인용해 `pass`했고, 외부 critic/orchestrator trust boundary가 서명한 attestation이 있다.
+6. `design-runtime.py finalize`가 register별 grader를 실행해 7.0 이상, 모든 축 5 이상을 확인했다.
+7. repair는 최대 2회다. 같은 실패가 반복되면 더 꾸미지 말고 `blocked`/`failed`로 종료한다.
 
-### 1. Load project context
+로컬 `design-runtime.py finalize`는 `passed`를 쓰지 않는다. 로컬 최종 상태는 항상 `ready_for_external_promotion`이며, 인증된 외부 provider/orchestrator만 검증된 artifact hash와 attestation을 확인한 뒤 별도 신뢰 경계에서 `passed`로 승격할 수 있다. 외부 승격이 없으면 완료 보고도 로컬 상태 그대로 유지한다.
 
-- Read `PRODUCT.md`, `DESIGN.md`, brand docs, route docs, or local planning files when present.
-- Inspect at least one representative UI file: tokens/theme CSS, app shell, page, or component.
-- Check `package.json` before recommending or importing libraries.
-- For redesigns, inspect current IA, brand tokens, SEO-sensitive routes, analytics hooks, forms, and legal copy before proposing changes.
+스크린샷을 보지 않았는데 “시각적으로 검증됨”, 실행하지 않았는데 “반응형 완료”, placeholder를 실제 제품 증거처럼 보고하는 행위는 금지한다.
 
-### 2. Write the Design Read
+## 1. Context and fingerprint
 
-Always produce a compact design read before implementation or review:
+먼저 프로젝트 truth를 읽는다.
 
-```text
-Reading this as: <surface> for <audience>, in <scene>, using <product|brand|operational> register, with <visual stance>, avoiding <main slop risk>.
-```
+- 제품/브랜드 문서, route/flow 문서, 대표 화면.
+- token/theme, app shell, 공통 component.
+- `package.json` 또는 `pubspec.yaml`과 실제 설치된 design system.
+- 기존 UI의 유지 대상과 개선 대상.
+- redesign이면 SEO, analytics, legal copy, form field, URL contract.
 
-Ask one short question only when two plausible reads would materially change the work. Otherwise state assumptions and proceed.
-
-Read `references/design-read.md` when the direction is ambiguous, broad, or likely to suffer from category reflex.
-
-### 3. Set five control dials
-
-| Dial | 1-3 | 4-7 | 8-10 |
-|---|---|---|---|
-| `DISTINCTION` | familiar | specific | highly authored |
-| `MOTION` | feedback only | subtle choreography | advanced scroll/physics |
-| `DENSITY` | sparse | normal | compact/operational |
-| `EVIDENCE` | mostly text | some proof | proof-led: screenshots/data/assets |
-| `SYSTEMNESS` | bespoke | token-guided | official DS / strict component system |
-
-Defaults by surface:
-
-| Surface | DISTINCTION | MOTION | DENSITY | EVIDENCE | SYSTEMNESS |
-|---|---:|---:|---:|---:|---:|
-| Product UI / dashboard | 3-5 | 2-4 | 6-9 | 6-9 | 7-10 |
-| Brand / landing | 6-9 | 4-8 | 2-5 | 7-10 | 4-8 |
-| Portfolio / editorial | 6-9 | 3-7 | 2-5 | 5-9 | 3-7 |
-| Public-sector / regulated | 2-4 | 1-3 | 5-8 | 6-9 | 8-10 |
-| Redesign preserve | match existing + small lift | +0-1 | match | +1 | +1 |
-
-### 4. Pick a mode and required references
-
-| Mode | Use when | Required references |
-|---|---|---|
-| `shape` | UX/UI plan before code | `references/workflows.md`, `references/design-read.md` |
-| `reference` | named brand/product/site inspiration or best-in-class comparison | `references/design-reference-index.md`, `references/design-references.md`, `references/anti-slop.md` |
-| `measure` | concrete URL/screenshot should become measured tokens or `design.md` | `references/reference-style-extraction.md`, then `web-access-ladder` if fetching is hard |
-| `craft` | implement a new UI surface end-to-end | `references/registers.md`, `references/anti-slop.md`, `references/preflight.md`, `references/interface-polish.md` |
-| `audit` | review UX, a11y, responsive, visual quality | `references/workflows.md`, `references/anti-slop.md`, `references/preflight.md`, `references/interface-polish.md` |
-| `polish` | improve an existing surface before ship | `references/anti-slop.md`, `references/preflight.md`, `references/interface-polish.md`, `references/motion-interaction.md` |
-| `redesign` | modernize existing UI | `references/redesign-protocol.md`, `references/workflows.md`, `references/anti-slop.md`, `references/preflight.md` |
-| `typeset` | typography hierarchy/font work | `references/registers.md`, then `korean-typography` when Korean fonts apply |
-| `colorize` | palette/theme work | `references/registers.md`, `references/anti-slop.md`, `references/preflight.md` |
-| `animate` | purposeful motion/interactions | `references/motion-interaction.md`, `references/interface-polish.md`, `references/preflight.md` |
-| `harden` | states, edge cases, i18n, text overflow | `references/preflight.md`, `references/interface-polish.md`, `references/korean-ui.md` when Korean applies |
-
-Use `references/design-system-map.md` whenever the surface is product UI, dashboard/admin, public-sector, enterprise, commerce/admin, devtool, or any interface where official systems may apply.
-
-### 5. Execute with the right downstream skill
-
-- Component implementation: `ui-styling`.
-- Token architecture: `design-system`.
-- Korean webfont pairing, Hangul readability, and role-based font tokens: `korean-typography`.
-- Public reference URL retrieval: `web-access-ladder`.
-- Official design system docs for a library or SDK: `official-docs-guide`.
-- Lottie/Bodymovin JSON animation authoring and Skottie preview: `text-to-lottie`.
-- Logos, banners, CIP, social images: `design`, `logo-creator`, `banner-design`.
-- Historical database lookup is archived; do not route new design work to it.
-
-### 6. Mandatory gate before finalizing
-
-When UI code exists locally, run the detector on changed UI files or the focused source directory:
+런타임을 시작한다.
 
 ```bash
-node .claude/skills/design-harness/scripts/detect-design-slop.mjs src app components pages
+python3 .claude/skills/design-harness/scripts/design-runtime.py init \
+  --root . \
+  --mode craft \
+  --surface "<surface>" \
+  --register product \
+  --implementation-actor-id "worker:<execution-id>" \
+  --critic-public-key "<trusted-ed25519-public-key>" \
+  --design-read "Reading this as: <surface> for <audience>, in <scene>, using <register>, with <stance>, avoiding <risk>." \
+  --dials 4,2,8,8,9 \
+  --slop-risk "<primary risk>" \
+  --route /target \
+  --state default --state loading --state empty --state error --state focus
 ```
 
-If the script exits non-zero, inspect findings. Hard-fail findings require a fix or an explicit reason they are acceptable. Warnings are review prompts.
+`references/runtime-v3.md`에 artifact와 명령 계약이 있다.
 
-When the project is runnable, verify in a browser or screenshot. Check desktop and mobile-relevant widths when feasible.
+## 2. Design Read and five dials
 
-Before final response, use `references/preflight.md`. State what was verified and what remains unverified.
+항상 한 문장으로 읽기를 고정한다.
 
-## Register Split
+```text
+Reading this as: <surface> for <audience>, in <scene>, using <register>, with <visual stance>, avoiding <main slop risk>.
+```
 
-Read `references/registers.md` when the task touches a full screen, page, app shell, landing page, dashboard, or redesign.
+두 방향이 제품 결과를 실질적으로 바꿀 때만 짧게 질문한다. 나머지는 관찰 가능한 근거와 가정을 기록하고 진행한다.
 
-- **Product register**: repeated task completion. Favor predictable controls, complete states, restrained color, density, speed, and clarity.
-- **Brand register**: design is part of the product. Favor a clear point of view, real assets, committed art direction, layout variation, and strong first impression.
-- **Operational register**: internal tools, dashboards, admin, data workflows. Favor data density, keyboard flow, robust states, low motion, and official system patterns.
+| Dial | 1–3 | 4–7 | 8–10 |
+|---|---|---|---|
+| `DISTINCTION` | familiar | context-specific | highly authored |
+| `MOTION` | feedback only | subtle choreography | advanced narrative/physics |
+| `DENSITY` | sparse | balanced | compact/operational |
+| `EVIDENCE` | text-led | mixed proof | proof/state-led |
+| `SYSTEMNESS` | bespoke | token-guided | official/strict system |
 
-Do not use brand-page tactics on dashboards. Do not use dashboard restraint on campaign pages. Do not use aesthetic references to override regulatory, accessibility, or product constraints.
+다이얼은 미학 preset이 아니다. 구현과 evidence 양을 제한하는 계약이다. 예를 들어 `EVIDENCE=9`인데 실제 화면/데이터가 없으면 완료할 수 없다.
 
-## Anti-Slop Model
+## 3. Choose the correct register
 
-Read `references/anti-slop.md` for implementation or review. Treat slop as five failure classes:
+`references/registers.md`를 full screen/page/app shell/redesign에서 읽는다.
 
-1. **Category reflex** - the category predicts the look.
-2. **Layout reflex** - centered hero, pill, equal cards, repeated split sections.
-3. **Content slop** - vague verbs, fake-perfect metrics, unsupported trust claims.
-4. **Evidence slop** - fake dashboards, abstract blobs, empty bento cells, generic avatars.
-5. **Polish slop** - bad contrast, missing states, `transition-all`, tiny hit areas, broken mobile.
+- `product`: 반복 작업, 예측 가능한 controls, 모든 상태, restrained color.
+- `operational`: 비교와 처리 속도, density, keyboard flow, 데이터 신뢰성.
+- `brand`/`campaign`: 기억 가능한 관점, 실제 asset, layout variation, 구체적 copy.
+- `public-sector`: 공식 시스템, 접근성, plain language, 오류 복구.
+- `editorial`: typography, pacing, source integrity.
+- `design-system`: token/component contract.
+- `asset`: art direction만 이 runtime이 소유하고, image prompt는 `image-prompt`가 소유한다.
 
-The default response to slop is not "make it prettier". It is to identify the failure class and route it to the right gate: reference, official system, evidence, detector, polish, or preflight.
+Dashboard에 brand-page novelty를 강요하거나 campaign page를 admin UI처럼 채점하지 않는다.
 
-## Review Output
+## 4. Mode and reference routing
 
-For reviews, lead with a table:
-
-| Before | After | Why |
+| Mode | Use | Load |
 |---|---|---|
-| Current pattern or issue | Proposed change | Design reason and risk |
+| `shape` | 코드 전 방향/IA | `design-read.md`, `workflows.md` |
+| `reference` | 원칙 추출과 anti-imitation | `design-reference-index.md`, `anti-slop.md` |
+| `measure` | URL/screenshot에서 측정 가능한 token 추출 | `reference-style-extraction.md` |
+| `craft` | 새 surface 구현 | `registers.md`, `anti-slop.md`, `preflight.md` |
+| `audit` | 읽기 전용 UX/a11y/visual review | `workflows.md`, `preflight.md` |
+| `polish` | 출시 전 교정 | `interface-polish.md`, `motion-interaction.md` |
+| `redesign` | 기존 계약을 보존한 현대화 | `redesign-protocol.md`, `anti-slop.md` |
+| `typeset` / `colorize` | type/color token | `registers.md`, 필요 시 `korean-typography` |
+| `animate` | 목적 있는 motion | `motion-interaction.md` |
+| `harden` | state/overflow/mobile/i18n | `preflight.md`, `korean-ui.md` |
 
-Then list only the highest-impact fixes. Avoid long taste-preference inventories.
+## 5. Execute through the detected platform
 
-For implementation handoff, include:
+```bash
+python3 .claude/skills/design-harness/scripts/design-runtime.py plan --root .
+```
 
-- Design read.
-- Dials.
-- Key decisions.
-- Gate results: detector, browser/screenshot QA, preflight notes.
-- Remaining risks or assumptions.
+- Web: 기존 framework와 component system을 보존한다. 구현은 `ckm:ui-styling`; 기술 선택은 project profile과 tech-stack registry를 따른다. shadcn/Tailwind/Motion을 기본값으로 가정하지 않는다.
+- Flutter: 기존 Theme/Material/Cupertino와 Flutter skills를 따른다. `flutter analyze`, test/golden/integration evidence, 실제 device/simulator state를 사용한다.
+- Official system이 맞는 제품은 `design-system-map.md`와 공식 문서를 우선한다.
+- Raster image generation은 반드시 exact-vendored `image-prompt`로 compile/validate한 뒤 Codex `$imagegen` host contract(required model `gpt-image-2`)만 사용한다. `full_prompt`는 host tool의 `prompt`로 매핑하며, 이 skill에서 별도 prompt를 만들지 않는다.
+- 실제 product screenshot, deterministic SVG/vector, browser/device capture는 이미지 생성이 아니며 그대로 검증한다.
 
-## Legacy Policy
+Platform별 evidence와 포착 규칙은 `references/platform-adapters.md`를 읽는다.
+Web은 `capture-web-evidence.mjs`, Flutter는 `capture-flutter-evidence.py`로 실제 artifact index를 만들고 `design-runtime.py import-index`로 등록한다.
 
-- `ui-ux-pro-max` and `design-craft` have been archived outside the active skill tree at `.claude/archive/skills/design/legacy-entrypoints-260529`.
-- `🎨 디자인/ui-design-agent-skills/*` has been archived outside the active skill tree at `.claude/archive/skills/design/ui-design-agent-skills-legacy-260529`. Do not use those old template snippets as primary guidance.
+## 6. Mechanical and visual gates
+
+변경 UI 경로를 scan한다.
+
+```bash
+node .claude/skills/design-harness/scripts/detect-design-slop.mjs \
+  --format json --fail-on hard-fail \
+  --output .design-runs/<run>/source-scan.json \
+  src app components lib
+```
+
+Detector는 `.dart`를 포함하고 JSON/SARIF를 출력한다. 존재하지 않는 target과 scan 대상 0개는 실패다. warning은 맥락 검토 항목이지만 hard-fail은 수정 전에 승격할 수 없다. 정적 scan 통과는 시각 품질 통과가 아니다.
+
+각 대상 route/screen에서 최소한 다음을 포착한다.
+
+- 계획된 viewport별 default state.
+- scope에 있는 loading, empty, error, disabled/focus 상태.
+- Web은 접근성 tree 또는 동등한 audit evidence.
+- Flutter는 analyze/test log와 screenshot/golden 또는 integration capture.
+- redesign은 비교 가능한 baseline.
+
+Promotion artifact는 `design-runtime.py capture`가 canonical adapter를 직접 실행해 등록한다. 직접 adapter 실행 뒤 `import-index`를 호출하거나 `add-evidence`를 사용하는 경로는 manual/diagnostic로 표시되며 hard gate를 충족하지 못한다. 외부 trust-store authority의 `design-capture-attestation-v1`도 없으면 review packet을 만들 수 없다. 자세한 예시는 `runtime-v3.md`를 따른다.
+
+## 7. Independent critic and bounded repair
+
+구현자는 자기 결과를 최종 승인할 수 없다. critic에게 implementation rationale 대신 run, screenshots, state coverage, detector output을 제공한다. 외부/병렬 worker로 repo context를 보낼 때는 `context-pack-gate`를 먼저 통과한다.
+
+critic에게 넘기기 전에 외부 authority가 canonical capture를 서명하고, `design-runtime.py prepare-review --capture-attestation ...`로 live detector 결과와 evidence hash를 묶은 immutable review packet을 만든다. critic 결과는 그 packet hash를 인용해야 하며, 외부 critic/orchestrator는 같은 trust-store authority로 검증할 수 있는 별도 critic attestation을 발급한다.
+
+Critic은 다음만 보고한다.
+
+- evidence에 보이는 구체적 observation.
+- severity와 평가 axis.
+- 영향을 받는 evidence ID.
+- 가장 작은 coherent repair.
+- `pass | repair | fail | blocked`.
+
+Repair는 최대 2회다. 전체를 취향대로 다시 디자인하는 open-ended loop는 금지한다. `references/critic-loop.md`를 따른다.
+
+## 8. Final executable evaluation
+
+```bash
+python3 .claude/evals/ui-design/grader.py self-test
+python3 .claude/skills/design-harness/scripts/design-runtime.py finalize \
+  --run <design-run.json> \
+  --critic <critic-result.json> \
+  --attestation <critic-attestation.json> \
+  --output <finalization-result.json>
+```
+
+평가 가중치는 register마다 다르다. `Originality 35%` 같은 단일 보편 기준을 사용하지 않는다.
+이 명령의 성공 결과는 `ready_for_external_promotion`이다. 로컬 명령 성공을 `passed`로 바꾸어 말하지 않는다.
+
+## Anti-slop failure classes
+
+`references/anti-slop.md`를 구현/리뷰에서 읽는다.
+
+1. Category reflex.
+2. Layout reflex.
+3. Content slop.
+4. Evidence slop.
+5. Polish/state slop.
+6. Evaluation slop — screenshot/flow 없이 “좋다”고 채점.
+
+기본 대응은 “더 예쁘게”가 아니다. register, evidence, official system, source detector, state coverage 중 실패한 gate로 되돌린다.
+
+## Handoff
+
+최종 보고에는 다음만 포함한다.
+
+- Design Read와 5 dials.
+- 바뀐 핵심 결정.
+- 실행한 플랫폼 검증.
+- detector/evidence/critic/eval 결과 경로.
+- 로컬 상태(`ready_for_external_promotion`까지)와 외부 promotion 여부.
+- diagnostic approval과 남은 위험. waiver가 남아 있으면 `passed`가 아니다.
+
+완료되지 않은 evidence를 완료처럼 표현하지 않는다.
+
+## Legacy policy
+
+- `ui-ux-pro-max`, `design-craft`, `ui-design-agent-skills/*`는 archive이며 활성 지침이 아니다.
+- UI agent의 `minimal/modern/bold` template strategy는 비활성 legacy 참고자료다. category-to-style routing에 사용하지 않는다.
+- active implementation owner는 `ckm:ui-styling`이고, 방향과 검증 owner는 `design-harness`다.

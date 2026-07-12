@@ -2,7 +2,8 @@
 description: "TOML 템플릿으로 사전 정의된 팀을 원커맨드 실행"
 argument-hint: "<template-name> --goal '<목표 설명>'"
 allowed-tools: Bash, Read, Write, Glob, Grep, AskUserQuestion
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 ## Pre-execution Context

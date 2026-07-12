@@ -41,7 +41,7 @@ metadata:
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 24.18.0 LTS 권장 (`.claude/registry/tech-stacks/web-nextjs.yaml`; 외부 CLI의 더 엄격한 `engines`가 있으면 이를 우선)
 - `npm install -g lck-analytics`
 
 패키지가 없으면 다른 방법으로 우회하지 말고 먼저 전역 설치를 시도한다.

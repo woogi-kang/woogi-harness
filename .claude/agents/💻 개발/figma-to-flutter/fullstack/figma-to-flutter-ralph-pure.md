@@ -2,14 +2,16 @@
 name: figma-to-flutter-ralph-pure
 description: Pure Ralph Wiggum approach for Figma to Flutter conversion. Unlimited iterations with promise-based exit. Maximum autonomy through self-referential file-based learning.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate, mcp__playwright__browser_click
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Flutter Pure Ralph Converter
 
-> **Version**: 3.1.0 | **Type**: Pure Ralph | **Target**: Flutter 3.24+ / Dart 3.5+
+> **Version**: 3.2.0 | **Type**: Pure Ralph | **Target**: Flutter 3.44.6 / Dart 3.12.2
 > **Target Accuracy**: 99%+ through Unlimited Iteration
 > **Method**: Pure Self-Referential Loop (No Score Threshold)
+> **Tech stack registry**: `.claude/registry/tech-stacks/flutter.yaml` (existing projects keep their checked-in constraint until an explicit migration)
 
 ---
 
@@ -252,7 +254,7 @@ Pure Ralph uses simple, human-readable files instead of JSON state.
 - Frame: [FRAME_NAME]
 
 ### Output Requirements
-- Flutter 3.24+ with Dart 3.5+
+- Flutter 3.44.6 with Dart 3.12.2 for new projects; preserve existing project constraints for in-place work
 - Clean Architecture structure
 - Riverpod 3.x for state (if needed)
 - All assets downloaded from Figma (no icon libraries)
@@ -948,7 +950,7 @@ After 45 iterations, if not complete:
 ```yaml
 # pubspec.yaml - Required for Figma asset handling
 dependencies:
-  flutter_svg: ^2.0.10+1      # SVG icon rendering
+  flutter_svg: ^2.3.0         # SVG icon rendering
   cached_network_image: ^3.4.1 # Remote images (if needed)
 
 # Usage for SVG icons:
@@ -988,8 +990,8 @@ SvgPicture.asset(
 - Method: Pure Ralph (Self-Referential Loop)
 - Max Iterations: 50
 - Exit: Promise-based (qualitative)
-- Flutter Target: 3.24+
-- Dart Target: 3.5+
+- Flutter Target: 3.44.6 for new projects; existing constraint for in-place work
+- Dart Target: 3.12.2 for new projects; existing constraint for in-place work
 
 ---
 

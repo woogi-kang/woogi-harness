@@ -135,16 +135,32 @@ function checkManifestForSlide(slideNumber, images, manifest) {
     }
 
     const status = String(entry.status || "");
+    const kind = String(entry.kind || "generated-raster");
+    const compiler = String(entry.compiler || "");
     const generator = String(entry.generator || "");
-    const requiredGenerator = String(entry.required_generator || "");
+    const hasLegacyModel = Object.prototype.hasOwnProperty.call(entry, "model");
+    const requiredModel = String(entry.required_model || "");
+    const modelBinding = String(entry.model_binding || "");
+    const localModelVerification = String(entry.local_model_verification || "");
+    const generationAssurance = String(entry.generation_assurance || "");
+    const hasHostReportedModel = Object.prototype.hasOwnProperty.call(entry, "host_reported_model");
+    const hostReportedModel = entry.host_reported_model;
+    const promptRecord = String(entry.prompt_record || "");
     const visualContract = entry.visual_contract || {};
+    const generatedRaster = kind === "generated-raster";
+    const evidenceAsset = new Set([
+      "product-screenshot",
+      "reference-photo",
+      "deterministic-chart",
+      "deterministic-svg",
+    ]).has(kind);
 
-    if (status === "blocked_cli_generation_not_run") {
+    if (status === "blocked_imagegen_not_run") {
       imageErrors.push({
         index: image.index,
         src: image.src,
         status,
-        reason: "CLI/native image generation was not executed for this asset.",
+        reason: "Codex image generation was not executed for this asset.",
       });
     }
 
@@ -158,18 +174,52 @@ function checkManifestForSlide(slideNumber, images, manifest) {
       });
     }
 
-    if (requiredGenerator === "codex-native-image-cli" && generator !== "codex-native-image-cli") {
-      imageErrors.push({
-        index: image.index,
-        src: image.src,
-        generator,
-        requiredGenerator,
-        reason: "Asset manifest requires Codex native image generation/CLI output.",
-      });
+    if (!generatedRaster && !evidenceAsset) {
+      imageErrors.push({ index: image.index, src: image.src, kind, reason: "Manifest entry has an unsupported asset kind." });
     }
 
-    if (!entry.generator) {
-      imageErrors.push({ index: image.index, src: image.src, reason: "Manifest entry missing generator." });
+    if (generatedRaster && compiler !== "image-prompt@2.3.0") {
+      imageErrors.push({ index: image.index, src: image.src, compiler, reason: "Generated raster must use image-prompt@2.3.0." });
+    }
+
+    if (generatedRaster && generator !== "image_gen__imagegen") {
+      imageErrors.push({ index: image.index, src: image.src, generator, reason: "Generated raster must record the exact Codex image_gen__imagegen host tool." });
+    }
+
+    if (generatedRaster && hasLegacyModel) {
+      imageErrors.push({ index: image.index, src: image.src, reason: "Generated raster must not claim a locally verified model field." });
+    }
+
+    if (generatedRaster && requiredModel !== "gpt-image-2") {
+      imageErrors.push({ index: image.index, src: image.src, requiredModel, reason: "Generated raster must require gpt-image-2." });
+    }
+
+    if (generatedRaster && modelBinding !== "trusted-host-fixed") {
+      imageErrors.push({ index: image.index, src: image.src, modelBinding, reason: "Generated raster must use the trusted-host-fixed model binding." });
+    }
+
+    if (generatedRaster && localModelVerification !== "unavailable") {
+      imageErrors.push({ index: image.index, src: image.src, localModelVerification, reason: "Local model verification must be recorded as unavailable." });
+    }
+
+    if (generatedRaster && (!hasHostReportedModel || hostReportedModel !== null)) {
+      imageErrors.push({ index: image.index, src: image.src, hostReportedModel, reason: "host_reported_model must be explicitly null when the Codex host exposes no model identity." });
+    }
+
+    if (generatedRaster && generationAssurance !== "generated_under_trusted_host_contract") {
+      imageErrors.push({ index: image.index, src: image.src, generationAssurance, reason: "Generated raster must use trusted-host provenance without claiming local model attestation." });
+    }
+
+    if (generatedRaster && !promptRecord) {
+      imageErrors.push({ index: image.index, src: image.src, reason: "Generated raster is missing prompt_record." });
+    }
+
+    if (generatedRaster && Object.prototype.hasOwnProperty.call(entry, "prompt")) {
+      imageErrors.push({ index: image.index, src: image.src, reason: "Inline image prompts are forbidden; store the Gongnyang prompt_record reference." });
+    }
+
+    if (evidenceAsset && !String(entry.source || "").trim()) {
+      imageErrors.push({ index: image.index, src: image.src, kind, reason: "Evidence/deterministic asset is missing source provenance." });
     }
 
     if (!entry.status) {
@@ -193,11 +243,11 @@ function checkManifestForSlide(slideNumber, images, manifest) {
       imageErrors.push({ index: image.index, src: image.src, reason: "visual_contract.acceptance_check is required." });
     }
 
-    if (/generic|abstract|random|filler|decorative/i.test(`${entry.prompt || ""} ${entry.alt || ""}`)) {
+    if (/generic|abstract|random|filler|decorative/i.test(String(entry.alt || ""))) {
       imageWarnings.push({
         index: image.index,
         src: image.src,
-        reason: "Prompt or alt contains generic/decorative language; confirm the visual contract is specific enough.",
+        reason: "Alt text contains generic/decorative language; confirm the visual contract is specific enough.",
       });
     }
   });
@@ -561,7 +611,7 @@ function buildReport(options, results, contactSheet) {
     "- Korean heading word breaking",
     "- percent label letter spacing",
     "- local image loading, alt text, and data-image-slot",
-    "- asset_manifest generator status and visual contract",
+    "- asset_manifest image-prompt/Codex trusted-host contract (required_model gpt-image-2; model_binding trusted-host-fixed; local_model_verification unavailable; host_reported_model null; generation_assurance generated_under_trusted_host_contract) or explicit deterministic evidence kind",
     "- S15/S16/S22 image slot class consistency",
     "",
     "## Details",

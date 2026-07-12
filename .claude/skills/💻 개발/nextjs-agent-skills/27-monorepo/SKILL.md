@@ -10,6 +10,8 @@ metadata:
 
 Turborepo를 사용하여 모노레포를 설정합니다.
 
+> Tech stack registry: `.claude/registry/tech-stacks/web-nextjs.yaml` (`web-nextjs@recommended`). TypeScript 7은 compiler-API 및 editor gate를 통과하기 전까지 candidate lane에만 둔다.
+
 ## Triggers
 
 - "모노레포", "monorepo", "turborepo", "workspace"
@@ -89,10 +91,10 @@ packages:
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "prettier": "^3.4.2",
-    "turbo": "^2.3.3"
+    "prettier": "^3.9.5",
+    "turbo": "^2.10.4"
   },
-  "packageManager": "pnpm@9.14.4"
+  "packageManager": "pnpm@11.12.0"
 }
 ```
 
@@ -149,7 +151,7 @@ packages:
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",
-    "typescript": "^5.7.2"
+    "typescript": "^6.0.2"
   },
   "peerDependencies": {
     "react": "^19.0.0"
@@ -229,13 +231,13 @@ export { Button, buttonVariants };
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4",
-    "drizzle-orm": "^0.36.4"
+    "@neondatabase/serverless": "^1.1.0",
+    "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",
-    "drizzle-kit": "^0.28.1",
-    "typescript": "^5.7.2"
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^6.0.2"
   }
 }
 ```
@@ -294,7 +296,7 @@ export * from './posts';
     "noEmit": true,
     "verbatimModuleSyntax": true
   },
-  "$note": "Node.js 20.19+ 권장. moduleResolution: Bundler는 Next.js 16 App Router 권장 설정"
+  "$note": "Node.js는 web-nextjs@recommended LTS를 사용. moduleResolution: Bundler는 Next.js 16 App Router 권장 설정"
 }
 ```
 
@@ -324,14 +326,14 @@ export * from './posts';
     "./nextjs": "./nextjs.js"
   },
   "dependencies": {
-    "eslint": "^10.4.0",
-    "@eslint/js": "^10.0.1",
-    "typescript-eslint": "^8.59.4",
-    "eslint-config-next": "^16.2.6"
+    "eslint": "^9.39.5",
+    "@eslint/js": "^9.39.5",
+    "typescript-eslint": "^8.63.0",
+    "eslint-config-next": "^16.2.10"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0",
-    "typescript": ">=5.9.3"
+    "typescript": ">=6.0.2 <7"
   }
 }
 ```
@@ -375,16 +377,16 @@ export default tseslint.config(
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/ui": "workspace:*",
-    "next": "^16.2.6",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "@types/node": "^20.19.41",
-    "@types/react": "^19.2.15",
-    "typescript": "^5.9.3"
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "typescript": "^6.0.2"
   }
 }
 ```
@@ -394,7 +396,6 @@ export default tseslint.config(
 {
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     }
@@ -473,7 +474,7 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: Build
@@ -559,15 +560,16 @@ describe('Button (shared UI)', () => {
 
 ```json
 // ❌ Bad: 모든 앱에서 동일 버전 중복 관리
-// apps/web: "react": "^18.2.0"
-// apps/docs: "react": "^18.3.0"
+// apps/web: "react": "^19.2.6"
+// apps/docs: "react": "^19.2.7"
 
 // ✅ Good: 루트에서 버전 통합 관리
 // package.json (root)
 {
   "pnpm": {
     "overrides": {
-      "react": "^18.3.0"
+      "react": "^19.2.7",
+      "react-dom": "^19.2.7"
     }
   }
 }

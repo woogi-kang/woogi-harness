@@ -1,7 +1,8 @@
 ---
 name: budget-analyzer
 description: 예산 대비 실적 분석 및 알림 스킬
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "예산"
   - "초과"

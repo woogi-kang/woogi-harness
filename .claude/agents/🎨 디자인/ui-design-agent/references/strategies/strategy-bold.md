@@ -1,5 +1,7 @@
 # Bold Strategy
 
+> INACTIVE LEGACY (2026-07-13): 이 category-to-style template은 Design Runtime v3에서 라우팅하거나 구현 근거로 사용하지 않는다. 실제 프로젝트의 Design Read, register, 5 dials, evidence를 사용한다.
+
 대담하고 실험적인 디자인 전략입니다.
 브랜드, 포트폴리오, 게임, 스타트업에 최적화되어 있습니다.
 

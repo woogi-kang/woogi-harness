@@ -283,7 +283,7 @@ Invoke `assets-organizing` skill to organize all output files and reports:
 - **Facebook** — Informative, can have more text, eye-catching in feed
 - **Twitter/X** — Bold headlines, contrast for dark/light mode, clear message
 - **LinkedIn** — Professional, clean, data-driven visuals, thought leadership
-- **Pinterest** — Vertical format, text overlay on images, how-to style
+- **Pinterest** — Vertical format, native layout text beside existing/licensed imagery, how-to style
 - **YouTube** — Face close-ups perform best, bright colors, readable at small size
 - **TikTok** — Trendy, energetic, bold typography, youth-oriented
 
@@ -294,7 +294,7 @@ Invoke `assets-organizing` skill to organize all output files and reports:
 | Minimalist | SaaS, tech, luxury | Whitespace, single accent color, clean type |
 | Bold Typography | Announcements, quotes | Large type, high contrast, minimal imagery |
 | Gradient Mesh | Modern brands, apps | Fluid color transitions, floating elements |
-| Photo-Based | Lifestyle, e-commerce | Hero image, subtle overlay, text on image |
+| Photo-Based | Lifestyle, e-commerce | Existing/licensed hero image with a separate native text region |
 | Geometric | Tech, fintech | Shapes, patterns, structured layouts |
 | Glassmorphism | SaaS, modern apps | Frosted glass, blur effects, transparency |
 | Flat Illustration | Education, health | Custom illustrations, friendly, approachable |
@@ -326,4 +326,4 @@ This sub-skill handles social media image design only. Does NOT handle:
 - Animation/motion graphics
 - Print production files (CMYK, bleed)
 - Direct social media posting/scheduling
-- AI image generation (use `ai-artist` skill for that)
+- Generated raster image production (use `image-prompt` → Codex `gpt-image-2`)

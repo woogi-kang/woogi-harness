@@ -4,7 +4,8 @@ description: |
   Next.js 프로젝트의 설계, 구현, 테스트를 지원하는 종합 Expert Agent.
   Clean Architecture + TanStack Query + Zustand + shadcn/ui + TDD 기반의 현대적 Next.js 개발.
   "Next.js 앱 설계해줘", "기능 구현해줘", "테스트 작성해줘" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 triggers:
   - "nextjs 개발"
   - "nextjs 설계"
@@ -33,30 +34,32 @@ Next.js 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 ## 기술 스택
 
+> Tech stack registry: `.claude/registry/tech-stacks/web-nextjs.yaml` (`web-nextjs@recommended`). `latest_observed`가 `recommended`를 자동 대체하지 않으며, 기존 프로젝트의 package manager와 lockfile을 먼저 보존한다.
+
 ### Core
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **프레임워크** | Next.js (App Router) | 16.2+ |
-| **UI 런타임** | React / React DOM | 19.2+ |
-| **언어** | TypeScript | 5.9+ 권장 |
-| **런타임** | Node.js / Edge Runtime | 20.19+ 권장 |
+| **프레임워크** | Next.js (App Router) | 16.2.10 |
+| **UI 런타임** | React / React DOM | 19.2.7 |
+| **언어** | TypeScript | 7.0.2 stable (승격 후보) / 6.0.2 기본 권장 |
+| **런타임** | Node.js / Edge Runtime | 24.18.0 LTS |
 | **번들러** | Turbopack | 기본값 |
 
 ### 상태관리 & 데이터
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Server State** | TanStack Query | 5.x |
-| **Client State** | Zustand | 5.0+ |
-| **URL State** | nuqs | 2.x |
-| **Validation** | Zod | 4.x |
+| **Server State** | TanStack Query | 5.101.2 |
+| **Client State** | Zustand | 5.0.14 |
+| **URL State** | nuqs | 2.9.0 |
+| **Validation** | Zod | 4.4.3 |
 
 ### 데이터베이스
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **ORM** | Drizzle ORM | 0.40+ |
+| **ORM** | Drizzle ORM | 0.45.2 |
 | **Database** | PostgreSQL (Neon/Supabase) | - |
 | **Cache** | Redis (Upstash) | - |
 
@@ -64,36 +67,37 @@ Next.js 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **CSS Framework** | Tailwind CSS | 4.0+ |
+| **CSS Framework** | Tailwind CSS | 4.3.2 |
 | **Component Library** | shadcn/ui | - |
-| **Animation** | Framer Motion | 12+ |
+| **Animation** | Motion / framer-motion | 12.42.2 |
 | **Icons** | Lucide React | - |
 
 ### 폼 & 인증
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Form** | React Hook Form | 7.x |
-| **Server Actions** | next-safe-action | 8.x |
-| **Auth** | Auth.js (NextAuth v5) | 5.x |
+| **Form** | React Hook Form | 7.81.0 |
+| **Server Actions** | next-safe-action | 8.5.5 |
+| **Auth stable** | next-auth | 4.24.14 |
+| **Auth prerelease (명시적 승인 필요)** | Auth.js / next-auth v5 | 5.0.0-beta.31 |
 | **Auth (Alternative)** | Clerk | - |
 
 ### 테스트 & 품질
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Unit/Integration** | Vitest | 4.x |
-| **Component Testing** | React Testing Library | 16.x |
-| **E2E Testing** | Playwright | 1.60+ |
-| **Mocking** | MSW (Mock Service Worker) | 2.x |
+| **Unit/Integration** | Vitest | 4.1.10 |
+| **Component Testing** | React Testing Library | 16.3.2 |
+| **E2E Testing** | Playwright | 1.61.1 |
+| **Mocking** | MSW (Mock Service Worker) | 2.15.0 |
 
 ### DevOps & DX
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **환경 변수** | T3 Env | 0.13+ |
-| **i18n** | next-intl | 4.x |
-| **Monorepo** | Turborepo | 2.x |
+| **환경 변수** | T3 Env | 0.13.11 |
+| **i18n** | next-intl | 4.13.2 |
+| **Monorepo** | Turborepo | 2.10.4 |
 | **CI/CD** | GitHub Actions | - |
 | **Deployment** | Vercel | - |
 | **Error Tracking** | Sentry | - |
@@ -367,7 +371,7 @@ Skills에서 참조하는 공통 레퍼런스 문서:
 
 | 문서 | 설명 |
 |------|------|
-| `_references/NEXT16-ZUSTAND5-UPDATE.md` | Next.js 16.2 + Zustand 5 최신 변경 체크리스트 |
+| `_references/NEXT16-ZUSTAND5-UPDATE.md` | `web-nextjs@recommended`와 TypeScript 7 candidate migration 체크리스트 |
 | `_references/REACT-PERF-RULES.md` | **Vercel 45개 React 성능 규칙** |
 | `_references/UI-GUIDELINES.md` | **100+ UI 접근성/성능 가이드라인** |
 | `_references/ARCHITECTURE-PATTERN.md` | Clean Architecture 패턴 & 샘플 |

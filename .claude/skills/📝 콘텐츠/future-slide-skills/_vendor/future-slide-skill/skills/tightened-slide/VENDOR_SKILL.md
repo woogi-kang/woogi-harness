@@ -128,9 +128,11 @@ Language rules:
 
 If images are needed:
 
-- Ask before generating new images.
-- Choose the layout slot before writing the prompt.
-- Use `references/image-prompts.md`.
+- Choose the layout slot before generating the asset.
+- Route every generative raster through the repository `image-prompt` skill,
+  its upstream validator, Codex `$imagegen`, and `gpt-image-2`.
+- Do not define or load a local prompt template, negative prompt, suffix, or
+  alternate provider/model from this vendored skill.
 - Save generated or provided images in `images/`.
 - Name images `{page}-{semantic-name}.{ext}`.
 - Add `data-image-slot` to every local image.

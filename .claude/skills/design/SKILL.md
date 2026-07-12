@@ -1,338 +1,202 @@
 ---
 name: ckm:design
-description: "종합 디자인 스킬 — 브랜드 아이덴티티, 로고, CIP, 배너, 아이콘, 소셜 이미지 생성"
+description: "종합 디자인 오케스트레이션 — CIP, slides, deterministic SVG/social assets와 Gongnyang/Codex 생성형 이미지를 올바른 경로로 분리"
 argument-hint: "[design-type] [context]"
 license: MIT
 metadata:
   author: claudekit
-  version: "2.1.0"
+  version: "3.0.0"
 ---
 
 # Design
 
-종합 디자인 오케스트레이터. 요청을 분석하여 적절한 전문 스킬로 분배하고, CIP/슬라이드/아이콘/소셜 포토는 자체 처리한다.
+종합 디자인 요청을 전문 skill로 라우팅하고, 산출물 간 brand evidence와
+provenance를 연결합니다. 생성형 이미지 prompt engineering은 이 스킬의
+책임이 아닙니다.
 
-## 범위 (Scope)
+## 책임
 
-**이 스킬의 핵심 역할:**
-- **오케스트레이션** — 종합 디자인 요청을 적절한 전문 스킬로 라우팅
-- **CIP (Corporate Identity Program)** — 명함, 레터헤드, 봉투 등 50+ 기업 아이덴티티 산출물
-- **슬라이드/프레젠테이션** — Chart.js 기반 HTML 발표자료
-- **아이콘 생성** — SVG 아이콘 (Gemini 3.1 Pro)
-- **소셜 포토** — 멀티 플랫폼 소셜 이미지 (HTML → 스크린샷)
-- **브랜드 패키지 워크플로우** — 로고 → CIP → 배너 전체 파이프라인 조율
+- 복합 디자인 요청 분해와 순서 결정
+- CIP deliverable brief와 실제 source asset 관리
+- slides, chart, table, HTML/native layout 연결
+- deterministic SVG/vector와 screenshot workflow
+- 생성형 raster의 `image-prompt`/Codex 경로 연결
+- 최종 asset manifest와 QA
 
-**이 스킬이 직접 처리하지 않는 것:**
-- UI 컴포넌트 코드 작성 → `ui-styling`
-- 스타일/컬러/폰트/UI 방향 의사결정 → `design-harness`
-- 디자인 토큰/CSS 변수 → `design-system`
-- 로고 생성 → `logo-creator`
-- 배너 디자인 → `banner-design`
+## Delegation
 
-## 위임 (Delegates to)
+| 요청 | Owner |
+|---|---|
+| 디자인 방향, anti-slop | `design-harness` |
+| logo/brand mark/app icon concept | `logo-creator` |
+| banner/cover/header | `banner-design` |
+| 브랜드 voice와 token | `brand` / `design-system` |
+| UI 구현 | `ui-styling` |
+| 생성형 raster | `image-prompt` → Codex `$imagegen` |
+| PPT/HTML deck | `slides` / presentation skills |
 
-| 요청 내용 | 위임 대상 | 조건 |
-|-----------|-----------|------|
-| 로고가 필요한 경우 | `logo-creator` | CIP 작업 전 로고가 없을 때 |
-| 배너/커버/헤더 요청 | `banner-design` | 배너 전용 요청 시 |
-| 브랜드 정의 (보이스, 톤) | `brand` | 브랜드 가이드가 없을 때 |
-| 토큰/CSS 변수 필요 | `design-system` | 슬라이드에 토큰 시스템 적용 시 |
-| UI 코드 구현 | `ui-styling` | HTML/CSS 컴포넌트 코딩 시 |
-| 디자인 리서치/스타일 선택 | `design-harness` | 소셜 포토 아트 디렉션 시 |
+## 생성형 이미지 단일 경로
 
-## 이 스킬을 사용하지 않는 경우
-
-- 로고만 만들 때 → `logo-creator` 직접 호출
-- 배너만 만들 때 → `banner-design` 직접 호출
-- UI 컴포넌트를 코딩할 때 → `ui-styling` 직접 호출
-- 스타일/컬러/폰트/UI 방향을 추천받을 때 → `design-harness` 직접 호출
-- 디자인 토큰을 정의할 때 → `design-system` 직접 호출
-
-## When to Use
-
-- Brand identity, voice, assets
-- Design system tokens and specs
-- UI styling with shadcn/ui + Tailwind
-- Logo design and AI generation
-- Corporate identity program (CIP) deliverables
-- Presentations and pitch decks
-- Banner design for social media, ads, web, print
-- Social photos for Instagram, Facebook, LinkedIn, Twitter, Pinterest, TikTok
-
-## Sub-skill Routing
-
-| Task | Sub-skill | Details |
-|------|-----------|---------|
-| Brand identity, voice, assets | `brand` | External skill |
-| Tokens, specs, CSS vars | `design-system` | External skill |
-| shadcn/ui, Tailwind, code | `ui-styling` | External skill |
-| Logo creation, AI generation | Logo (built-in) | `references/logo-design.md` |
-| CIP mockups, deliverables | CIP (built-in) | `references/cip-design.md` |
-| Presentations, pitch decks | Slides (built-in) | `references/slides.md` |
-| Banners, covers, headers | Banner (built-in) | `references/banner-sizes-and-styles.md` |
-| Social media images/photos | Social Photos (built-in) | `references/social-photos-design.md` |
-| SVG icons, icon sets | Icon (built-in) | `references/icon-design.md` |
-
-## Logo Design (Built-in)
-
-55+ styles, 30 color palettes, 25 industry guides. Gemini Nano Banana models.
-
-### Logo: Generate Design Brief
-
-```bash
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech startup modern" --design-brief -p "BrandName"
+```text
+design brief + brand evidence + source asset
+→ `image-prompt`
+→ upstream validator
+→ Codex `$imagegen`
+→ `gpt-image-2`
 ```
 
-### Logo: Search Styles/Colors/Industries
+- 다른 생성 provider/model로 fallback하지 않습니다.
+- 로컬 prompt template, style suffix, negative prompt를 만들지 않습니다.
+- Gongnyang `full_prompt`를 Codex host tool의 `prompt` 필드로 그대로 매핑합니다.
+- transparent generation은 지원하지 않습니다. Opaque 결과 또는
+  `unsupported_transparent_background`로 처리합니다.
+- 생성 raster의 문구를 코드로 덧씌우지 않습니다.
 
-```bash
-python3 ~/.claude/skills/design/scripts/logo/search.py "minimalist clean" --domain style
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech professional" --domain color
-python3 ~/.claude/skills/design/scripts/logo/search.py "healthcare medical" --domain industry
+## Deterministic lane
+
+다음은 `image-prompt` 경로와 별개입니다.
+
+- 실제 product/browser/app screenshot
+- existing logo/icon/source file
+- 편집 가능한 HTML/PPT text와 chart/table
+- 검증 가능한 code-native SVG/vector
+- crop, resize, compression, vector trace 같은 artifact transformation
+
+생성 raster와 native text를 한 캔버스로 합성하지 않습니다. 둘 다 필요한
+경우 layout의 분리된 region으로 구성합니다.
+
+## Logo
+
+1. `scripts/logo/search.py --design-brief`로 style/color/industry evidence를
+   수집합니다.
+2. `logo-creator`가 brief를 `image-prompt`에 전달합니다.
+3. 각 option을 별도 JSONL record로 검증하고 Codex로 생성합니다.
+4. 선택 후 crop/vector artifact를 만들고 source raster를 보존합니다.
+
+검색 결과는 prompt가 아니라 compiler 입력 evidence입니다.
+
+## CIP
+
+1. `scripts/cip/search.py --cip-brief`로 deliverable, context, industry evidence를
+   수집합니다.
+2. 실제 logo/source asset과 brief를 `image-prompt`의 C8 경로에 전달합니다.
+3. `scripts/cip/generate.py`는 generation plan/manifest만 검사합니다.
+4. 생성된 asset은 `scripts/cip/render-html.py`로 검토용 presentation에
+   배치할 수 있습니다.
+
+실제 logo fidelity가 절대 조건이면 생성 mockup 대신 deterministic template을
+사용합니다. 생성 model이 source mark를 정확히 재현한다고 가정하지 않습니다.
+
+## Icon
+
+- Raster/3D/object icon concept: `image-prompt` C9 → Codex `gpt-image-2`.
+- Editable SVG icon: existing icon library 또는 deterministic code/vector
+  tooling.
+- `scripts/icon/generate.py`는 외부 model을 호출하지 않고 SVG source를
+  정규화·검증하는 artifact command입니다.
+
+## Banner
+
+`banner-design`이 generative와 deterministic lane을 선택합니다.
+
+- Generative: copy까지 Gongnyang이 이미지 안에서 렌더
+- Deterministic: HTML/CSS/native text와 실제 asset으로 전체 banner 작성
+
+생성 배경 위에 HTML text를 얹는 혼합 lane은 사용하지 않습니다.
+
+## Social assets
+
+- 생성형 post/cover: `social-visual` → `image-prompt`
+- text-heavy carousel/chart: HTML/SVG/native renderer
+- 실제 제품 증거: screenshot
+
+Platform size, safe zone, alt text, file weight는 prompt가 아니라 artifact QA로
+관리합니다.
+
+## Slides
+
+Strategic HTML presentation과 Chart.js/native table은 deterministic lane입니다.
+
+1. `references/slides-create.md`로 생성 workflow를 선택합니다.
+2. layout, template, copy, strategy reference를 필요한 범위만 읽습니다.
+3. 생성형 hero/concept asset이 필요할 때만 presentation image skill을
+   통해 `image-prompt`로 라우팅합니다.
+4. 정확한 수치, 표, 차트, 본문은 편집 가능한 native element로 유지합니다.
+
+## Complete brand package
+
+1. `logo-creator` → logo option 생성과 선택
+2. `design` CIP → deliverable brief, mockup/evidence asset, HTML review
+3. `banner-design` → channel-specific banner
+4. `brand` → token, asset manifest, usage guideline 동기화
+
+## Asset manifest
+
+생성형 asset:
+
+```json
+{
+  "compiler": "image-prompt@2.3.0",
+  "upstream_commit": "d1cd1dd3e77f7e12e2fed982fd738cc1ea880598",
+  "generator": "image_gen__imagegen",
+  "required_model": "gpt-image-2",
+  "model_binding": "trusted-host-fixed",
+  "local_model_verification": "unavailable",
+  "host_reported_model": null,
+  "generation_assurance": "generated_under_trusted_host_contract",
+  "prompt_record": "prompts.jsonl#C8-CIP-001",
+  "source_evidence": ["brand-guidelines.md", "logo.svg"],
+  "output_path": "assets/cip/business-card.webp",
+  "review_status": "approved"
+}
 ```
 
-### Logo: Generate with AI
+Deterministic asset은 `generator` 대신 source tool, input path, command,
+checksum을 기록합니다.
 
-**ALWAYS** generate output logo images with white background.
+## Completion gate
 
-```bash
-python3 ~/.claude/skills/design/scripts/logo/generate.py --brand "TechFlow" --style minimalist --industry tech
-python3 ~/.claude/skills/design/scripts/logo/generate.py --prompt "coffee shop vintage badge" --style vintage
-```
-
-**IMPORTANT:** When scripts fail, try to fix them directly.
-
-After generation, **ALWAYS** ask user about HTML preview via `AskUserQuestion`. If yes, invoke `design-harness` for gallery direction and visual QA.
-
-## CIP Design (Built-in)
-
-50+ deliverables, 20 styles, 20 industries. Gemini Nano Banana (Flash/Pro).
-
-### CIP: Generate Brief
-
-```bash
-python3 ~/.claude/skills/design/scripts/cip/search.py "tech startup" --cip-brief -b "BrandName"
-```
-
-### CIP: Search Domains
-
-```bash
-python3 ~/.claude/skills/design/scripts/cip/search.py "business card letterhead" --domain deliverable
-python3 ~/.claude/skills/design/scripts/cip/search.py "luxury premium elegant" --domain style
-python3 ~/.claude/skills/design/scripts/cip/search.py "hospitality hotel" --domain industry
-python3 ~/.claude/skills/design/scripts/cip/search.py "office reception" --domain mockup
-```
-
-### CIP: Generate Mockups
-
-```bash
-# With logo (RECOMMENDED)
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --deliverable "business card" --industry "consulting"
-
-# Full CIP set
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --industry "consulting" --set
-
-# Pro model (4K text)
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo logo.png --deliverable "business card" --model pro
-
-# Without logo
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TechFlow" --deliverable "business card" --no-logo-prompt
-```
-
-Models: `flash` (default, `gemini-2.5-flash-image`), `pro` (`gemini-3-pro-image-preview`)
-
-### CIP: Render HTML Presentation
-
-```bash
-python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --industry "consulting" --images /path/to/cip-output
-```
-
-**Tip:** If no logo exists, use Logo Design section above first.
-
-## Slides (Built-in)
-
-Strategic HTML presentations with Chart.js, design tokens, copywriting formulas.
-
-Load `references/slides-create.md` for the creation workflow.
-
-### Slides: Knowledge Base
-
-| Topic | File |
-|-------|------|
-| Creation Guide | `references/slides-create.md` |
-| Layout Patterns | `references/slides-layout-patterns.md` |
-| HTML Template | `references/slides-html-template.md` |
-| Copywriting | `references/slides-copywriting-formulas.md` |
-| Strategies | `references/slides-strategies.md` |
-
-## Banner Design (Built-in)
-
-22 art direction styles across social, ads, web, print. Uses `frontend-design`, `ai-artist`, `ai-multimodal`, `chrome-devtools` skills.
-
-Load `references/banner-sizes-and-styles.md` for complete sizes and styles reference.
-
-### Banner: Workflow
-
-1. **Gather requirements** via `AskUserQuestion` — purpose, platform, content, brand, style, quantity
-2. **Research** — Activate `design-harness`, browse Pinterest for references when useful
-3. **Design** — Create HTML/CSS banner with `frontend-design`, generate visuals with `ai-artist`/`ai-multimodal`
-4. **Export** — Screenshot to PNG at exact dimensions via `chrome-devtools`
-5. **Present** — Show all options side-by-side, iterate on feedback
-
-### Banner: Quick Size Reference
-
-| Platform | Type | Size (px) |
-|----------|------|-----------|
-| Facebook | Cover | 820 x 312 |
-| Twitter/X | Header | 1500 x 500 |
-| LinkedIn | Personal | 1584 x 396 |
-| YouTube | Channel art | 2560 x 1440 |
-| Instagram | Story | 1080 x 1920 |
-| Instagram | Post | 1080 x 1080 |
-| Google Ads | Med Rectangle | 300 x 250 |
-| Website | Hero | 1920 x 600-1080 |
-
-### Banner: Top Art Styles
-
-| Style | Best For |
-|-------|----------|
-| Minimalist | SaaS, tech |
-| Bold Typography | Announcements |
-| Gradient | Modern brands |
-| Photo-Based | Lifestyle, e-com |
-| Geometric | Tech, fintech |
-| Glassmorphism | SaaS, apps |
-| Neon/Cyberpunk | Gaming, events |
-
-### Banner: Design Rules
-
-- Safe zones: critical content in central 70-80%
-- One CTA per banner, bottom-right, min 44px height
-- Max 2 fonts, min 16px body, ≥32px headline
-- Text under 20% for ads (Meta penalizes)
-- Print: 300 DPI, CMYK, 3-5mm bleed
-
-## Icon Design (Built-in)
-
-15 styles, 12 categories. Gemini 3.1 Pro Preview generates SVG text output.
-
-### Icon: Generate Single Icon
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "settings gear" --style outlined
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "shopping cart" --style filled --color "#6366F1"
-python3 ~/.claude/skills/design/scripts/icon/generate.py --name "dashboard" --category navigation --style duotone
-```
-
-### Icon: Generate Batch Variations
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "cloud upload" --batch 4 --output-dir ./icons
-```
-
-### Icon: Multi-size Export
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile" --sizes "16,24,32,48" --output-dir ./icons
-```
-
-### Icon: Top Styles
-
-| Style | Best For |
-|-------|----------|
-| outlined | UI interfaces, web apps |
-| filled | Mobile apps, nav bars |
-| duotone | Marketing, landing pages |
-| rounded | Friendly apps, health |
-| sharp | Tech, fintech, enterprise |
-| flat | Material design, Google-style |
-| gradient | Modern brands, SaaS |
-
-**Model:** `gemini-3.1-pro-preview` — text-only output (SVG is XML text). No image generation API needed.
-
-## Social Photos (Built-in)
-
-Multi-platform social image design: HTML/CSS → screenshot export. Uses `design-harness`, `brand`, `design-system`, `chrome-devtools` skills.
-
-Load `references/social-photos-design.md` for sizes, templates, best practices.
-
-### Social Photos: Workflow
-
-1. **Orchestrate** — `project-management` skill for TODO tasks; parallel subagents for independent work
-2. **Analyze** — Parse prompt: subject, platforms, style, brand context, content elements
-3. **Ideate** — 3-5 concepts, present via `AskUserQuestion`
-4. **Design** — `/ckm:brand` → `/ckm:design-system` → `design-harness`; HTML per idea × size
-5. **Export** — `chrome-devtools` or Playwright screenshot at exact px (2x deviceScaleFactor)
-6. **Verify** — Use Chrome MCP or `chrome-devtools` skill to visually inspect exported designs; fix layout/styling issues and re-export
-7. **Report** — Summary to `plans/reports/` with design decisions
-8. **Organize** — Invoke `assets-organizing` skill to sort output files and reports
-
-### Social Photos: Key Sizes
-
-| Platform | Size (px) | Platform | Size (px) |
-|----------|-----------|----------|-----------|
-| IG Post | 1080×1080 | FB Post | 1200×630 |
-| IG Story | 1080×1920 | X Post | 1200×675 |
-| IG Carousel | 1080×1350 | LinkedIn | 1200×627 |
-| YT Thumb | 1280×720 | Pinterest | 1000×1500 |
-
-## Workflows
-
-### Complete Brand Package
-
-1. **Logo** → `scripts/logo/generate.py` → Generate logo variants
-2. **CIP** → `scripts/cip/generate.py --logo ...` → Create deliverable mockups
-3. **Presentation** → Load `references/slides-create.md` → Build pitch deck
-
-### New Design System
-
-1. **Brand** (brand skill) → Define colors, typography, voice
-2. **Tokens** (design-system skill) → Create semantic token layers
-3. **Implement** (ui-styling skill) → Configure Tailwind, shadcn/ui
+- owner와 production lane이 명확함
+- 생성형 asset은 `image-prompt` validator `ok: true`
+- `required_model: gpt-image-2`, `model_binding: trusted-host-fixed`,
+  `local_model_verification: unavailable`, `host_reported_model: null`,
+  `generation_assurance: generated_under_trusted_host_contract` 기록
+- 다른 생성 provider/model fallback 없음
+- source evidence와 output provenance 연결
+- generated raster text overlay 없음
+- 실제 출력 크기와 accessibility 검수
+- `bash scripts/verify-gongnyang-prompt-kit.sh` 통과
 
 ## References
 
-| Topic | File |
-|-------|------|
-| Design Routing | `references/design-routing.md` |
-| Logo Design Guide | `references/logo-design.md` |
-| Logo Styles | `references/logo-style-guide.md` |
-| Logo Colors | `references/logo-color-psychology.md` |
-| Logo Prompts | `references/logo-prompt-engineering.md` |
-| CIP Design Guide | `references/cip-design.md` |
-| CIP Deliverables | `references/cip-deliverable-guide.md` |
-| CIP Styles | `references/cip-style-guide.md` |
-| CIP Prompts | `references/cip-prompt-engineering.md` |
-| Slides Create | `references/slides-create.md` |
-| Slides Layouts | `references/slides-layout-patterns.md` |
-| Slides Template | `references/slides-html-template.md` |
-| Slides Copy | `references/slides-copywriting-formulas.md` |
-| Slides Strategy | `references/slides-strategies.md` |
-| Banner Sizes & Styles | `references/banner-sizes-and-styles.md` |
-| Social Photos Guide | `references/social-photos-design.md` |
-| Icon Design Guide | `references/icon-design.md` |
+- `references/design-routing.md`
+- `references/logo-design.md`
+- `references/logo-style-guide.md`
+- `references/logo-color-psychology.md`
+- `references/logo-prompt-engineering.md`
+- `references/cip-design.md`
+- `references/cip-deliverable-guide.md`
+- `references/cip-style-guide.md`
+- `references/cip-prompt-engineering.md`
+- `references/icon-design.md`
+- `references/social-photos-design.md`
+- `references/banner-sizes-and-styles.md`
+- `references/slides-create.md`
+- `references/slides-layout-patterns.md`
+- `references/slides-html-template.md`
+- `references/slides-copywriting-formulas.md`
+- `references/slides-strategies.md`
 
 ## Scripts
 
 | Script | Purpose |
-|--------|---------|
-| `scripts/logo/search.py` | Search logo styles, colors, industries |
-| `scripts/logo/generate.py` | Generate logos with Gemini AI |
-| `scripts/logo/core.py` | BM25 search engine for logo data |
-| `scripts/cip/search.py` | Search CIP deliverables, styles, industries |
-| `scripts/cip/generate.py` | Generate CIP mockups with Gemini |
-| `scripts/cip/render-html.py` | Render HTML presentation from CIP mockups |
-| `scripts/cip/core.py` | BM25 search engine for CIP data |
-| `scripts/icon/generate.py` | Generate SVG icons with Gemini 3.1 Pro |
+|---|---|
+| `scripts/logo/search.py` | style/color/industry evidence 검색과 design brief |
+| `scripts/logo/generate.py` | Gongnyang JSONL 검증과 generation plan 생성 |
+| `scripts/cip/search.py` | deliverable/style/industry/mockup evidence 검색 |
+| `scripts/cip/generate.py` | Gongnyang JSONL 검증과 CIP plan 생성 |
+| `scripts/cip/render-html.py` | 생성/실증 asset을 HTML review deck에 배치 |
+| `scripts/icon/generate.py` | existing deterministic SVG 정규화·검증 |
 
-## Setup
-
-```bash
-export GEMINI_API_KEY="your-key"  # https://aistudio.google.com/apikey
-pip install google-genai pillow
-```
-
-## Integration
-
-**External sub-skills:** brand, design-system, ui-styling
-**Related Skills:** design-harness, frontend-design, ai-multimodal, chrome-devtools
+Prompt authoring reference는 vendored
+`.claude/skills/image-prompt/SKILL.md`만 사용합니다.

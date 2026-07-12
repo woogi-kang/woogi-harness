@@ -1,7 +1,8 @@
 ---
 name: corporate-registration
 description: 법인 설립 및 등기 변경 가이드
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "등기"
   - "법인설립"

@@ -8,7 +8,8 @@ Claude Craft 프로젝트에 스킬, 에이전트, 커맨드를 추가하는 방
 
 ```
 .claude/
-├── agents/           # 도메인 에이전트 정의 (8개 카테고리, 25+)
+├── agents/           # 전문 에이전트 정의 (9개 최상위 그룹, 25+)
+│   ├── figma-to-nextjs/ # Figma 변환 공유 자산
 │   ├── 💻 개발/      # FastAPI, Flutter, Next.js, Figma 변환, TDD 등
 │   ├── 🎯 기획/      # 디스커버리, 전략, GTM, 데이터 분석
 │   ├── 🎨 디자인/    # UI/UX 디자인 시스템
@@ -17,19 +18,24 @@ Claude Craft 프로젝트에 스킬, 에이전트, 커맨드를 추가하는 방
 │   ├── ⚖️ 법무/      # 계약, 법인 운영
 │   ├── 💰 재무/      # 결제, 재무 보고
 │   └── 🔍 리뷰/      # 멀티 리뷰 오케스트레이션
-├── skills/           # 스킬 원본 (Single Source of Truth, 340+)
+├── skills/           # 스킬 원본 (9개 도메인, Single Source of Truth, 384개)
 │   ├── _template/    # 새 스킬 템플릿
 │   ├── 💻 개발/      # 카테고리별 스킬 디렉토리
 │   ├── 🎯 기획/
+│   ├── 🇰🇷 k-skill/  # 한국생활 스킬 31개
 │   └── ...           # standalone 스킬 (brand, design, social-content 등)
-├── commands/         # 슬래시 커맨드 (18개)
+├── commands/         # 슬래시 커맨드 (25개)
 ├── templates/        # 팀 오케스트레이션 TOML 템플릿 (5개)
-├── hooks/            # 라이프사이클 훅 (3개)
-└── rules/            # 모듈형 규칙 (common, python, typescript)
+├── hooks/            # 라이프사이클 훅 (4개)
+├── rules/            # 모듈형 규칙 (13개)
+├── registry/         # capability/provider/project/tech/design 계약
+├── project-packs/    # sync v2 default pack + overlay
+└── evals/            # 실행 가능한 평가 케이스/채점기
 
 .agents/skills/       # → .claude/skills/ symlink (Gemini, Codex, OpenCode 공용)
 contexts/             # 행동 모드 (dev, plan, research, review)
 scripts/              # 유틸리티 (validate, catalog, sync, orchestrate)
+third_party/          # SHA 고정 upstream runtime (로컬 patch 금지)
 ```
 
 ---
@@ -56,7 +62,7 @@ description: |                  # 한 줄 설명 + 트리거 조건
   When to use: API 테스트, 엔드포인트 검증이 필요할 때.
 argument-hint: "[endpoint]"     # 선택 인자 힌트
 metadata:
-  category: "💻 개발"           # 8개 카테고리 중 택 1 또는 "standalone"
+  category: "💻 개발"           # 9개 도메인 중 택 1 또는 "standalone"
   version: "1.0.0"              # SemVer
   tags: "api, test, rest"       # 검색용 태그
   author: "woogi"               # 작성자
@@ -126,7 +132,8 @@ name: my-agent
 description: |
   에이전트의 역할과 전문 분야를 설명합니다.
   어떤 요청에 반응하는지 명시합니다.
-model: opus                     # opus, sonnet 등
+model: inherit                 # provider/project profile이 실제 모델을 선택
+quality_tier: reasoning_high   # reasoning_high, implementation, fast_scan, independent_critic
 triggers:                       # 이 에이전트를 호출하는 키워드
   - "my domain 개발"
   - "my domain 설계"
@@ -165,7 +172,8 @@ description: "커맨드 설명 (영어, 한 줄)"
 argument-hint: "[args]"
 type: utility
 allowed-tools: AskUserQuestion, Bash, Read, Write, Glob, Grep
-model: opus
+model: inherit
+quality_tier: implementation
 ---
 ```
 
@@ -287,24 +295,27 @@ AGENTS.md  → CLAUDE.md           # Codex CLI, OpenCode용
 
 ### 6.2 다른 프로젝트에 동기화 (복사)
 
-다른 프로젝트(예: memoriz)에 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md` 엔트리포인트, `contexts`, `.agents/skills`, `.claude/` 공유 자산을 동기화할 때는 `sync-to-projects.sh`를 사용합니다:
+다른 프로젝트(예: memoriz)에 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md` 엔트리포인트, `contexts`, `.agents/skills`, `.claude/` 공유 자산과 runtime closure를 동기화할 때는 `sync-to-projects.sh`를 사용합니다. 기본 동작은 읽기 전용 dry-run입니다:
 
 ```bash
-# 등록된 모든 프로젝트에 동기화
+# 등록된 모든 프로젝트의 변경 계획
 bash scripts/sync-to-projects.sh
 
-# 특정 프로젝트에만 동기화
+# 특정 프로젝트의 변경 계획
 bash scripts/sync-to-projects.sh /path/to/project
+
+# canary 1개에 명시 적용
+bash scripts/sync-to-projects.sh --canary --apply
 ```
 
-새 프로젝트를 등록하려면 스크립트의 `DEFAULT_PROJECTS` 배열에 추가합니다.
+새 프로젝트는 `.claude/registry/projects/projects.json`에 등록합니다. 배포 closure는 `.claude/project-packs/default/pack.json`과 project profile overlay가 소유하며, registry/rules/evals/runtime scripts와 고정된 Gongnyang runtime도 여기서 선언합니다.
 프로젝트별 권한/MCP 설정(`.claude/settings*.json`, `.mcp.json`)은 동기화하지 않습니다.
 
 ### 6.3 핵심 원칙
 
 - **원본은 항상 `.claude/`에서 수정**
 - 다른 프로젝트의 `.claude/`를 직접 수정하지 않음 (sync로 덮어씌워짐)
-- 스킬/에이전트 변경 후 `sync-to-projects.sh` 실행
+- 스킬/에이전트 변경 후 `sync-to-projects.sh` dry-run을 검토하고 승인된 경우에만 `--apply`
 
 ---
 
@@ -312,7 +323,17 @@ bash scripts/sync-to-projects.sh /path/to/project
 
 커밋 전에 다음 스크립트를 실행하여 무결성을 확인합니다.
 
-### 7.1 프론트매터 검증
+### 7.1 Runtime closure 검증
+
+```bash
+bash -n scripts/install.sh docs/install.sh scripts/sync-to-projects.sh
+python3 -m unittest discover -s tests/runtime -p 'test_install_script.py' -v
+python3 scripts/harness-registry.py validate
+python3 scripts/harness-context.py --output /tmp/harness-context.json
+python3 scripts/harness-doctor.py
+```
+
+### 7.2 프론트매터 검증
 
 모든 SKILL.md에 YAML 프론트매터가 있는지 확인:
 
@@ -320,7 +341,7 @@ bash scripts/sync-to-projects.sh /path/to/project
 bash scripts/validate-skills.sh
 ```
 
-### 7.2 참조 무결성 검증
+### 7.3 참조 무결성 검증
 
 SKILL.md에서 참조하는 파일이 실제로 존재하는지 확인:
 
@@ -328,7 +349,7 @@ SKILL.md에서 참조하는 파일이 실제로 존재하는지 확인:
 python scripts/integrity-check.py
 ```
 
-### 7.3 카탈로그 재생성
+### 7.4 카탈로그 재생성
 
 스킬 추가/수정 후 카탈로그를 업데이트:
 

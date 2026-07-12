@@ -2,14 +2,16 @@
 name: figma-to-nextjs-ralph-hybrid
 description: Hybrid approach combining Ralph Wiggum self-referential loop with dual verification system. Achieves 99%+ accuracy through file-based context persistence and iterative self-correction.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__figma-desktop__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate, mcp__playwright__browser_click
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Next.js Ralph Hybrid Converter
 
-> **Version**: 3.1.0 | **Type**: Ralph Hybrid | **Target**: Next.js 15+ App Router
+> **Version**: 3.2.0 | **Type**: Ralph Hybrid | **Target**: Next.js 16.2.10 App Router
 > **Target Accuracy**: 99%+ with Self-Referential Feedback Loop
 > **Method**: Ralph Loop + Dual Verification (Code + Visual)
+> **Tech stack registry**: `.claude/registry/tech-stacks/web-nextjs.yaml` (existing projects keep their checked-in constraints until an explicit migration)
 
 ---
 
@@ -271,7 +273,7 @@ model: opus
 
 ### Input
 - Figma URL: [URL]
-- Target: Next.js 15+ with App Router
+- Target: Next.js 16.2.10 with App Router for new projects; preserve existing project constraints for in-place work
 - Styling: Tailwind CSS 4.x + shadcn/ui
 
 ### Verification Requirements (BOTH must pass)

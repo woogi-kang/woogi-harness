@@ -9,7 +9,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: '{{PROJECT_NAME}}',
-  description: 'Built with Next.js 15',
+  description: 'Built with Next.js 16.2',
 }
 
 export default function RootLayout({

@@ -11,7 +11,7 @@
 | `text-to-lottie` | **Lottie 제작 하네스** — Bodymovin JSON 생성/수정, Skottie 플레이어 검증, slots/controls 작성 | Lottie, 로티, Bodymovin, Skottie, lottie.json, animated JSON |
 | `ui-styling` | **구현 단계** — shadcn/ui 컴포넌트 + Tailwind CSS로 실제 코드 작성 | shadcn, Tailwind, 컴포넌트 코드, 다크모드 구현 |
 | `design-system` | **시스템 단계** — 3-레이어 토큰 아키텍처, CSS 변수, 컴포넌트 스펙 정의 | 토큰, CSS 변수, 컴포넌트 스펙, 토큰 검증 |
-| `logo-creator` | **전문 특화** — AI 로고 생성 End-to-End (디스커버리 → 배치 생성 → 후처리) | 로고, brand mark, favicon, 앱 아이콘 |
+| `logo-creator` | **전문 특화** — `image-prompt` → validator → Codex `$imagegen`/`gpt-image-2` 로고 생성과 deterministic 파생 산출물 | 로고, brand mark, favicon, 앱 아이콘 |
 | `banner-design` | **전문 특화** — 배너 디자인 (소셜/광고/웹/인쇄) | 배너, 커버, 헤더, 광고 배너 |
 
 ## 라우팅 매트릭스
@@ -84,3 +84,4 @@
 6. **`logo-creator`는 로고만 만든다** — CIP, 배너, 아이콘은 절대 처리하지 않는다.
 7. **`banner-design`은 배너만 만든다** — 로고, CIP, UI 컴포넌트는 절대 처리하지 않는다.
 8. **`text-to-lottie`는 Lottie JSON 산출물에만 사용한다** — 모션 의도는 `design-harness`, 영상 타임라인은 Remotion 계열, 일반 UI 전환은 `ui-styling`/프레임워크 코드가 맡는다.
+9. **생성형 raster는 단일 경로를 사용한다** — 자체 prompt를 만들지 않고 `image-prompt` → upstream validator → Codex `$imagegen` → `gpt-image-2`로만 생성한다.

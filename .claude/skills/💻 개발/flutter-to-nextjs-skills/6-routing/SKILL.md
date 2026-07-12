@@ -113,21 +113,21 @@ src/app/
 ```tsx
 // src/app/user/[id]/page.tsx
 interface UserPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default function UserPage({ params }: UserPageProps) {
-  const { id } = params
+export default async function UserPage({ params }: UserPageProps) {
+  const { id } = await params
   return <UserScreen id={id} />
 }
 
 // src/app/product/[category]/[id]/page.tsx
 interface ProductPageProps {
-  params: { category: string; id: string }
+  params: Promise<{ category: string; id: string }>
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const { category, id } = params
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { category, id } = await params
   return <ProductScreen category={category} id={id} />
 }
 ```
@@ -150,11 +150,11 @@ GoRoute(
 // Next.js
 // src/app/search/page.tsx
 interface SearchPageProps {
-  searchParams: { q?: string; page?: string }
+  searchParams: Promise<{ q?: string; page?: string }>
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const { q: query, page } = searchParams
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { q: query, page } = await searchParams
   return <SearchScreen query={query} page={page} />
 }
 ```
@@ -276,11 +276,11 @@ export default async function ProtectedLayout({
 ```
 
 ```typescript
-// src/middleware.ts
+// src/proxy.ts — Next.js 16
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('auth-token')
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
                      request.nextUrl.pathname.startsWith('/register')
@@ -357,14 +357,18 @@ import Link from 'next/link'
 </Link>
 ```
 
-### 뒤로가기 방지 (WillPopScope)
+### 뒤로가기 보호 (PopScope + predictive back)
 
 ```dart
 // Flutter
-WillPopScope(
-  onWillPop: () async {
-    final shouldPop = await showConfirmDialog();
-    return shouldPop;
+PopScope<Object?>(
+  canPop: canPop,
+  onPopInvokedWithResult: (didPop, result) async {
+    if (didPop) return;
+    if (await showConfirmDialog() && context.mounted) {
+      setState(() => canPop = true);
+      Navigator.of(context).pop(result);
+    }
   },
   child: ...
 )
@@ -481,7 +485,7 @@ src/app/
 ├── error.tsx                    # Global Error UI
 └── not-found.tsx               # 404 페이지
 
-middleware.ts                    # 인증 미들웨어
+proxy.ts                         # Next.js 16 인증 proxy
 ```
 
 ### 페이지 파일 템플릿
@@ -493,7 +497,7 @@ import { notFound } from 'next/navigation'
 import { productApi } from '@/lib/api/product'
 
 interface ProductPageProps {
-  params: { category: string; id: string }
+  params: Promise<{ category: string; id: string }>
 }
 
 /**
@@ -503,7 +507,7 @@ interface ProductPageProps {
  * @route /product/:category/:id → /[category]/[id]
  */
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { category, id } = params
+  const { category, id } = await params
 
   const product = await productApi.getProduct(id)
 
@@ -516,7 +520,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 // Metadata
 export async function generateMetadata({ params }: ProductPageProps) {
-  const product = await productApi.getProduct(params.id)
+  const { id } = await params
+  const product = await productApi.getProduct(id)
   return {
     title: product?.name ?? 'Product',
     description: product?.description,

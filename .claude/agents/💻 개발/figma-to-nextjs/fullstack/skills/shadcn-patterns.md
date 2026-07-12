@@ -396,21 +396,12 @@ export function Footer() {
 
 ### 테마 확장
 
-```tsx
-// tailwind.config.ts
-{
-  theme: {
-    extend: {
-      colors: {
-        // shadcn 기본 색상 확장
-        brand: {
-          50: 'var(--brand-50)',
-          500: 'var(--brand-500)',
-          900: 'var(--brand-900)',
-        },
-      },
-    },
-  },
+```css
+/* globals.css — Tailwind CSS 4 */
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-500: var(--brand-500);
+  --color-brand-900: var(--brand-900);
 }
 ```
 

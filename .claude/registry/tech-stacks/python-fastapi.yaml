@@ -1,0 +1,396 @@
+schema_version: 1
+id: python-fastapi
+display_name: Python and FastAPI service baseline
+verified_at: 2026-07-13
+policy:
+  default_channel: recommended
+  upgrade_rule: Runtime, ASGI, validation, security, database, and test families move only with contract and integration evidence.
+migration:
+  guide: migrations/python314-fastapi139.md
+  summary: Upgrade Python and FastAPI together while separating incompatible Redis client and broker dependency lanes and testing changed protocol behavior.
+promotion_gates: &stack_gates
+  - dependency-resolution
+  - ruff
+  - mypy
+  - pytest
+  - openapi-snapshot
+  - asgi-lifespan
+  - websocket-contract
+  - database-migration
+consumers: &stack_consumers
+  - .claude/agents/💻 개발/fastapi-agent.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/1-project-setup/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/36-service-layer/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/21-file-upload/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/24-scheduled-jobs/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/29-integration-test/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/35-email/SKILL.md
+  - .claude/skills/💻 개발/fastapi-agent-skills/_references/TEST-PATTERN.md
+  - .claude/skills/ui-styling/scripts/requirements.txt
+  - .claude/skills/📝 콘텐츠/presentation-agent-skills/10-export-pptx/SKILL.md
+
+components:
+  python:
+    latest_observed: { version: 3.14.6, channel: stable }
+    recommended: { version: 3.14.6, channel: stable, reason: Latest stable bugfix release for new services. }
+    compatibility_floor: { version: 3.10.0, channel: stable, reason: FastAPI 0.139 technical floor; existing services remain project-truth first. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: official-release, url: "https://www.python.org/downloads/release/python-3146/" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Audit deferred annotations, process start methods, C extensions, and deprecated standard-library APIs." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  fastapi:
+    latest_observed: { version: 0.139.0, channel: stable }
+    recommended: { version: 0.139.0, channel: stable, reason: Current FastAPI stable release. }
+    compatibility_floor: { version: 0.128.0, channel: stable, reason: Supported harness contract is Pydantic 2 only. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/fastapi/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Test strict JSON content type, router trees, response serialization, and frontend routing." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  uvicorn:
+    latest_observed: { version: 0.51.0, channel: stable }
+    recommended: { version: 0.51.0, channel: stable, reason: Current Uvicorn stable release with rolling worker restart. }
+    compatibility_floor: { version: 0.50.0, channel: stable, reason: Harness assumes websockets-sansio is the auto default. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/uvicorn/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify WebSocket implementation, startup exit codes, proxy headers, and worker lifecycle." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  gunicorn:
+    latest_observed: { version: 26.0.0, channel: stable }
+    recommended: { version: 26.0.0, channel: stable, reason: Current Gunicorn stable line when an external process manager is required. }
+    compatibility_floor: { version: 26.0.0, channel: stable, reason: New templates do not use deprecated uvicorn.workers. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/gunicorn/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Prefer Uvicorn workers directly; if Gunicorn is retained, use the separate uvicorn-worker package." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  sqlalchemy:
+    latest_observed: { version: 2.0.51, channel: stable }
+    recommended: { version: 2.0.51, channel: stable, reason: Current SQLAlchemy 2 stable patch. }
+    compatibility_floor: { version: 2.0.36, channel: stable, reason: Maintain the typed SQLAlchemy 2 async contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/sqlalchemy/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Exercise async sessions, transaction boundaries, eager loading, and compiled queries." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  alembic:
+    latest_observed: { version: 1.18.5, channel: stable }
+    recommended: { version: 1.18.5, channel: stable, reason: Current Alembic stable release. }
+    compatibility_floor: { version: 1.14.0, channel: stable, reason: Existing migrations stay on Alembic 1. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/alembic/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Upgrade and downgrade a disposable database from zero and from a production-shaped snapshot. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  asyncpg:
+    latest_observed: { version: 0.31.0, channel: stable }
+    recommended: { version: 0.31.0, channel: stable, reason: Current asyncpg stable release. }
+    compatibility_floor: { version: 0.30.0, channel: stable, reason: Maintain the current async driver family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/asyncpg/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Exercise prepared statements, pools, cancellation, and transaction failures." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pydantic:
+    latest_observed: { version: 2.13.4, channel: stable }
+    recommended: { version: 2.13.4, channel: stable, reason: Current Pydantic 2 stable patch. }
+    compatibility_floor: { version: 2.7.0, channel: stable, reason: FastAPI no longer supports Pydantic v1; generated code uses ConfigDict and model APIs. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pydantic/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Replace v1 Config and serialization APIs; snapshot validation errors and JSON schema. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pydantic-settings:
+    latest_observed: { version: 2.14.2, channel: stable }
+    recommended: { version: 2.14.2, channel: stable, reason: Current pydantic-settings stable release. }
+    compatibility_floor: { version: 2.7.0, channel: stable, reason: Keep settings on the Pydantic 2 family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pydantic-settings/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify env aliases, nested delimiters, secrets, and source precedence." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  redis-py:
+    latest_observed: { version: 8.0.1, channel: stable }
+    recommended: { version: 8.0.1, channel: stable, reason: Current redis-py stable release. }
+    compatibility_floor: { version: 8.0.0, channel: stable, reason: New services use the RESP3-default client contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/redis/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Install Redis 8 only through the redis-direct extra; keep it mutually exclusive with the Celery and ARQ broker extras, then test RESP3, async pools, pubsub, scripts, modules, and mocks." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pyjwt:
+    latest_observed: { version: 2.13.0, channel: stable }
+    recommended: { version: 2.13.0, channel: stable, reason: Current maintained JWT library used by FastAPI official guidance. }
+    compatibility_floor: { version: 2.10.0, channel: stable, reason: Maintain the PyJWT 2 API family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/PyJWT/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Enforce algorithms, issuer, audience, subject, expiration, rotation, and invalid-token tests." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pwdlib:
+    latest_observed: { version: 0.3.0, channel: stable }
+    recommended: { version: 0.3.0, channel: stable, reason: Modern Argon2 password hashing recommended by FastAPI. }
+    compatibility_floor: { version: 0.3.0, channel: stable, reason: New hashes use pwdlib; passlib is legacy verification only. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pwdlib/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Preserve legacy verification during rehash-on-login and write all new hashes with Argon2. }
+    promotion_gates:
+      - legacy-hash-fixture
+      - argon2-hash-fixture
+      - verify-and-update-fixture
+      - timing-behavior-test
+    consumers: *stack_consumers
+  celery:
+    latest_observed: { version: 5.6.3, channel: stable }
+    recommended: { version: 5.6.3, channel: stable, reason: Current Celery 5 stable patch. }
+    compatibility_floor: { version: 5.4.0, channel: stable, reason: Keep the Celery 5 task contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/celery/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Install through the broker-celery extra so Celery's Redis transport resolves independently from the Redis 8 direct-client lane; test serialization, retries, idempotency, acknowledgements, schedules, and worker shutdown." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  arq:
+    latest_observed: { version: 0.28.0, channel: stable }
+    recommended: { version: 0.28.0, channel: stable, reason: Current ARQ stable release. }
+    compatibility_floor: { version: 0.26.0, channel: stable, reason: Maintain the selected async queue family. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/arq/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Install through the broker-arq extra; ARQ currently requires redis-py below 6, so never combine it with redis-direct and test job serialization, retries, cancellation, and cron against its resolved Redis client." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pytest:
+    latest_observed: { version: 9.1.1, channel: stable }
+    recommended: { version: 9.1.1, channel: stable, reason: Current pytest 9 stable patch. }
+    compatibility_floor: { version: 9.0.0, channel: stable, reason: Generated tests use the pytest 9 collection contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pytest/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Audit collection duplicates, CI detection, warnings, returns, and plugin compatibility." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pytest-asyncio:
+    latest_observed: { version: 1.4.0, channel: stable }
+    recommended: { version: 1.4.0, channel: stable, reason: Current pytest-asyncio 1 stable release. }
+    compatibility_floor: { version: 1.0.0, channel: stable, reason: Deprecated event_loop fixtures are not generated. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pytest-asyncio/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Replace event_loop fixtures and make loop_scope explicit where fixture scope differs. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  ruff:
+    latest_observed: { version: 0.15.21, channel: stable }
+    recommended: { version: 0.15.21, channel: stable, reason: Current Ruff stable release. }
+    compatibility_floor: { version: 0.15.0, channel: stable, reason: Generated configuration uses the current lint table and Python 3.14 target. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/ruff/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Apply fixes separately, then require check and format stability." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  mypy:
+    latest_observed: { version: 2.2.0, channel: stable }
+    recommended: { version: 2.2.0, channel: stable, reason: Current mypy stable release. }
+    compatibility_floor: { version: 2.0.0, channel: stable, reason: New services use the mypy 2 type-checking line. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/mypy/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Run strict checking over application and test fixtures with the Pydantic plugin. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  structlog:
+    latest_observed: { version: 26.1.0, channel: stable }
+    recommended: { version: 26.1.0, channel: stable, reason: Current structlog stable release. }
+    compatibility_floor: { version: 26.0.0, channel: stable, reason: Generated observability config targets structlog 26. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/structlog/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Snapshot JSON logs and verify context propagation across async tasks. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  opentelemetry:
+    latest_observed: { version: 1.43.0/0.64b0, channel: stable }
+    recommended: { version: 1.43.0/0.64b0, channel: stable, reason: "Keep API, SDK, exporter 1.43.0 aligned with instrumentation 0.64b0." }
+    compatibility_floor: { version: 1.43.0/0.64b0, channel: stable, reason: Treat OpenTelemetry as a BOM rather than independent pins. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/opentelemetry-instrumentation-fastapi/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify trace propagation, sampling, exporter shutdown, and SQL/HTTP spans as a coherent BOM." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  prometheus-fastapi-instrumentator:
+    latest_observed: { version: 8.0.2, channel: stable }
+    recommended: { version: 8.0.2, channel: stable, reason: Current stable instrumentator. }
+    compatibility_floor: { version: 8.0.0, channel: stable, reason: Generated metrics setup targets the v8 line. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/prometheus-fastapi-instrumentator/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Snapshot metric names, labels, excluded paths, and multiprocess behavior." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  httpx:
+    latest_observed: { version: 0.28.1, channel: stable }
+    recommended: { version: 0.28.1, channel: stable, reason: Current HTTPX 0.28 patch. }
+    compatibility_floor: { version: 0.28.1, channel: stable, reason: Generated clients target current transport APIs. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/httpx/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Exercise ASGI transport, timeouts, streaming, and redirects." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  slowapi:
+    latest_observed: { version: 0.1.10, channel: stable }
+    recommended: { version: 0.1.10, channel: stable, reason: Current SlowAPI patch. }
+    compatibility_floor: { version: 0.1.10, channel: stable, reason: Generated middleware targets this patch. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/slowapi/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Test keys, proxies, exemptions, and 429 responses." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  aiosmtplib:
+    latest_observed: { version: 5.1.2, channel: stable }
+    recommended: { version: 5.1.2, channel: stable, reason: Current async SMTP client. }
+    compatibility_floor: { version: 5.0.0, channel: stable, reason: Generated email service targets v5. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/aiosmtplib/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify TLS, auth, timeout, and retry behavior." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  resend-python:
+    latest_observed: { version: 2.32.2, channel: stable }
+    recommended: { version: 2.32.2, channel: stable, reason: Current Resend Python SDK. }
+    compatibility_floor: { version: 2.32.0, channel: stable, reason: Keep the selected v2 SDK contract. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/resend/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Exercise send, batch, API errors, and idempotency." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  sendgrid:
+    latest_observed: { version: 6.12.5, channel: stable }
+    recommended: { version: 6.12.5, channel: stable, reason: Current SendGrid Python SDK. }
+    compatibility_floor: { version: 6.12.0, channel: stable, reason: Maintain the v6 API. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/sendgrid/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify personalization, attachments, API errors, and retries." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  jinja2:
+    latest_observed: { version: 3.1.6, channel: stable }
+    recommended: { version: 3.1.6, channel: stable, reason: Current Jinja 3.1 patch. }
+    compatibility_floor: { version: 3.1.6, channel: stable, reason: Templates target current escaping behavior. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/Jinja2/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Snapshot rendering and escaping for email templates. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  aiofiles:
+    latest_observed: { version: 25.1.0, channel: stable }
+    recommended: { version: 25.1.0, channel: stable, reason: Current async file helper. }
+    compatibility_floor: { version: 25.1.0, channel: stable, reason: Generated upload service targets current APIs. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/aiofiles/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Test atomic writes, cleanup, and cancellation." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  aioboto3:
+    latest_observed: { version: 15.5.0, channel: stable }
+    recommended: { version: 15.5.0, channel: stable, reason: Current async AWS SDK wrapper. }
+    compatibility_floor: { version: 15.0.0, channel: stable, reason: Upload examples target v15. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/aioboto3/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify session lifecycle, multipart upload, retries, and mocks." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pillow:
+    latest_observed: { version: 12.3.0, channel: stable }
+    recommended: { version: 12.3.0, channel: stable, reason: Current Pillow major. }
+    compatibility_floor: { version: 12.0.0, channel: stable, reason: Image paths target the v12 API. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/Pillow/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Verify codecs, EXIF orientation, decompression limits, and image output." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  python-magic:
+    latest_observed: { version: 0.4.27, channel: stable }
+    recommended: { version: 0.4.27, channel: stable, reason: Current python-magic release. }
+    compatibility_floor: { version: 0.4.27, channel: stable, reason: Maintain MIME detection behavior. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/python-magic/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Verify libmagic installation and representative file signatures. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  apscheduler:
+    latest_observed: { version: 3.11.3, channel: stable }
+    recommended: { version: 3.11.3, channel: stable, reason: Current stable v3 scheduler. }
+    compatibility_floor: { version: 3.11.0, channel: stable, reason: Do not cross into the v4 API without migration. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/APScheduler/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: "Exercise persistence, time zones, misfires, and shutdown." }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pytest-cov:
+    latest_observed: { version: 7.1.0, channel: stable }
+    recommended: { version: 7.1.0, channel: stable, reason: Current pytest coverage plugin. }
+    compatibility_floor: { version: 7.1.0, channel: stable, reason: Align with pytest 9. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pytest-cov/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Verify subprocess coverage and threshold enforcement. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  pytest-mock:
+    latest_observed: { version: 3.15.1, channel: stable }
+    recommended: { version: 3.15.1, channel: stable, reason: Current pytest mock fixture. }
+    compatibility_floor: { version: 3.15.1, channel: stable, reason: Align with pytest 9. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/pytest-mock/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Run fixture and spy/stub compatibility tests. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  python-pptx:
+    latest_observed: { version: 1.0.2, channel: stable }
+    recommended: { version: 1.0.2, channel: stable, reason: Current python-pptx major. }
+    compatibility_floor: { version: 1.0.0, channel: stable, reason: Export tooling targets v1. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/python-pptx/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Export and visually compare representative decks. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers
+  playwright-python:
+    latest_observed: { version: 1.61.0, channel: stable }
+    recommended: { version: 1.61.0, channel: stable, reason: Current Playwright Python package. }
+    compatibility_floor: { version: 1.61.0, channel: stable, reason: Match installed browser binaries. }
+    prerelease: null
+    verified_at: 2026-07-13
+    source: { kind: pypi, url: "https://pypi.org/pypi/playwright/json" }
+    migration: { guide: migrations/python314-fastapi139.md, note: Install matching browsers and run export/browser fixtures. }
+    promotion_gates: *stack_gates
+    consumers: *stack_consumers

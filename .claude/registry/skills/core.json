@@ -1,0 +1,27 @@
+{
+  "schema_version": "harness.skills.v1",
+  "skills": [
+    {
+      "id": "safety.context-pack-gate",
+      "aliases": ["context-pack-gate", "safe-context-pack"],
+      "intent": "Bound and secret-scan repository context before dispatch.",
+      "source": ".claude/skills/context-pack-gate/SKILL.md",
+      "frontmatter_name": "context-pack-gate",
+      "context_files": ["scripts/context-pack-gate.py"],
+      "required_context": false,
+      "status": "stable",
+      "version": "0.1.0"
+    },
+    {
+      "id": "quality.eval-harness",
+      "aliases": ["eval-harness", "evaluation"],
+      "intent": "Run explicit evaluator presets and capture evidence.",
+      "source": ".claude/skills/eval-harness/SKILL.md",
+      "frontmatter_name": "eval-harness",
+      "context_files": [],
+      "required_context": false,
+      "status": "stable",
+      "version": "2.0.0"
+    }
+  ]
+}

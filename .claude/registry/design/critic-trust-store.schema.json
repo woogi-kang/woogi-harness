@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-critic-trust-store-v1.json",
+  "title": "External Design Authority Trust Store",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "authorities"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "design-critic-trust-store-v1"},
+    "authorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "purposes", "public_key_sha256"],
+        "properties": {
+          "id": {"type": "string", "minLength": 3},
+          "status": {"enum": ["active", "revoked"]},
+          "purposes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"enum": ["capture", "critic"]},
+            "uniqueItems": true
+          },
+          "public_key_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  }
+}

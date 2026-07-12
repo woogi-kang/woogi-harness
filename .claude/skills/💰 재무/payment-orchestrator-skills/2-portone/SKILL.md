@@ -1,7 +1,8 @@
 ---
 name: portone
 description: 포트원(PortOne) 한국 통합 결제 연동 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "포트원"
   - "PortOne"

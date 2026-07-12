@@ -126,7 +126,7 @@ triggers:
 | 항목 | 값 |
 |------|-----|
 | Flutter 버전 | {version} |
-| Next.js 버전 | 15.x |
+| Next.js 버전 | 16.2.10 (신규 기준; 실제 변환 프로젝트 constraint 우선) |
 | 변환된 화면 | {count}개 |
 | 변환된 컴포넌트 | {count}개 |
 | Zustand 스토어 | {count}개 |

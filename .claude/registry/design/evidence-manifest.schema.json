@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-evidence-manifest-v1.json",
+  "title": "Design Evidence Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "run_id", "project_root", "project_fingerprint_digest", "generated_at", "items", "coverage"],
+  "properties": {
+    "schema": { "const": "design-evidence-manifest-v1" },
+    "run_id": { "type": "string" },
+    "project_root": { "type": "string", "minLength": 1 },
+    "project_fingerprint_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "path", "sha256", "captured_at", "supports"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["baseline-screenshot", "result-screenshot", "interaction-recording", "accessibility-tree", "state-assertion", "source-scan", "test-log", "design-token-snapshot", "critic-report", "evaluation-result"] },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "captured_at": { "type": "string", "format": "date-time" },
+          "route": { "type": "string" },
+          "state": { "type": "string" },
+          "viewport": { "type": "string" },
+          "platform": { "enum": ["web", "flutter", "native", "document", "unknown"] },
+          "supports": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+          "command": { "type": "string" },
+          "verdict": { "enum": ["pass", "fail", "needs-review", "informational"] },
+          "finding_counts": {
+            "type": "object",
+            "additionalProperties": { "type": "integer", "minimum": 0 }
+          },
+          "notes": { "type": "string" }
+          ,"provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["trust", "producer"],
+            "properties": {
+              "trust": {"enum": ["manual", "runtime", "runtime-adapter"]},
+              "producer": {"type": "string", "minLength": 1},
+              "source_index": {"type": "string"},
+              "source_index_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "spec": {"type": "string"},
+              "spec_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "capture_nonce": {"type": "string"},
+              "adapter_sha256": {"type": "string"},
+              "source_fingerprint_digest": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["routes", "states", "viewports", "tuples", "source_scan", "accessibility", "critic"],
+      "properties": {
+        "routes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "states": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "viewports": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "tuples": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "source_scan": { "type": "boolean" },
+        "accessibility": { "type": "boolean" },
+        "critic": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -2,9 +2,10 @@
 name: flutter-agent
 description: |
   Flutter 프로젝트의 설계, 구현, 테스트를 지원하는 종합 Expert Agent.
-  Flutter 3.44 / Dart 3.12 + Clean Architecture + Riverpod 3 + GoRouter + TDD 기반의 현대적 Flutter 개발.
+  중앙 기술 스택 레지스트리의 Flutter 권장 기준 + Clean Architecture + Riverpod 3 + GoRouter + TDD 기반의 현대적 Flutter 개발.
   "Flutter 앱 설계해줘", "기능 구현해줘", "테스트 작성해줘" 등의 요청에 반응.
-model: opus
+model: inherit
+quality_tier: reasoning_high
 triggers:
   - "flutter 개발"
   - "flutter 설계"
@@ -35,23 +36,25 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 ## 기술 스택
 
+> Tech stack registry: `.claude/registry/tech-stacks/flutter.yaml` (`flutter@recommended`). 숫자가 충돌하면 프로젝트의 `pubspec.yaml`/lockfile을 먼저 보존하고 레지스트리 migration gate를 적용한다.
+
 ### Core
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **언어** | Dart | 3.12+ |
-| **프레임워크** | Flutter | 3.44+ |
+| **언어** | Dart | 3.12.2 |
+| **프레임워크** | Flutter | 3.44.6 |
 | **호환 최소선** | 최신 패키지 세트 | Flutter 3.38.1+ / Dart 3.10+ |
-| **상태관리** | Riverpod + Generator | 3.3.1 / 4.0.3 |
-| **라우팅** | GoRouter + Builder | 17.2.3 / 4.3.0 |
+| **상태관리** | Riverpod + Generator | 3.3.2 / 4.0.4 |
+| **라우팅** | GoRouter + Builder | 17.3.0 / 4.3.0 |
 
 ### 데이터 레이어
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **네트워킹** | Dio + Retrofit | 5.9.2 / 4.9.2 |
-| **로컬 DB** | Drift + sqlite3 | 2.33.0 / 3.3.1 |
-| **Platform Channel** | Pigeon | 26.3.4 |
+| **네트워킹** | Dio + Retrofit | 5.10.0 / 4.9.2 |
+| **로컬 DB** | Drift + sqlite3 | 2.34.1 / 3.4.0 |
+| **Platform Channel** | Pigeon | 27.1.1 |
 
 ### 코드 생성
 
@@ -66,26 +69,26 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 | 영역 | 기술 | 버전 |
 |------|------|------|
 | **Flavor** | flutter_flavorizr | 2.5.0 |
-| **환경 변수** | envied | 1.3.5 |
+| **환경 변수** | envied | 1.3.8 |
 
 ### Firebase
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Core** | firebase_core | 4.9.0 |
-| **Auth** | firebase_auth | 6.5.1 |
-| **Firestore** | cloud_firestore | 6.4.1 |
-| **Messaging** | firebase_messaging | 16.2.2 |
-| **Crashlytics** | firebase_crashlytics | 5.2.2 |
-| **Analytics** | firebase_analytics | 12.4.1 |
-| **Storage** | firebase_storage | 13.4.1 |
-| **Remote Config** | firebase_remote_config | 6.5.1 |
+| **Core** | firebase_core | 4.11.0 |
+| **Auth** | firebase_auth | 6.5.4 |
+| **Firestore** | cloud_firestore | 6.6.0 |
+| **Messaging** | firebase_messaging | 16.4.1 |
+| **Crashlytics** | firebase_crashlytics | 5.2.4 |
+| **Analytics** | firebase_analytics | 12.4.3 |
+| **Storage** | firebase_storage | 13.4.3 |
+| **Remote Config** | firebase_remote_config | 6.5.3 |
 
 ### Supabase (Firebase 대안)
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Core** | supabase_flutter | 2.12.4 |
+| **Core** | supabase_flutter | 2.16.0 |
 | **Database** | PostgreSQL + RLS | - |
 | **Realtime** | Postgres Changes, Broadcast, Presence | - |
 | **Edge Functions** | Deno Runtime | - |
@@ -97,7 +100,7 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 | **반응형 UI** | MediaQuery.sizeOf + LayoutBuilder | Flutter SDK |
 | **디자인 스케일 보조** | flutter_screenutil (선택) | 5.9.3 |
 | **다국어** | easy_localization | 3.0.8 |
-| **컴포넌트 문서화** | Widgetbook | 3.23.0 |
+| **컴포넌트 문서화** | Widgetbook | 3.25.0 |
 | **위젯 프리뷰** | Flutter Widget Previewer (선택) | Flutter 3.35+ |
 
 ### 테스트 & 품질
@@ -106,15 +109,15 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 |------|------|------|
 | **Unit Test** | mocktail + checks (선택) | 1.0.5 / 0.3.1 |
 | **Golden Test** | Alchemist | 0.14.0 |
-| **E2E Test** | Patrol | 4.6.0 |
+| **E2E Test** | Patrol | 4.6.1 |
 | **로깅** | Talker | 5.1.17 |
 
 ### 보안
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Secure Storage** | flutter_secure_storage | 10.3.0 |
-| **생체 인증** | local_auth | 3.0.1 |
+| **Secure Storage** | flutter_secure_storage | 10.3.1 |
+| **생체 인증** | local_auth | 3.0.2 |
 | **Root 탐지** | flutter_jailbreak_detection | 1.10.0 |
 | **암호화** | encrypt | 5.0.3 |
 
@@ -122,7 +125,7 @@ Flutter 프로젝트의 설계부터 구현, 테스트까지 지원하는 종합
 
 | 영역 | 기술 | 버전 |
 |------|------|------|
-| **Deep Link** | app_links | 7.0.0 |
+| **Deep Link** | app_links | 7.2.1 |
 | **OTA Update** | Shorebird | - |
 | **자동 배포** | Fastlane | - |
 
@@ -357,7 +360,7 @@ Skills에서 참조하는 공통 레퍼런스 문서:
 
 | 문서 | 설명 |
 |------|------|
-| `_references/RECENT-FLUTTER-CHANGES.md` | Flutter 3.44 / Dart 3.12 및 최신 패키지 기준선 |
+| `_references/RECENT-FLUTTER-CHANGES.md` | `flutter@recommended`의 SDK·패키지·migration 기준선 |
 | `_references/QUALITY-CODE-PATTERN.md` | 공식 Flutter 고품질 코드 원칙 (Constraints, DevTools/MCP, MVVM, Repository, 테스트) |
 | `_references/ARCHITECTURE-PATTERN.md` | Clean Architecture 패턴 & 샘플 |
 | `_references/RIVERPOD-PATTERN.md` | Riverpod 3 패턴 & 샘플 |
@@ -515,7 +518,7 @@ Agent 실행:
 ## 주의사항
 
 1. **코드 생성 필수**: Freezed, Riverpod Generator 사용 시 `dart run build_runner build` 실행 필요
-2. **SDK 기준 확인**: 신규 프로젝트는 Flutter 3.44 / Dart 3.12를 기본값으로 두고, 기존 프로젝트는 `RECENT-FLUTTER-CHANGES.md`의 호환 최소선을 확인
+2. **SDK 기준 확인**: 신규 프로젝트는 `flutter@recommended`를 사용하고, 기존 프로젝트는 실제 `pubspec.yaml`/lockfile과 migration guide를 먼저 확인
 3. **Riverpod 3 문법**: `ref.watch`는 UI 리빌드, `ref.read`는 명령 실행, `ref.listen`은 side effect에 용도별 사용
 4. **GoRouter Builder**: Type-safe 라우팅을 위해 `@TypedGoRoute` 사용 권장
 5. **테스트 우선**: TDD 원칙에 따라 테스트 먼저 작성

@@ -1,138 +1,134 @@
 ---
 name: eval-harness
-description: "Eval 기반 개발 프레임워크 — pass/fail 기준 정의와 pass@k 품질 측정"
+description: "Evidence-backed Eval Harness v2. 행동/산출물 품질을 executable cases, deterministic checks, 독립 model/human critic, typed outcome, 회귀 결과로 검증한다. shell exit 0이나 자기평가만으로 성공 처리하지 않으며 UI/디자인은 Design Runtime v3 evidence contract를 사용한다."
 metadata:
   category: "standalone"
-  version: "1.0.0"
-  tags: "eval, testing, metrics, quality, verification"
+  version: "2.0.0"
+  tags: "eval, evidence, testing, grader, regression, quality, typed-outcome"
   author: "woogi"
 ---
 
-# Eval-Driven Development (EDD)
+# Eval Harness v2
 
-구현 전에 평가 기준을 정의하고, 객관적 메트릭으로 품질을 측정하는 프레임워크.
+Eval은 “좋아 보인다”는 의견을 자동화하는 도구가 아니다. 성공 기준을 관찰 가능한 evidence와 실행 가능한 grader로 바꾸고, 주관 판단은 evidence ID를 인용하는 독립 평가로 분리한다.
 
-## TDD와의 차이
+## Contract
 
-| | TDD | EDD |
+```text
+Objective + cases
+→ evidence packet
+→ deterministic grader
+→ independent model/human grader when needed
+→ hard gates + weighted result
+→ typed execution outcome
+→ regression record
+```
+
+다음은 성공 증거가 아니다.
+
+- process exit code 0만 존재.
+- 구현자의 “완료”, “프로덕션급” 주장.
+- 실행하지 않은 test/build/browser flow.
+- 실제 입력·출력·화면 없이 작성한 점수.
+- 개인정보, 브랜드 인지도, 작성자 prestige.
+
+## Eval package
+
+```text
+.claude/evals/<name>/
+├── eval.md
+├── grader.py | grader.sh
+├── cases/
+├── fixtures/          # optional deterministic inputs
+└── results/           # optional append-only run records
+```
+
+최소 요구:
+
+1. Case ID와 목적.
+2. 입력/환경 조건.
+3. expected invariant 또는 rubric axis.
+4. hard failure.
+5. 실제 실행 명령.
+6. machine-readable 결과.
+7. 재현에 필요한 seed/version/platform 정보.
+
+## Grader order
+
+1. **Deterministic** — schema, exact invariant, build/test, detector, browser/device assertion.
+2. **Model-based** — 의미/명료성/시각 품질처럼 deterministic하게 완결할 수 없는 축.
+3. **Human** — 사용자 취향, 승인, 법적/브랜드 판단처럼 권한자가 필요한 축.
+
+하위 단계가 상위 hard failure를 덮을 수 없다. 예를 들어 visual score가 높아도 기능 불능이나 접근성 hard gate는 fail이다.
+
+## Evidence packet
+
+`.claude/evals/presets/evaluation-result-schema.md`를 사용한다.
+
+- `included_signals`: 실제 파일, 명령, test log, browser/device flow, screenshot, 사용자 제공 artifact.
+- `excluded_signals`: identity, prestige, private data, unsupported context, scope 밖 정보.
+- `missing_evidence`: 채점에 필요하지만 확인하지 못한 것.
+- 모든 score/finding은 evidence ID를 인용한다.
+
+근거가 부족하면 점수를 추정해 pass시키지 않고 `needs_review`로 둔다.
+
+## Typed outcome integration
+
+Harness execution state는 `pending | running | succeeded | failed | blocked | needs_approval`이다. `succeeded`에는 다음이 필요하다.
+
+- 하나 이상의 success criterion.
+- 각 criterion의 passed check.
+- 하나 이상의 evidence item.
+- 재현 가능한 final outcome document.
+
+```bash
+python3 scripts/harness-execution.py validate --file <outcome.json> --final
+python3 scripts/harness-execution.py from-exit --exit-code 0 --outcome-file <outcome.json>
+```
+
+Outcome file이 없으면 exit 0도 실패다.
+
+## UI/Design
+
+UI는 실제 executable eval이 있다.
+
+```bash
+python3 .claude/evals/ui-design/grader.py self-test
+python3 .claude/evals/ui-design/grader.py grade \
+  --run <design-run.json> --evidence <evidence-manifest.json> \
+  --critic <critic-result.json> --detector <source-scan.json> \
+  --scores <scores.json> --output <evaluation-result.json>
+```
+
+`product`, `operational`, `brand`, `campaign`, `public-sector`, `editorial`은 서로 다른 weight를 사용한다. universal originality score는 사용하지 않는다. Web/Flutter platform evidence와 independent critic이 없으면 pass할 수 없다.
+
+## Other presets
+
+| Preset | Source | Status |
 |---|---|---|
-| 대상 | 코드 정확성 | 행동/결과 품질 |
-| 기준 | 유닛 테스트 | Eval 함수 (다양한 입력) |
-| 메트릭 | pass/fail | pass@k (k번 시도 중 성공률) |
-| 범위 | 함수/모듈 | 기능/워크플로우 전체 |
+| Evaluation result | `.claude/evals/presets/evaluation-result-schema.md` | standard schema |
+| UI/Design | `.claude/evals/ui-design/` | executable regression + evidence grader |
+| Korean typography | `.claude/evals/korean-typography/` | executable source validator |
+| API backend | `.claude/evals/presets/api-backend.md` | rubric; add project-specific executable cases |
+| Content | `.claude/evals/presets/content-quality.md` | rubric; add source/fact cases |
 
-## Eval 구조
+Markdown rubric만 있는 preset은 실행 완료 증거가 아니다. 프로젝트별 cases/grader를 추가하거나 상태를 `needs_review`로 둔다.
 
-```
-.claude/evals/
-├── {eval-name}/
-│   ├── eval.md           # Eval 정의 (기준, 입력, 기대 출력)
-│   ├── grader.sh         # 자동 채점 스크립트
-│   ├── cases/            # 테스트 케이스
-│   │   ├── case-1.json
-│   │   └── case-2.json
-│   └── results/          # 실행 결과
-│       └── {timestamp}.json
-```
+## Repeated-run metrics
 
-## Eval 유형
+`pass@k = 1 - C(n-c, k) / C(n, k)`는 stochastic generation을 동일 조건에서 여러 번 실행할 때만 사용한다. 한 번 실행한 deterministic build나 UI QA를 pass@k로 포장하지 않는다.
 
-### 1. Code-Based Grader (자동)
-```bash
-#!/bin/bash
-# grader.sh — 결과를 자동 채점
-INPUT="$1"
-OUTPUT="$2"
-# 조건 확인
-if jq -e '.status == "success"' "$OUTPUT" > /dev/null 2>&1; then
-  echo "PASS"
-else
-  echo "FAIL: status is not success"
-fi
-```
+기록에는 model/provider, prompt/skill version, seed 가능 여부, case set hash, 성공 수 `c`, 전체 시도 `n`, `k`를 남긴다. Sample이 작으면 과도한 readiness 결론을 내리지 않는다.
 
-### 2. Model-Based Grader (LLM 판단)
-```markdown
-# eval.md
-## 채점 기준
-- 응답이 한국어로 작성되었는가
-- 기술적으로 정확한가
-- 톤이 전문적인가
+## Workflow
 
-## 채점 방법
-Claude에게 결과와 기준을 제시하고 PASS/FAIL 판정 요청
-```
+1. 구현 전에 success criteria와 hard gates를 정한다.
+2. normal/edge/failure/adversarial cases를 작성한다.
+3. 실제 evidence source와 excluded signal을 정한다.
+4. deterministic grader를 먼저 작성·실행한다.
+5. 주관 축만 독립 model/human grader로 보완한다.
+6. `evaluation-result-v1`과 typed execution outcome을 남긴다.
+7. 실패 원인을 수정하고 동일 cases로 재실행한다.
+8. 안정된 eval을 CI/doctor/project pack에 연결한다.
 
-### 3. Human Grader (수동)
-결과를 사용자에게 보여주고 판정 요청.
-
-## pass@k 메트릭
-
-```
-pass@k = 1 - C(n-c, k) / C(n, k)
-```
-- n = 총 시도 횟수
-- c = 성공 횟수
-- k = 필요한 성공 횟수
-
-| pass@k | 의미 |
-|--------|------|
-| pass@1 > 90% | 프로덕션 준비 완료 |
-| pass@1 > 70% | 안정적이지만 개선 여지 |
-| pass@1 < 50% | 근본적 재설계 필요 |
-
-## 워크플로우
-
-1. **Eval 정의**: 기능 요구사항에서 평가 기준 도출
-2. **케이스 작성**: 다양한 입력 시나리오 (정상, 에지, 에러)
-3. **구현**: 코드 작성
-4. **근거 패킷 구성**: 실제 확인한 파일, 명령, 브라우저 플로우, 로그만 평가 근거로 분리
-5. **실행**: Eval 실행하여 pass@k 측정
-6. **채점**: base score와 deductions/bonus/hard failures를 분리해 기록
-7. **반복**: pass@k 목표 미달 시 구현 개선
-8. **회귀 방지**: CI에 Eval 통합
-
-## 사용 예시
-
-```bash
-# Eval 생성
-mkdir -p .claude/evals/auth-login
-# eval.md, grader.sh, cases/ 작성
-
-# Eval 실행 (수동)
-bash .claude/evals/auth-login/grader.sh input.json output.json
-
-# 결과 기록
-echo '{"timestamp":"...","pass":true,"notes":"..."}' >> .claude/evals/auth-login/results/latest.json
-```
-
-## 도메인별 Eval 프리셋
-
-사전 정의된 평가 루브릭을 사용하여 도메인별 품질을 측정:
-
-| 프리셋 | 파일 | 용도 |
-|--------|------|------|
-| Evaluation Result Schema | `.claude/evals/presets/evaluation-result-schema.md` | evidence packet, excluded signals, adjustments, hard failures 표준 결과 형식 |
-| UI/Design | `.claude/evals/presets/ui-design.md` | 4축 평가 (Design Quality, Originality, Craft, Functionality) |
-| Korean Typography | `.claude/evals/presets/korean-typography.md` | 4축 평가 (Korean Readability/Wrapping, Font Fit, Role Consistency, Craft) |
-| API Backend | `.claude/evals/presets/api-backend.md` | 4축 평가 (Correctness, Robustness, Security, Performance) |
-| Content | `.claude/evals/presets/content-quality.md` | 4축 평가 (Clarity, Completeness, Accuracy, Engagement) |
-
-프리셋은 `live-qa-agent`의 `eval_type` 파라미터와 연동됩니다.
-
-## 평가 결과 계약
-
-Model-based grader, human grader, 리뷰 합의 결과처럼 주관 판단이 섞이는 Eval은 `.claude/evals/presets/evaluation-result-schema.md`를 따른다.
-
-- 점수 전에 Evidence Packet을 만든다.
-- 점수에 쓰면 안 되는 정보는 `excluded_signals`에 적고 평가에서 제외한다.
-- 축별 점수는 `scores`에 기록하고, 감점/가점은 `adjustments`에 따로 둔다.
-- 보안 취약점, 핵심 플로우 불능, 치명적 사실 오류는 `hard_failures`로 둔다.
-- 개인정보와 시크릿은 원문을 남기지 않고 `redacted` 또는 범주명으로만 기록한다.
-
-## 기존 도구와 연동
-
-- `/verify`: 코드 품질 검증 (린트, 테스트)
-- `/tdd`: 단위 테스트 기반 개발
-- `live-qa-agent`: Playwright 기반 라이브 QA (eval 프리셋 사용)
-- **eval-harness**: 행동/결과 기반 검증 (보완적)
+같은 실패를 점수 조정으로 숨기거나 test fixture를 구현에 맞춰 약화하지 않는다.

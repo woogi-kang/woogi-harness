@@ -4,7 +4,8 @@ description: |
   자율 루프 모니터링 및 안전 관리 에이전트.
   교착 감지, 비용 추적, 에스컬레이션을 담당.
   "루프 모니터", "loop status", "교착", "stall" 요청에 반응.
-model: haiku
+model: inherit
+quality_tier: fast_scan
 tools: ["Read", "Bash", "Glob", "Grep"]
 ---
 

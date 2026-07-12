@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.project-pack.v1",
+  "type": "object",
+  "required": ["schema_version", "id", "paths"],
+  "properties": {
+    "schema_version": {"const": "harness.project-pack.v1"},
+    "id": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "paths": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "links": {"type": "object", "additionalProperties": {"type": "string"}},
+    "exclude": {"type": "array", "items": {"type": "string"}},
+    "settings_merges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["target", "format", "operation", "path", "match", "append_path", "value"],
+        "properties": {
+          "target": {"type": "string", "minLength": 1},
+          "format": {"const": "json"},
+          "operation": {"const": "append-if-missing"},
+          "path": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "match": {"type": "object"},
+          "append_path": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "value": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ Use this for implementation, review, redesign, and final QA. Slop is not just "u
 | Content slop | Generic verbs, fake metrics, unsupported claims | Copy self-audit |
 | Evidence slop | Fake dashboards, blobs, generic avatars, empty bento | Evidence dial + real assets |
 | Polish slop | Missing states, bad contrast, transition-all, tiny controls | Interface polish + detector |
+| Evaluation slop | Claims of quality without real screens, states, or independent review | Evidence manifest + critic + executable eval |
 
 ## Reflex Rejection
 
@@ -125,6 +126,9 @@ These are banned unless the brief explicitly earns them:
 - Give meaningful alt text for content images.
 - Invented brands in logo walls need simple marks, not plain text rows.
 - Do not invent customer logos, compliance claims, or investor logos.
+- Record route/screen, state, viewport, platform, command, and hash for every completion artifact.
+- A single best-looking screenshot cannot stand in for loading, empty, error, focus, overflow, or mobile evidence that is in scope.
+- The implementer cannot self-issue the final critic pass.
 
 ## Interaction States
 

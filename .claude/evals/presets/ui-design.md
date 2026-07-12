@@ -1,134 +1,84 @@
-# UI/Design Eval Preset
+# UI/Design Eval Preset v3
 
-Anthropic GAN-Loop 패턴 기반의 UI/디자인 평가 루브릭.
-`eval-harness` 스킬 및 `live-qa-agent`에서 `eval_type: ui` 시 사용.
+UI 평가는 취향 점수 하나로 통과시키지 않는다. `design-harness`의 `design-run-v3`, 해시된 evidence manifest, 기계적 source scan, 실제 화면/상태 증거, 독립 critic을 먼저 확인한 뒤 register별 축을 채점한다.
 
-## Evidence Packet
+실행 가능한 기준과 가중치는 `.claude/evals/ui-design/eval.md`와 `.claude/evals/ui-design/grader.py`가 source of truth다.
 
-채점 전에 `.claude/evals/presets/evaluation-result-schema.md`의 `evidence_packet`을 먼저 구성한다.
+## Evidence packet
 
-**포함할 근거**:
-- 실제 화면 스크린샷, 브라우저 플로우, 접근성 트리
-- 디자인 brief, 대상 사용자, 브랜드/제품 제약
-- 컴포넌트 상태, 반응형 viewport, 콘솔/네트워크 에러
-- 확인 가능한 레이아웃 깨짐, 대비, overflow, 상호작용 문제
+필수 근거:
 
-**점수에서 제외할 신호**:
-- 개인 취향, 유행 선호, 근거 없는 "고급스러움" 판단
-- 브랜드/회사 인지도
-- 스크린샷에 없는 화면이나 상태에 대한 추측
-- 기능 요구와 무관한 장식 선호
+- `design-run.json`: Design Read, register, 5 dials, project fingerprint, 대상 route/state/viewport.
+- `evidence-manifest.json`: baseline/result screenshot, source scan, accessibility 또는 Flutter test evidence.
+- `source-scan.json`: `design-slop-scan-v2` 결과.
+- `critic-result.json`: 구현자와 독립된 reviewer가 evidence ID를 인용한 결과.
+- register별 scores: 각 점수에 evidence ID와 rationale 포함.
 
-## 평가 축 (가중치)
+다음은 점수 근거가 아니다.
 
-### Design Quality (35%)
+- 개인 취향이나 유행 선호.
+- 브랜드·회사·작성자 인지도.
+- 실제 캡처되지 않은 화면/상태 추측.
+- “프로덕션급”, “고급스럽다”, “독창적이다” 같은 자기평가.
+- prompt 또는 구현 설명만 있고 artifact가 없는 주장.
 
-통합된 전체로 느껴지는가? 색상, 타이포그래피, 레이아웃이 일관된 무드를 만드는가?
+## Register별 평가 축
 
-| 점수 | 기준 |
-|------|------|
-| 9-10 | 전문 디자이너 수준의 일관성, 독자적 무드와 톤 |
-| 7-8 | 대부분 일관적, 사소한 불일치 1-2곳 |
-| 5-6 | 기본적 일관성은 있지만 "조립된" 느낌 |
-| 3-4 | 불일치가 눈에 띄고 산만함 |
-| 1-2 | 색상/폰트/레이아웃이 충돌, 디자인 시스템 부재 |
+### Product
 
-**체크리스트**:
-- [ ] 색상 팔레트가 3-5색 이내로 일관적인가
-- [ ] 타이포그래피 스케일이 체계적인가 (h1 > h2 > h3 > body)
-- [ ] 여백/패딩이 일관된 스케일을 따르는가 (4px/8px 기반)
-- [ ] 아이콘 스타일이 통일되어 있는가
-- [ ] 전체적으로 하나의 "무드"가 느껴지는가
+| Axis | Weight | 보는 것 |
+|---|---:|---|
+| Usability | 25% | 핵심 작업의 발견성, 순서, 피드백, 복구 |
+| State completeness | 20% | loading/empty/error/disabled/focus와 edge state |
+| Craft | 20% | 위계, spacing, contrast, responsive, component rigor |
+| Accessibility | 15% | keyboard, semantics, focus, contrast, reduced motion |
+| Evidence truth | 10% | 실제 데이터/컴포넌트/스크린샷, 허위 주장 부재 |
+| Distinction | 10% | 제품 맥락에 맞는 authored decision; novelty 자체가 목적은 아님 |
 
-### Originality (35%)
+### Operational
 
-사용자 정의 결정의 증거가 있는가? 템플릿/라이브러리 기본값/AI 생성 패턴인가?
+| Axis | Weight | 보는 것 |
+|---|---:|---|
+| Task efficiency | 25% | 반복 업무 속도, 비교, keyboard path, action proximity |
+| Density readability | 20% | 정보 밀도와 scanability의 균형 |
+| State completeness | 20% | 실패/빈 상태/권한/대량 처리/부분 성공 |
+| Craft | 15% | 정렬, 숫자, table/list overflow, token 일관성 |
+| Accessibility | 10% | keyboard, focus, semantics, contrast |
+| Evidence truth | 10% | 실제 data shape와 검증 가능한 상태 |
 
-| 점수 | 기준 |
-|------|------|
-| 9-10 | 독창적 레이아웃, 커스텀 그래픽, 독특한 인터랙션 |
-| 7-8 | 기본 컴포넌트를 창의적으로 조합, 커스텀 스타일링 |
-| 5-6 | shadcn/ui 기본값에 약간의 커스텀 (색상 변경 등) |
-| 3-4 | 전형적 AI 생성 패턴 (centered hero, card grid, gradient 헤더) |
-| 1-2 | 기본 템플릿과 구분 불가, 기본 shadcn/ui 그대로 |
+### Brand
 
-**AI 생성 패턴 레드 플래그**:
-- 중앙 정렬된 hero + 3열 카드 그리드
-- 보라-파랑 그라데이션 배경
-- "Get Started" CTA 버튼
-- 모든 섹션이 동일한 패딩/구조
-- 장식적이지만 기능 없는 요소
+| Axis | Weight | 보는 것 |
+|---|---:|---|
+| Register fit | 15% | audience, scene, brand promise와 시각 문법의 일치 |
+| Distinction | 25% | category reflex가 아닌 기억 가능한 authored stance |
+| Evidence truth | 20% | 실제/정당한 visual asset과 검증 가능한 claim |
+| Craft | 20% | typography, composition, color, responsive, motion 완성도 |
+| Accessibility | 10% | contrast, keyboard, semantics, reduced motion |
+| Narrative | 10% | fold/section 간 메시지 진행과 CTA 명확성 |
 
-### Craft (15%)
+`campaign`, `public-sector`, `editorial`은 실행 grader의 별도 가중치를 사용한다. 공공 surface에서 originality를 35%로 두거나 운영 화면에 brand-page novelty를 강요하지 않는다.
 
-기술적 실행 — 타이포그래피 계층, 간격 일관성, 색상 조화, 명암 비율.
+## Hard gates
 
-| 점수 | 기준 |
-|------|------|
-| 9-10 | 완벽한 정렬, 8px 그리드, WCAG AA 대비, 세련된 그림자/라운딩 |
-| 7-8 | 대부분 정확, 미세한 간격 불일치 1-2곳 |
-| 5-6 | 눈에 띄는 정렬 오류 2-3곳, 간격 체계 불명확 |
-| 3-4 | 간격/정렬이 체계 없음, 대비 부족 |
-| 1-2 | 기본적인 CSS 문제 (overflow, z-index, 깨진 레이아웃) |
+- 미해결 detector `hard-fail`.
+- 플랫폼 필수 evidence 누락.
+- 독립 critic 누락 또는 독립성 불명.
+- critic `fail`/`blocked`.
+- 어떤 축이든 5점 미만.
+- weighted score 7.0 미만.
+- project fingerprint/evidence hash drift.
+- repair 2회 초과.
 
-**체크리스트**:
-- [ ] 텍스트 대비비가 WCAG AA 충족 (4.5:1 이상)
-- [ ] 요소들이 그리드에 정렬되어 있는가
-- [ ] 반응형에서 레이아웃이 깨지지 않는가
-- [ ] 호버/포커스 상태가 정의되어 있는가
-- [ ] 로딩 상태가 있는가
+점수가 높아도 hard gate를 덮을 수 없다. 근거가 일부면 `needs_review`; 완료로 보고하지 않는다.
 
-### Functionality (15%)
+## 출력
 
-사용자가 인터페이스를 이해하고 주요 작업을 완료할 수 있는가?
+`.claude/evals/presets/evaluation-result-schema.md`의 `evaluation-result-v1`을 사용한다. `included_signals`에는 실제 파일/명령/스크린샷만 넣고, 각 축은 반드시 해당 evidence ID를 인용한다.
 
-| 점수 | 기준 |
-|------|------|
-| 9-10 | 모든 플로우 완벽, 에지 케이스 처리, 로딩/에러/빈 상태 |
-| 7-8 | 주요 플로우 작동, 사소한 UX 문제 (느린 피드백 등) |
-| 5-6 | 주요 플로우 작동하나 예외 처리 부족 |
-| 3-4 | 일부 핵심 기능 미작동 |
-| 1-2 | 주요 플로우 완료 불가 |
-
-**체크리스트**:
-- [ ] 주요 사용자 플로우를 끝까지 수행할 수 있는가
-- [ ] 폼 유효성 검사가 작동하는가
-- [ ] 에러 발생 시 사용자에게 피드백이 있는가
-- [ ] 빈 상태(empty state)가 의미 있는 메시지를 보여주는가
-- [ ] 네비게이션이 직관적인가
-
-## 합격 기준
-
-```
-가중 평균 = (DQ × 0.35) + (O × 0.35) + (C × 0.15) + (F × 0.15)
-
-PASS: 가중 평균 ≥ 7.0
-FAIL: 가중 평균 < 7.0
-FAIL: Design Quality < 5 (가중 평균 무관)
-FAIL: Originality < 5 (가중 평균 무관)
-FAIL: Functionality < 3 (사용 불가)
-```
-
-## 출력 형식
-
-자동 집계나 model-based grader 결과는 `.claude/evals/presets/evaluation-result-schema.md`의 JSON 구조를 함께 남긴다. 사람에게 보여주는 요약은 아래 Markdown 형식을 사용할 수 있다.
-
-```markdown
-## UI/Design Evaluation
-
-| Axis | Score | Weight | Weighted |
-|------|-------|--------|----------|
-| Design Quality | 8 | 35% | 2.80 |
-| Originality | 7 | 35% | 2.45 |
-| Craft | 8 | 15% | 1.20 |
-| Functionality | 9 | 15% | 1.35 |
-| **Total** | | | **7.80** |
-
-**Result**: PASS
-
-### Feedback
-- Design Quality: 색상 팔레트 일관적, 타이포 스케일 체계적
-- Originality: 카드 레이아웃이 다소 전형적이나 커스텀 인터랙션으로 보완
-- Craft: 모바일 뷰에서 패딩 불일치 1곳 (minor)
-- Functionality: 모든 주요 플로우 작동
+```bash
+python3 .claude/evals/ui-design/grader.py self-test
+python3 .claude/evals/ui-design/grader.py grade \
+  --run <run.json> --evidence <manifest.json> --critic <critic.json> \
+  --detector <source-scan.json> --scores <scores.json> --output <result.json>
 ```

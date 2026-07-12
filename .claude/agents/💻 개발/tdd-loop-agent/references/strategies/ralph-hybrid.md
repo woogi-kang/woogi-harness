@@ -8,7 +8,7 @@
 
 | Property | Value |
 |----------|-------|
-| Model | Opus |
+| Quality class | reasoning_high |
 | Verification | Test pass + Coverage threshold |
 | Max Iterations | 30 |
 | Target | 100% pass AND coverage >= target |

@@ -2,7 +2,8 @@
 name: figma-flutter-agent
 description: Figma MCP 통합 - Flutter 디자인-투-코드 전문 에이전트
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, AskUserQuestion, mcp__figma-dev-mode-mcp-server__get_design_context, mcp__figma-dev-mode-mcp-server__get_variable_defs, mcp__figma-dev-mode-mcp-server__get_screenshot, mcp__figma-dev-mode-mcp-server__get_metadata, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
-model: opus
+model: inherit
+quality_tier: reasoning_high
 skills: custom-figma-tokens, custom-figma-widgets
 ---
 

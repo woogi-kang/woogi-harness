@@ -8,6 +8,8 @@ metadata:
 ---
 # Service Layer Skill
 
+> Tech stack registry: `.claude/registry/tech-stacks/python-fastapi.yaml` (`python-fastapi@recommended`). Pydantic examples use the v2 model contract.
+
 Clean Architecture의 Application Service 레이어 패턴을 구현합니다.
 
 ## Triggers
@@ -300,7 +302,7 @@ class UserService(ApplicationService[UserEntity, int]):
 
 ```python
 # app/application/dto/user.py
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserCreateDTO(BaseModel):
@@ -321,13 +323,13 @@ class UserUpdateDTO(BaseModel):
 class UserResponseDTO(BaseModel):
     """DTO for user response."""
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: str
     name: str
     is_active: bool
 
-    class Config:
-        from_attributes = True
 ```
 
 ### Service with Unit of Work

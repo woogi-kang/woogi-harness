@@ -1,5 +1,8 @@
 # Tightened Slide Layouts
 
+Any new generative raster assigned to these slots must use repository
+`image-prompt` → upstream validator → Codex `$imagegen` → `gpt-image-2`.
+
 This file describes the registered Tightened Slide layouts and when to use them. Body slides must use `S01` to `S22`. Do not invent new page structures.
 
 ## Baseline

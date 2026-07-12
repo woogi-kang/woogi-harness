@@ -224,7 +224,7 @@ GoRoute(
   routes: [
     GoRoute(
       path: 'user/:id',
-      builder: (context, state) => UserScreen(id: state.params['id']!),
+      builder: (context, state) => UserScreen(id: state.pathParameters['id']!),
     ),
   ],
 )
@@ -244,13 +244,13 @@ src/app/
 
 ```dart
 // Flutter
-final id = GoRouterState.of(context).params['id'];
+final id = GoRouterState.of(context).pathParameters['id'];
 ```
 
 ```typescript
 // Next.js
-export default function UserPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 }
 ```
 
@@ -258,7 +258,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
 ```dart
 // Flutter
-final query = GoRouterState.of(context).queryParams['search'];
+final query = GoRouterState.of(context).uri.queryParameters['search'];
 ```
 
 ```typescript
@@ -308,8 +308,9 @@ export const userRepository = {
 // app/user/[id]/page.tsx
 import { userRepository } from '@/lib/repositories/user.repository'
 
-export default async function UserPage({ params }: { params: { id: string } }) {
-  const user = await userRepository.getUser(params.id)
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const user = await userRepository.getUser(id)
   return <UserProfile user={user} />
 }
 ```

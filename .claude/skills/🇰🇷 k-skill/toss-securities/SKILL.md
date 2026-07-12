@@ -32,7 +32,7 @@ metadata:
 - macOS + Homebrew
 - `tossctl` 설치
 - `tossctl auth login` 으로 브라우저 세션 확보
-- Node.js 18+
+- Node.js 24.18.0 LTS 권장 (`.claude/registry/tech-stacks/web-nextjs.yaml`; `tossctl`의 더 엄격한 `engines`가 있으면 이를 우선)
 
 ## Workflow
 

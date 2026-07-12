@@ -513,7 +513,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.18.0
           cache: 'npm'
 
       - name: Install dependencies
@@ -1130,4 +1130,3 @@ e2e/**/*.png-snapshots/
 
 - `_references/TEST-PATTERN.md`
 - `_references/COMPONENT-PATTERN.md`
-

@@ -30,7 +30,7 @@ metadata:
 
 ## Prerequisites
 
-- 공통 변환 경로: Node.js 18+
+- 공통 변환 경로: Node.js 24.18.0 LTS 권장 (`.claude/registry/tech-stacks/web-nextjs.yaml`; 변환 도구의 더 엄격한 `engines`가 있으면 이를 우선)
 - 직접 제어 경로: Windows + 한글(HWP) 프로그램 설치 + Python 3.7+
 - 출력 경로 쓰기 권한
 

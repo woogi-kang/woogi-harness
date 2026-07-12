@@ -1,7 +1,8 @@
 ---
 name: shareholder-meeting
 description: 주주총회 소집, 진행, 의사록 작성 지원
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "주주총회"
   - "주총"

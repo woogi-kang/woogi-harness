@@ -30,6 +30,7 @@ local.json
 
 # Orchestration (ephemeral session state)
 .orchestration/
+.claude/sync-manifests/
 
 # Build outputs
 dist/

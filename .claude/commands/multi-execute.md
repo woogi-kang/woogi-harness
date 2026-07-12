@@ -2,6 +2,8 @@
 name: multi-execute
 description: 멀티 LLM 협업 실행 — 계획 기반 구현 with 프로토타입 정제
 allowed-tools: ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "AskUserQuestion", "Agent"]
+model: inherit
+quality_tier: implementation
 ---
 
 $ARGUMENTS
@@ -25,14 +27,18 @@ $ARGUMENTS
 2. 기존 패턴 확인
 
 ### Phase 3: 프로토타입 획득 (선택적)
-복잡한 작업의 경우 외부 LLM에 초안 요청:
+복잡한 작업은 project profile에 등록된 provider의 `implementation` quality
+binding과 새 context를 사용합니다. repo context를 넘기기 전에는
+`context-pack-gate`를 통과해야 합니다.
 
 ```bash
-# Codex에 프로토타입 요청
-echo "{구현 프롬프트}" | codex -q --model codex-mini 2>/dev/null
+# profile에 선언된 provider binding 확인
+python3 scripts/harness-provider.py --provider "${HARNESS_PROVIDER}" --quality-tier implementation
 ```
 
-**주의**: 외부 LLM 출력은 항상 "dirty prototype"으로 취급.
+binding을 실행할 host-native substrate가 없으면 model/provider를 임의로 고르지
+않고 typed `blocked`로 반환합니다. 외부 worker 출력은 항상 "dirty prototype"으로
+취급합니다.
 
 ### Phase 4: 구현 및 정제
 Claude가 직접 구현하거나 프로토타입을 정제:

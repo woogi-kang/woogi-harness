@@ -569,9 +569,10 @@ def create_statistics_slide(prs, title, metrics):
 □ 10장 이상 덱에서 최소 5개 layout family를 사용했는지 확인
 □ 같은 layout family가 연속 반복되면 pattern_repeat_reason이 있는지 확인
 □ 챕터별 실제 예시, 전후 비교, 진단표, 실습 중 하나 이상이 포함됐는지 확인
-□ 인포그래픽은 imagegen 생성 asset인지 확인
+□ 생성형 인포그래픽은 image-prompt → validator → Codex `image_gen__imagegen` trusted-host asset인지 확인
 □ 인포그래픽/이미지 사용 목적과 asset manifest 확인
-□ imagegen asset prompt에 텍스트 금지와 한국어 텍스트용 여백 조건이 포함됐는지 확인
+□ 생성 asset manifest에 image-prompt compiler, upstream commit, prompt record와 `required_model: gpt-image-2`, `model_binding: trusted-host-fixed`, `local_model_verification: unavailable`, `host_reported_model: null`, `generation_assurance: generated_under_trusted_host_contract`가 있는지 확인 (`model` 필드 금지)
+□ 생성 raster 위에 native text/logo overlay가 추가되지 않았는지 확인
 □ 정확한 표, 수치, 단계명, 한국어 라벨은 이미지가 아니라 편집 가능한 PPTX 요소인지 확인
 □ 한국어 word breaking 확인 (`break-all`, 조사/어미 고립, 어색한 직역투 없음)
 □ 색상 코드 '#' 제거
@@ -609,9 +610,9 @@ def create_statistics_slide(prs, title, metrics):
 ```json
 {
   "dependencies": {
-    "pptxgenjs": "^3.12.0",
-    "playwright": "^1.40.0",
-    "sharp": "^0.33.0"
+    "pptxgenjs": "^4.0.1",
+    "playwright": "^1.61.1",
+    "sharp": "^0.35.3"
   }
 }
 ```
@@ -619,9 +620,9 @@ def create_statistics_slide(prs, title, metrics):
 ### Python
 
 ```txt
-python-pptx>=0.6.21
-Pillow>=10.0.0
-playwright>=1.40.0
+python-pptx>=1.0.2,<2
+Pillow>=12.3.0,<13
+playwright>=1.61.0,<2
 defusedxml>=0.7.1
 ```
 
@@ -657,7 +658,7 @@ apt-get install poppler-utils
 
 - [x] 슬라이드 크기 검증 통과
 - [x] 오버플로우 검증 통과
-- [x] 인포그래픽 imagegen asset 검토 완료
+- [x] 인포그래픽 image-prompt/Codex asset 검토 완료
 - [x] 인포그래픽/이미지 적합성 검토 완료
 - [x] 한국어 word breaking 검증 통과
 - [x] PPTX/PDF slide/page PNG 확대 검수 완료

@@ -1,7 +1,8 @@
 ---
 name: financial-statement
 description: AI 기반 재무제표 자동 생성 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "재무제표"
   - "손익계산서"

@@ -15,6 +15,8 @@ blocks/
   footer/
   transition/
   portfolio/
+  operational/
+  states/
 ```
 
 ## Required Frontmatter
@@ -54,3 +56,5 @@ stack: ["react", "next", "tailwind"]
 - Every block must pass `preflight.md`.
 - Blocks depending on an official design system live under `<category>/<name>--<system>.md`.
 - Do not add a block that only changes decoration. Blocks must solve layout, comprehension, evidence, or interaction.
+- Every active block must name its platform in `stack` and its evidence requirements. Web snippets are not silently translated into Flutter, or vice versa.
+- Reviewed starting points currently include `hero/product-proof-hero.md`, `operational/review-queue.md`, and `states/recoverable-state-panel-flutter.md`.

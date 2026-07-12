@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-capture-attestation-v1.json",
+  "title": "Externally Signed Canonical Capture Attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "payload", "signature"],
+  "properties": {
+    "schema": {"const": "design-capture-attestation-v1"},
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "run_id", "issuer", "execution_id", "authority_id", "receipt_sha256", "adapter_sha256", "spec_sha256", "index_sha256", "source_fingerprint_digest", "evidence_projection_sha256", "issued_at"],
+      "properties": {
+        "schema": {"const": "design-capture-attestation-payload-v1"},
+        "run_id": {"type": "string", "minLength": 6},
+        "issuer": {"type": "string", "minLength": 3},
+        "execution_id": {"type": "string", "minLength": 6},
+        "authority_id": {"type": "string", "minLength": 3},
+        "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "adapter_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "spec_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "index_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_fingerprint_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidence_projection_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "issued_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "signature": {"type": "string", "minLength": 16}
+  }
+}

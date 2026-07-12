@@ -33,14 +33,14 @@ FastAPI 프로젝트의 배포 패턴 가이드입니다.
 
 ```dockerfile
 # Stage 1: Build
-FROM python:3.12-slim as builder
+FROM python:3.14-slim AS builder
 WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Stage 2: Runtime
-FROM python:3.12-slim as runtime
+FROM python:3.14-slim AS runtime
 WORKDIR /app
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 COPY --from=builder /app/.venv /app/.venv
@@ -56,7 +56,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 | Practice | Implementation |
 |----------|----------------|
 | Non-root user | `USER appuser` |
-| Minimal base image | `python:3.12-slim` |
+| Minimal base image | `python:3.14-slim` for new services; pin a digest in production |
 | No secrets in image | Use environment variables |
 | Read-only filesystem | `readOnlyRootFilesystem: true` |
 | Health checks | `HEALTHCHECK` instruction |

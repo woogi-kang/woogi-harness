@@ -2,6 +2,8 @@
 
 FastAPI 프로젝트의 인증/인가 패턴 가이드입니다.
 
+> Tech stack registry: `.claude/registry/tech-stacks/python-fastapi.yaml`. 신규 해시는 `pwdlib[argon2]`로 생성하며 Passlib 예제는 기본 경로로 제공하지 않습니다.
+
 ## Authentication Flow
 
 ```
@@ -60,21 +62,18 @@ FastAPI 프로젝트의 인증/인가 패턴 가이드입니다.
 
 ```python
 # app/infrastructure/security/password.py
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
-# Argon2 is preferred, bcrypt as fallback
-pwd_context = CryptContext(
-    schemes=["argon2", "bcrypt"],
-    deprecated="auto",
-)
+# FastAPI's maintained default: pwdlib with Argon2
+password_hash = PasswordHash.recommended()
 
 def hash_password(password: str) -> str:
     """Hash password with Argon2."""
-    return pwd_context.hash(password)
+    return password_hash.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify password against hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    return password_hash.verify(plain_password, hashed_password)
 ```
 
 ### 2. JWT Configuration

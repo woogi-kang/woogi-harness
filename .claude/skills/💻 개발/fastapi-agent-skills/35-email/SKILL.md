@@ -777,10 +777,10 @@ class Settings(BaseSettings):
 # Add to pyproject.toml
 dependencies = [
     # ... existing ...
-    "aiosmtplib>=3.0.0",      # Async SMTP
-    "resend>=2.0.0",           # Resend API
-    "sendgrid>=6.11.0",        # SendGrid API
-    "jinja2>=3.1.0",           # Template rendering
+    "aiosmtplib>=5.1.2,<6",    # Async SMTP
+    "resend>=2.32.2,<3",       # Resend API
+    "sendgrid>=6.12.5,<7",     # SendGrid API
+    "jinja2>=3.1.6,<4",        # Template rendering
 ]
 ```
 

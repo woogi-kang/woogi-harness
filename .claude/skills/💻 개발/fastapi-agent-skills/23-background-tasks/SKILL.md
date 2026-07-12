@@ -569,7 +569,7 @@ arq app.infrastructure.tasks.arq_worker.WorkerSettings
 |----------|-------------|
 | Simple, quick tasks | FastAPI BackgroundTasks |
 | Production workloads | Celery |
-| Async-native, Python 3.11+ | ARQ |
+| Async-native, Python 3.14 신규 기준 | ARQ 0.28.0 |
 | Scheduled tasks | Celery Beat / ARQ Cron |
 | Task monitoring | Celery Flower |
 

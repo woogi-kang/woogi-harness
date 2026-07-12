@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claude-craft.local/schemas/design-run-v3.json",
+  "title": "Claude Craft Design Runtime v3 Run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "run_id",
+    "created_at",
+    "project_root",
+    "implementation_actor_id",
+    "mode",
+    "surface",
+    "register",
+    "platform",
+    "design_read",
+    "dials",
+    "slop_risks",
+    "design_read_fingerprint",
+    "project_fingerprint",
+    "capture_receipts",
+    "capture_attestation",
+    "capture_attestation_sha256",
+    "trust_policy",
+    "validation",
+    "repair_policy",
+    "repair_history",
+    "status"
+  ],
+  "properties": {
+    "schema": { "const": "design-run-v3" },
+    "run_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{5,79}$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "project_root": { "type": "string", "minLength": 1 },
+    "implementation_actor_id": { "type": "string", "minLength": 3 },
+    "mode": {
+      "enum": ["shape", "reference", "measure", "craft", "audit", "polish", "redesign", "typeset", "colorize", "animate", "harden"]
+    },
+    "surface": { "type": "string", "minLength": 1 },
+    "register": {
+      "enum": ["product", "brand", "operational", "editorial", "public-sector", "campaign", "design-system", "asset"]
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "adapter", "detected_from"],
+      "properties": {
+        "kind": { "enum": ["web", "flutter", "native", "document", "unknown"] },
+        "adapter": { "type": "string", "minLength": 1 },
+        "detected_from": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "design_read": { "type": "string", "minLength": 20 },
+    "audience": { "type": "string" },
+    "scene": { "type": "string" },
+    "visual_stance": { "type": "string" },
+    "anti_reference": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "dials": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["distinction", "motion", "density", "evidence", "systemness"],
+      "properties": {
+        "distinction": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "motion": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "density": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "evidence": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "systemness": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "slop_risks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 }, "uniqueItems": true },
+    "routes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "states": {
+      "type": "array",
+      "items": { "enum": ["default", "loading", "empty", "error", "disabled", "focus", "success", "overflow", "offline"] },
+      "uniqueItems": true
+    },
+    "viewports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "width", "height"],
+        "properties": {
+          "name": { "type": "string" },
+          "width": { "type": "integer", "minimum": 240 },
+          "height": { "type": "integer", "minimum": 240 },
+          "device_scale_factor": { "type": "number", "exclusiveMinimum": 0 }
+        }
+      }
+    },
+    "project_fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "files", "candidate_count", "truncated", "stack_markers"],
+      "properties": {
+        "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string" },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        },
+        "candidate_count": { "type": "integer", "minimum": 1 },
+        "truncated": { "const": false },
+        "stack_markers": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "existing_systems": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "design_read_fingerprint": {
+      "$ref": "#/$defs/fingerprint"
+    },
+    "capture_receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["schema", "run_id", "nonce", "adapter", "adapter_sha256", "spec", "spec_sha256", "index", "index_sha256", "source_fingerprint_digest", "evidence_projection_sha256", "captured_at", "receipt_sha256"],
+        "properties": {
+          "schema": {"const": "design-capture-receipt-v1"},
+          "run_id": {"type": "string", "minLength": 6},
+          "nonce": {"type": "string", "pattern": "^[a-f0-9]{48}$"},
+          "adapter": {"type": "string", "minLength": 1},
+          "adapter_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "spec": {"type": "string", "minLength": 1},
+          "spec_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "index": {"type": "string", "minLength": 1},
+          "index_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "source_fingerprint_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "evidence_projection_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "captured_at": {"type": "string", "format": "date-time"},
+          "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "capture_attestation": {"type": "string"},
+    "capture_attestation_sha256": {"type": "string"},
+    "review_packet": {"type": "string"},
+    "review_packet_sha256": {"type": "string"},
+    "critic_attestation": {"type": "string"},
+    "trust_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critic_attestation", "public_key", "public_key_sha256", "authority_id", "trust_store", "trust_store_sha256"],
+      "properties": {
+        "critic_attestation": {"const": "ed25519-detached-v1"},
+        "public_key": {"type": "string"},
+        "public_key_sha256": {"type": "string"},
+        "authority_id": {"type": "string"},
+        "trust_store": {"type": "string"},
+        "trust_store_sha256": {"type": "string"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_scan", "visual_evidence", "state_coverage", "accessibility", "independent_critic", "evaluation"],
+      "properties": {
+        "source_scan": { "type": "boolean" },
+        "visual_evidence": { "type": "boolean" },
+        "state_coverage": { "type": "boolean" },
+        "accessibility": { "type": "boolean" },
+        "independent_critic": { "type": "boolean" },
+        "evaluation": { "type": "boolean" }
+      }
+    },
+    "repair_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_rounds", "same_failure_limit", "critic_must_be_independent"],
+      "properties": {
+        "max_rounds": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "same_failure_limit": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "critic_must_be_independent": { "const": true }
+      }
+    },
+    "repair_history": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["round", "previous_record_sha256", "record_sha256"],
+        "properties": {
+          "round": {"type": "integer", "minimum": 1, "maximum": 2},
+          "previous_record_sha256": {"type": "string"},
+          "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "status": { "enum": ["draft", "running", "needs_evidence", "needs_review", "ready_for_finalize", "ready_for_external_promotion", "passed", "failed", "blocked"] },
+    "evidence_manifest": { "type": "string" },
+    "critic_result": { "type": "string" },
+    "final_evaluation": { "type": "string" },
+    "finalized_at": { "type": "string", "format": "date-time" },
+    "waivers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate", "reason", "approved_by", "approval_id", "approved_at", "scope_sha256"],
+        "properties": {
+          "gate": { "type": "string" },
+          "reason": { "type": "string", "minLength": 10 },
+          "approved_by": { "type": "string", "minLength": 1 },
+          "approval_id": { "type": "string", "minLength": 1 },
+          "approved_at": { "type": "string", "format": "date-time" },
+          "scope_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "files", "candidate_count", "truncated", "stack_markers"],
+      "properties": {
+        "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": {"type": "string"},
+              "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            }
+          }
+        },
+        "candidate_count": {"type": "integer", "minimum": 1},
+        "truncated": {"const": false},
+        "stack_markers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "existing_systems": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    }
+  }
+}

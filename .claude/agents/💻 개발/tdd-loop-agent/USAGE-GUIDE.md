@@ -255,7 +255,7 @@ flutter clean && flutter pub get
 ## 지원 프레임워크
 
 현재 지원:
-- **Flutter** (3.24+)
+- **Flutter** (new-project baseline 3.44.6; existing projects follow their checked-in constraint)
 
 다른 프레임워크 추가 시 `frameworks/{name}/config.md` 생성
 

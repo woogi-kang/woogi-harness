@@ -1,7 +1,8 @@
 ---
 name: regulatory-calendar
 description: 등기/세무/규정 기한 관리 및 알림
-model: haiku
+model: inherit
+quality_tier: fast_scan
 triggers:
   - "기한"
   - "등기기한"

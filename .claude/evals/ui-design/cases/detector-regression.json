@@ -1,0 +1,78 @@
+{
+  "schema": "design-slop-detector-cases-v1",
+  "cases": [
+    {
+      "id": "clean-operational-list",
+      "extension": ".tsx",
+      "source": "export function Queue({ rows }) { return <main><h1>Review queue</h1><table><thead><tr><th>Owner</th><th>Status</th></tr></thead><tbody>{rows.map((row) => <tr key={row.id}><td>{row.owner}</td><td>{row.status}</td></tr>)}</tbody></table></main> }",
+      "expected_ids": [],
+      "exact": true
+    },
+    {
+      "id": "hard-lorem-placeholder",
+      "extension": ".html",
+      "source": "<section><h2>Lorem ipsum</h2><p>dolor sit amet</p></section>",
+      "expected_ids": ["lorem"]
+    },
+    {
+      "id": "purple-gradient-reflex",
+      "extension": ".tsx",
+      "source": "export const Hero = () => <section className=\"bg-gradient-to-r from-purple-600 to-blue-500\"><h1>AI workspace</h1></section>",
+      "expected_ids": ["ai-gradient"]
+    },
+    {
+      "id": "fake-evidence",
+      "extension": ".md",
+      "source": "Use a fake dashboard made from rectangles as the hero screenshot.",
+      "expected_ids": ["fake-product-ui"]
+    },
+    {
+      "id": "default-shadcn-card",
+      "extension": ".tsx",
+      "source": "<div className=\"rounded-lg border bg-card text-card-foreground shadow-sm\">Analytics</div>",
+      "expected_ids": ["default-shadcn-card"]
+    },
+    {
+      "id": "generic-copy-and-cta",
+      "extension": ".tsx",
+      "source": "<section><h1>Elevate your next-gen workflow</h1><button>Get Started</button></section>",
+      "expected_ids": ["cliche-copy", "generic-cta"]
+    },
+    {
+      "id": "unsafe-motion",
+      "extension": ".css",
+      "source": ".card { transition: all 200ms; will-change: all; }",
+      "expected_ids": ["transition-all", "will-change-all"]
+    },
+    {
+      "id": "flutter-gradient-reflex",
+      "extension": ".dart",
+      "source": "final decoration = BoxDecoration(gradient: LinearGradient(\n  colors: [Colors.deepPurple, Colors.blue],\n));",
+      "expected_ids": ["flutter-ai-gradient"]
+    },
+    {
+      "id": "flutter-glass-surface",
+      "extension": ".dart",
+      "source": "Widget build(BuildContext context) => BackdropFilter(filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), child: content);",
+      "expected_ids": ["flutter-backdrop-filter"]
+    },
+    {
+      "id": "default-ai-landing-composition",
+      "extension": ".mdx",
+      "source": "<Badge>New</Badge>\n<button>Start Now</button>\n{/* three equal cards */}\n<div className=\"grid grid-cols-3\">...</div>",
+      "expected_ids": ["generic-cta", "default-ai-landing-structure"]
+    },
+    {
+      "id": "unsupported-metric",
+      "extension": ".tsx",
+      "source": "<strong>99.99%</strong><span>uptime</span>",
+      "expected_ids": ["unsupported-perfect-metric"]
+    },
+    {
+      "id": "placeholder-label",
+      "extension": ".tsx",
+      "source": "<input placeholder=\"Work email\" />",
+      "expected_ids": ["placeholder-label"]
+    }
+  ]
+}

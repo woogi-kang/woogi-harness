@@ -2,14 +2,16 @@
 name: figma-to-nextjs-ralph-pure
 description: Pure Ralph Wiggum approach for Figma to Next.js conversion. Unlimited iterations with promise-based exit. Maximum autonomy through self-referential file-based learning.
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, mcp__figma-desktop__get_design_context, mcp__figma-desktop__get_variable_defs, mcp__figma-desktop__get_screenshot, mcp__figma-desktop__get_metadata, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_navigate, mcp__playwright__browser_click
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Next.js Pure Ralph Converter
 
-> **Version**: 3.1.0 | **Type**: Pure Ralph | **Target**: Next.js 15+ App Router
+> **Version**: 3.2.0 | **Type**: Pure Ralph | **Target**: Next.js 16.2.10 App Router
 > **Target Accuracy**: 99%+ through Unlimited Iteration
 > **Method**: Pure Self-Referential Loop (No Score Threshold)
+> **Tech stack registry**: `.claude/registry/tech-stacks/web-nextjs.yaml` (existing projects keep their checked-in constraints until an explicit migration)
 
 ---
 
@@ -248,7 +250,7 @@ Pure Ralph uses simple, human-readable files instead of JSON state.
 - Frame: [FRAME_NAME]
 
 ### Output Requirements
-- Next.js 15+ App Router
+- Next.js 16.2.10 App Router for new projects; preserve existing project constraints for in-place work
 - Tailwind CSS 4.x
 - shadcn/ui components where applicable
 - All assets downloaded from Figma (no icon libraries)

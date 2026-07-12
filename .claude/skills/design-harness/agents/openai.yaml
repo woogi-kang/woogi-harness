@@ -1,8 +1,8 @@
 interface:
   display_name: "Design Harness"
-  short_description: "Modern UI/UX design and anti-slop QA"
+  short_description: "Evidence-backed Web/Flutter design runtime and anti-slop QA"
   brand_color: "#0F766E"
-  default_prompt: "Use $design-harness to redesign this interface with a clear register, anti-slop preflight, and responsive QA."
+  default_prompt: "Use $design-harness to create a Design Runtime v3 contract, preserve the detected project system, implement or audit the requested surface, capture route/state/viewport evidence, run anti-slop checks, and require authenticated external capture plus independent critic attestations. Report local ready_for_external_promotion; only an authenticated external provider/orchestrator may promote to passed."
 
 policy:
   allow_implicit_invocation: true

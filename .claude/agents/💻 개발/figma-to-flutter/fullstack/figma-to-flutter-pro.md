@@ -1,15 +1,17 @@
 ---
 name: figma-to-flutter-pro
-description: Converts Figma designs to production-ready Flutter 3.24+ widgets using parallel dual-agent verification, achieving 95%+ pixel-perfect accuracy with golden tests and automated optimization
+description: Converts Figma designs to production-ready Flutter 3.44.6 widgets using parallel dual-agent verification, achieving 95%+ pixel-perfect accuracy with golden tests and automated optimization
 tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task, mcp__figma__get_design_context, mcp__figma__get_variable_defs, mcp__figma__get_screenshot, mcp__figma__get_metadata, mcp__figma__get_code_connect_map, mcp__figma__add_code_connect_map, mcp__figma__create_design_system_rules, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
-model: opus
+model: inherit
+quality_tier: reasoning_high
 ---
 
 # Figma → Flutter Pro Agent
 
-> **Version**: 2.1.0 | **Type**: Fullstack | **Target**: Flutter 3.24+ / Dart 3.5+
+> **Version**: 2.2.0 | **Type**: Fullstack | **Target**: Flutter 3.44.6 / Dart 3.12.2
 > **Target Accuracy**: 95%+ with Parallel Verification Loop
 > Skills Integration + Automation + Template System + Parallel Verification
+> **Tech stack registry**: `.claude/registry/tech-stacks/flutter.yaml` (existing projects keep their checked-in constraint until an explicit migration)
 
 ---
 
@@ -17,7 +19,7 @@ model: opus
 
 | Feature | Modular | PRO |
 |---------|---------|-----|
-| Model | Sonnet | Opus |
+| Quality class | implementation | reasoning_high |
 | Verification | Single Agent | Dual Agent (Parallel) |
 | Iterations | 5 max | 5 × 2 agents |
 | Strategy | Standard only | Conservative + Experimental |
@@ -288,7 +290,7 @@ final riverpodDocs = await mcp__context7__get_library_docs(
 
 ---
 
-## Dart 3.5+ Null Safety
+## Dart 3.12 Null Safety
 
 **Purpose**: Ensure all generated code follows Dart null safety
 
@@ -320,7 +322,7 @@ late final TextEditingController _controller;
 Object value;
 ```
 
-### Pattern Matching (Dart 3.5+)
+### Pattern Matching (Dart 3.12)
 
 ```dart
 // ✅ CORRECT: Use switch expressions
@@ -349,7 +351,8 @@ agents:
   - id: agent_a
     name: Conservative
     strategy: standard_widgets
-    model: opus
+    model: inherit
+    quality_tier: reasoning_high
     temperature: 0.3
     focus:
       - Use standard Flutter widgets
@@ -363,7 +366,8 @@ agents:
   - id: agent_b
     name: Experimental
     strategy: custom_painters
-    model: opus
+    model: inherit
+    quality_tier: reasoning_high
     temperature: 0.7
     focus:
       - Use CustomPainter for complex shapes
@@ -820,10 +824,10 @@ assets/
 
 - Agent Version: 2.1.0
 - Figma MCP API: 2025.1
-- Flutter Target: 3.24+
-- Dart Target: 3.5+
-- Riverpod: 3.x (optional)
-- go_router: 14.x (optional)
+- Flutter Target: 3.44.6 for new projects; existing constraint for in-place work
+- Dart Target: 3.12.2 for new projects; existing constraint for in-place work
+- Riverpod: 3.3.2 (optional)
+- go_router: 17.3.0 (optional)
 
 ---
 

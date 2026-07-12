@@ -29,13 +29,13 @@ Resend와 React Email을 사용하여 이메일을 발송합니다.
 
 ```bash
 # Resend SDK (2024.12 기준 권장 버전)
-npm install resend@^4.0.1
+npm install resend@^6.17.2
 
 # React Email 컴포넌트
-npm install @react-email/components@^0.0.28
+npm install @react-email/components@^1.0.12
 
 # 개발 도구 (이메일 미리보기)
-npm install -D react-email@^3.0.4
+npm install -D react-email@^6.7.0
 ```
 
 ---
@@ -727,4 +727,3 @@ const resetUrl = `${baseUrl}/reset/${token}?expires=${expiresAt}`;
 
 - `_references/SERVER-ACTION-PATTERN.md`
 - `_references/TEST-PATTERN.md`
-

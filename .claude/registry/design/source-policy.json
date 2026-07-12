@@ -1,0 +1,5 @@
+{
+  "schema": "design-source-policy-v1",
+  "extensions": [".html", ".css", ".scss", ".sass", ".less", ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".vue", ".svelte", ".astro", ".md", ".mdx", ".dart"],
+  "skip_directories": [".git", ".agents", ".claude", ".codex", ".cursor", ".dart_tool", ".design-runs", ".gemini", ".github", ".next", ".opencode", ".turbo", ".venv", ".vercel", "__pycache__", "build", "coverage", "dist", "node_modules"]
+}

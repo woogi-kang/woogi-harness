@@ -1,0 +1,54 @@
+{
+  "schema_version": "harness.projects.v1",
+  "projects": [
+    {
+      "id": "memoriz",
+      "path": "/Users/woogi/Development/memoriz",
+      "profile": ".claude/registry/projects/default.json",
+      "enabled": true,
+      "canary": true
+    },
+    {
+      "id": "memoriz-invite",
+      "path": "/Users/woogi/Development/memoriz-invite",
+      "profile": ".claude/registry/projects/default.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
+      "id": "playground",
+      "path": "/Users/woogi/Documents/Playground",
+      "profile": ".claude/registry/projects/default.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
+      "id": "openclaw-main-assistant",
+      "path": "/Users/woogi/Documents/Playground/openclaw/workspaces/main-assistant",
+      "profile": ".claude/registry/projects/openclaw.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
+      "id": "openclaw-slack-team-ops",
+      "path": "/Users/woogi/Documents/Playground/openclaw/workspaces/slack-team-ops",
+      "profile": ".claude/registry/projects/openclaw.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
+      "id": "openclaw-project-build-bot",
+      "path": "/Users/woogi/Documents/Playground/openclaw/workspaces/project-build-bot",
+      "profile": ".claude/registry/projects/openclaw.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
+      "id": "openclaw-experiments",
+      "path": "/Users/woogi/Documents/Playground/openclaw/workspaces/experiments",
+      "profile": ".claude/registry/projects/openclaw.json",
+      "enabled": true,
+      "canary": false
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 # {{PROJECT_NAME}}
 
-Next.js 15 프로젝트
+Next.js 16.2 프로젝트
 
 ## Tech Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16.2.10](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
 - **Linting**: ESLint + Prettier
@@ -13,7 +13,7 @@ Next.js 15 프로젝트
 
 ### Prerequisites
 
-- Node.js 18.17+
+- Node.js 24.18.0 LTS (`package.json`의 `engines` 기준)
 - npm or pnpm
 
 ### Installation

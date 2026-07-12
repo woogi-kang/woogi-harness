@@ -1,7 +1,8 @@
 ---
 name: lemon-squeezy
 description: Lemon Squeezy 글로벌 결제 및 MoR(Merchant of Record) 연동 스킬
-model: sonnet
+model: inherit
+quality_tier: implementation
 triggers:
   - "Lemon Squeezy"
   - "레몬"
