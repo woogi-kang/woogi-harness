@@ -24,6 +24,7 @@
     "**/.git/**",
     "**/__pycache__/**",
     "**/*.pyc",
+    ".claude/skills/ui-styling/canvas-fonts/**",
     ".claude/settings*.json",
     ".mcp.json",
     ".env*"
