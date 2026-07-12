@@ -1,0 +1,28 @@
+{
+  "$schema": "../contracts/project-profile.schema.json",
+  "schema_version": "harness.project-profile.v1",
+  "id": "check-your-hospital-design-runtime",
+  "pack": ".claude/project-packs/design-runtime/pack.json",
+  "pack_overlays": [
+    ".claude/project-packs/image-generation/pack.json"
+  ],
+  "providers": ["claude", "codex", "gemini", "opencode"],
+  "selected_provider": "claude",
+  "default_quality_tier": "implementation",
+  "capabilities": [
+    "runtime.provider"
+  ],
+  "context_budget_bytes": 131072,
+  "protected_paths": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GEMINI.md",
+    ".claude/settings.json",
+    ".claude/settings.local.json",
+    ".mcp.json",
+    ".env*",
+    ".claude/logs/**",
+    ".claude/harness-overlay.json"
+  ],
+  "overlays": []
+}

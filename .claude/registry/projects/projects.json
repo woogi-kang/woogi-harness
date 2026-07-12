@@ -23,6 +23,13 @@
       "canary": false
     },
     {
+      "id": "check-your-hospital-design-runtime",
+      "path": "/Users/woogi/Development/CheckYourHospital",
+      "profile": ".claude/registry/projects/check-your-hospital.json",
+      "enabled": true,
+      "canary": false
+    },
+    {
       "id": "openclaw-main-assistant",
       "path": "/Users/woogi/Documents/Playground/openclaw/workspaces/main-assistant",
       "profile": ".claude/registry/projects/openclaw.json",

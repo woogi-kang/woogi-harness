@@ -1,0 +1,23 @@
+{
+  "schema_version": "harness.project-pack.v1",
+  "id": "design-runtime",
+  "description": "Selective Design Runtime v3 distribution for projects that consume only the shared visual-quality harness.",
+  "paths": [
+    ".claude/skills/design-harness",
+    ".claude/skills/ui-styling",
+    ".claude/skills/korean-typography",
+    ".claude/skills/context-pack-gate",
+    ".claude/evals/ui-design",
+    ".claude/registry/design",
+    ".claude/registry/providers/core.yaml",
+    "scripts/context-pack-gate.py"
+  ],
+  "exclude": [
+    "**/.git/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    ".claude/settings*.json",
+    ".mcp.json",
+    ".env*"
+  ]
+}
