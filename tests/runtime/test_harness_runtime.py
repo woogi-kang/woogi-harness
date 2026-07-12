@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import json
+import hashlib
 import importlib.util
+import json
 import subprocess
 import sys
 import tempfile
@@ -978,9 +979,12 @@ class SyncTests(unittest.TestCase):
             target = base / "target"
             source.mkdir()
             target.mkdir()
+            (source / "owned").mkdir()
             (source / "payload.txt").write_text("new", encoding="utf-8")
             (target / "payload.txt").write_text("old", encoding="utf-8")
             (target / "target-only.txt").write_text("keep", encoding="utf-8")
+            (target / "owned").mkdir()
+            (target / "owned" / "retired.txt").write_text("legacy", encoding="utf-8")
 
             pack = source / "pack.json"
             profile = source / "profile.json"
@@ -990,7 +994,13 @@ class SyncTests(unittest.TestCase):
                 {
                     "schema_version": "harness.project-pack.v1",
                     "id": "test",
-                    "paths": ["payload.txt"],
+                    "paths": ["payload.txt", "owned"],
+                    "tombstones": [
+                        {
+                            "path": "owned/retired.txt",
+                            "accepted_sha256": [hashlib.sha256(b"legacy").hexdigest()],
+                        }
+                    ],
                     "links": {},
                     "exclude": [],
                 },
@@ -1046,6 +1056,7 @@ class SyncTests(unittest.TestCase):
                 (target / "payload.txt").read_text(encoding="utf-8"), "new"
             )
             self.assertTrue((target / "target-only.txt").is_file())
+            self.assertFalse((target / "owned" / "retired.txt").exists())
 
             subprocess.run(
                 [
@@ -1062,6 +1073,83 @@ class SyncTests(unittest.TestCase):
                 (target / "payload.txt").read_text(encoding="utf-8"), "old"
             )
             self.assertTrue((target / "target-only.txt").is_file())
+            self.assertEqual(
+                (target / "owned" / "retired.txt").read_text(encoding="utf-8"),
+                "legacy",
+            )
+
+    def test_tombstone_refuses_to_delete_unowned_content(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            source = base / "source"
+            target = base / "target"
+            source.mkdir()
+            target.mkdir()
+            (source / "owned").mkdir()
+            custom = target / "owned" / "retired.txt"
+            custom.parent.mkdir()
+            custom.write_text("project customization", encoding="utf-8")
+
+            pack = source / "pack.json"
+            profile = source / "profile.json"
+            projects = source / "projects.json"
+            write_json(
+                pack,
+                {
+                    "schema_version": "harness.project-pack.v1",
+                    "id": "test",
+                    "paths": ["owned"],
+                    "tombstones": [
+                        {
+                            "path": "owned/retired.txt",
+                            "accepted_sha256": [
+                                hashlib.sha256(b"known harness file").hexdigest()
+                            ],
+                        }
+                    ],
+                },
+            )
+            write_json(
+                profile,
+                {
+                    "schema_version": "harness.project-profile.v1",
+                    "pack": str(pack),
+                    "protected_paths": [],
+                },
+            )
+            write_json(
+                projects,
+                {
+                    "projects": [
+                        {
+                            "id": "target",
+                            "path": str(target),
+                            "profile": str(profile),
+                            "enabled": True,
+                        }
+                    ]
+                },
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPTS / "harness-sync.py"),
+                    "--root",
+                    str(source),
+                    "--registry",
+                    str(projects),
+                    "--project",
+                    "target",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("conflict-tombstone-unowned", result.stdout)
+            self.assertEqual(
+                custom.read_text(encoding="utf-8"), "project customization"
+            )
 
     def test_legacy_shell_wrapper_accepts_positional_target_and_stays_dry_run(
         self,

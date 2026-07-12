@@ -220,7 +220,13 @@ python3 scripts/harness-sync.py --rollback /tmp/harness-canary.json
 
 대상 목록은 `.claude/registry/projects/projects.json`에서 관리한다. apply는 다음 안전장치를 갖는다.
 
-- target-only 파일을 삭제하지 않음
+- target-only 파일은 삭제하지 않음. 단, pack의 `tombstones`에 경로와 과거
+  SHA-256이 함께 선언된 하네스 소유 파일만 backup 후 삭제하며, 해시가 다르면
+  `conflict-tombstone-unowned`로 중단
+- tombstone 적용은 project-root-relative directory descriptor에서 대상을 atomic
+  quarantine한 뒤 같은 entry를 재검증·backup한다. 중간에 예상하지 못한 파일이
+  나타나면 이를 삭제하지 않고 recovery quarantine을 남긴 채
+  `rollback-incomplete`로 중단
 - profile의 `protected_paths`를 덮어쓰지 않음
 - 대상의 `.claude/harness-overlay.json`에 추가 보호 패턴을 선언할 수 있음
 - default profile은 `image-generation` pack overlay도 합성해 Gongnyang third-party runtime, 보존된 image-prompt symlink, verifier/update/test 스크립트를 함께 배포

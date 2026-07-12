@@ -10,6 +10,38 @@
     "paths": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "links": {"type": "object", "additionalProperties": {"type": "string"}},
     "exclude": {"type": "array", "items": {"type": "string"}},
+    "tombstones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!\\.{1,2}$)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+          },
+          "accepted_sha256": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "accepted_symlink_targets": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "anyOf": [
+          {"required": ["accepted_sha256"]},
+          {"required": ["accepted_symlink_targets"]}
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    },
     "settings_merges": {
       "type": "array",
       "items": {

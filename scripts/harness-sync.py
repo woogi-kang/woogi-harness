@@ -7,7 +7,7 @@ import argparse
 import copy
 import json
 import os
-import shutil
+import stat
 import sys
 import uuid
 from pathlib import Path
@@ -38,6 +38,7 @@ def fingerprint(path: Path) -> dict[str, Any]:
             "kind": "file",
             "sha256": sha256_file(path),
             "bytes": path.stat().st_size,
+            "mode": stat.S_IMODE(path.stat().st_mode),
         }
     if path.exists():
         return {"kind": "directory"}
@@ -61,6 +62,269 @@ def safe_project_destination(project_root: Path, raw_path: str | Path) -> Path:
     except ValueError as exc:
         raise HarnessError(f"destination escapes project root: {raw_path}") from exc
     return destination
+
+
+def open_project_parent(
+    project_root: Path, raw_path: str | Path, *, create: bool
+) -> tuple[int, str]:
+    """Open a destination parent without following a replaceable symlink path."""
+    root = project_root.expanduser().resolve()
+    relative = Path(str(raw_path))
+    if not relative.parts or relative.is_absolute() or ".." in relative.parts:
+        raise HarnessError(f"path must stay project-relative: {raw_path}")
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        current_fd = os.open(root, flags)
+    except OSError as exc:
+        raise HarnessError(f"cannot open project root securely: {root}") from exc
+    try:
+        for part in relative.parts[:-1]:
+            try:
+                next_fd = os.open(part, flags, dir_fd=current_fd)
+            except FileNotFoundError:
+                if not create:
+                    raise
+                os.mkdir(part, mode=0o755, dir_fd=current_fd)
+                next_fd = os.open(part, flags, dir_fd=current_fd)
+            except OSError as exc:
+                raise HarnessError(
+                    f"destination parent is not a secure directory: {raw_path}"
+                ) from exc
+            os.close(current_fd)
+            current_fd = next_fd
+        return current_fd, relative.name
+    except BaseException:
+        os.close(current_fd)
+        raise
+
+
+def read_file_at(parent_fd: int, name: str) -> tuple[bytes, int]:
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0)
+    descriptor = os.open(name, flags, dir_fd=parent_fd)
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise HarnessError(f"entry is not a regular file: {name}")
+        chunks = []
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks), stat.S_IMODE(metadata.st_mode)
+    finally:
+        os.close(descriptor)
+
+
+def fingerprint_at(parent_fd: int, name: str) -> dict[str, Any]:
+    try:
+        metadata = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        return {"kind": "absent"}
+    if stat.S_ISLNK(metadata.st_mode):
+        target = os.readlink(name, dir_fd=parent_fd)
+        return {
+            "kind": "symlink",
+            "target": target,
+            "sha256": sha256_bytes(target.encode()),
+        }
+    if stat.S_ISREG(metadata.st_mode):
+        payload, mode = read_file_at(parent_fd, name)
+        return {
+            "kind": "file",
+            "sha256": sha256_bytes(payload),
+            "bytes": len(payload),
+            "mode": mode,
+        }
+    if stat.S_ISDIR(metadata.st_mode):
+        return {"kind": "directory"}
+    return {"kind": "other"}
+
+
+def fingerprints_match(expected: dict[str, Any], actual: dict[str, Any]) -> bool:
+    """Compare fingerprints while accepting pre-mode legacy manifests."""
+    if expected.get("kind") != actual.get("kind"):
+        return False
+    kind = expected.get("kind")
+    required = {
+        "file": ("sha256", "bytes"),
+        "symlink": ("target", "sha256"),
+        "directory": (),
+        "absent": (),
+    }.get(str(kind))
+    if required is None or any(
+        expected.get(key) != actual.get(key) for key in required
+    ):
+        return False
+    return "mode" not in expected or expected.get("mode") == actual.get("mode")
+
+
+def secure_fingerprint(project_root: Path, raw_path: str | Path) -> dict[str, Any]:
+    try:
+        parent_fd, name = open_project_parent(project_root, raw_path, create=False)
+    except FileNotFoundError:
+        return {"kind": "absent"}
+    try:
+        return fingerprint_at(parent_fd, name)
+    finally:
+        os.close(parent_fd)
+
+
+def write_bytes_at(
+    parent_fd: int, name: str, payload: bytes, mode: int, *, replace: bool = True
+) -> None:
+    temporary = f".{name}.{uuid.uuid4().hex}.tmp"
+    flags = (
+        os.O_WRONLY
+        | os.O_CREAT
+        | os.O_EXCL
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    descriptor = os.open(temporary, flags, mode, dir_fd=parent_fd)
+    try:
+        view = memoryview(payload)
+        while view:
+            written = os.write(descriptor, view)
+            view = view[written:]
+        os.fchmod(descriptor, mode)
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = -1
+        if replace:
+            os.replace(
+                temporary,
+                name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+            )
+        else:
+            os.link(
+                temporary,
+                name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+                follow_symlinks=False,
+            )
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        try:
+            os.unlink(temporary, dir_fd=parent_fd)
+        except FileNotFoundError:
+            pass
+
+
+def unlink_at(parent_fd: int, name: str) -> None:
+    current = fingerprint_at(parent_fd, name)
+    if current["kind"] in {"file", "symlink"}:
+        os.unlink(name, dir_fd=parent_fd)
+    elif current["kind"] != "absent":
+        raise HarnessError(f"refusing to unlink non-file destination: {name}")
+
+
+def quarantine_expected_at(
+    parent_fd: int, name: str, expected: dict[str, Any]
+) -> str | None:
+    """Atomically capture an entry, then prove it is the planned fingerprint."""
+    if expected.get("kind") == "absent":
+        if not fingerprints_match(expected, fingerprint_at(parent_fd, name)):
+            raise HarnessError(f"destination appeared before mutation: {name}")
+        return None
+    quarantine = f".{name}.{uuid.uuid4().hex}.quarantine"
+    try:
+        os.rename(
+            name,
+            quarantine,
+            src_dir_fd=parent_fd,
+            dst_dir_fd=parent_fd,
+        )
+    except FileNotFoundError as exc:
+        raise HarnessError(f"destination disappeared before mutation: {name}") from exc
+    captured = fingerprint_at(parent_fd, quarantine)
+    if fingerprints_match(expected, captured):
+        return quarantine
+    if fingerprint_at(parent_fd, name).get("kind") == "absent":
+        os.rename(
+            quarantine,
+            name,
+            src_dir_fd=parent_fd,
+            dst_dir_fd=parent_fd,
+        )
+    raise HarnessError(
+        f"destination changed during atomic capture: {name} "
+        f"expected={expected} captured={captured}"
+    )
+
+
+def discard_quarantine_at(
+    parent_fd: int, quarantine: str | None, expected: dict[str, Any]
+) -> None:
+    if quarantine is None:
+        return
+    captured = fingerprint_at(parent_fd, quarantine)
+    if not fingerprints_match(expected, captured):
+        raise HarnessError(f"quarantine fingerprint drifted: {quarantine}")
+    os.unlink(quarantine, dir_fd=parent_fd)
+
+
+def restore_quarantine_at(
+    parent_fd: int,
+    name: str,
+    quarantine: str,
+    expected: dict[str, Any],
+    allowed_current: dict[str, Any],
+) -> None:
+    captured = fingerprint_at(parent_fd, quarantine)
+    if not fingerprints_match(expected, captured):
+        raise HarnessError(f"quarantine fingerprint drifted: {quarantine}")
+    displaced = quarantine_expected_at(parent_fd, name, allowed_current)
+    restored = False
+    try:
+        if expected["kind"] == "file":
+            os.link(
+                quarantine,
+                name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+                follow_symlinks=False,
+            )
+            os.unlink(quarantine, dir_fd=parent_fd)
+        elif expected["kind"] == "symlink":
+            os.symlink(
+                os.readlink(quarantine, dir_fd=parent_fd), name, dir_fd=parent_fd
+            )
+            os.unlink(quarantine, dir_fd=parent_fd)
+        else:
+            raise HarnessError(
+                f"unsupported quarantine restore kind: {expected['kind']}"
+            )
+        restored = True
+        discard_quarantine_at(parent_fd, displaced, allowed_current)
+    except (HarnessError, OSError):
+        if not restored and fingerprint_at(parent_fd, name).get("kind") == "absent":
+            if expected["kind"] == "file":
+                os.link(
+                    quarantine,
+                    name,
+                    src_dir_fd=parent_fd,
+                    dst_dir_fd=parent_fd,
+                    follow_symlinks=False,
+                )
+                os.unlink(quarantine, dir_fd=parent_fd)
+            elif expected["kind"] == "symlink":
+                os.symlink(
+                    os.readlink(quarantine, dir_fd=parent_fd),
+                    name,
+                    dir_fd=parent_fd,
+                )
+                os.unlink(quarantine, dir_fd=parent_fd)
+        raise
 
 
 def sanitized_actions(actions: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -153,6 +417,87 @@ def desired_assets(root: Path, pack: dict[str, Any]) -> list[dict[str, Any]]:
     return [assets[key] for key in sorted(assets)]
 
 
+def desired_tombstones(root: Path, pack: dict[str, Any]) -> list[dict[str, Any]]:
+    """Load hash-bound removals for files formerly owned by this pack."""
+    pack_paths = [Path(str(raw)) for raw in pack.get("paths", [])]
+    excludes = list(pack.get("exclude", []))
+    tombstones: dict[str, dict[str, Any]] = {}
+    for raw_spec in pack.get("tombstones", []):
+        if not isinstance(raw_spec, dict):
+            raise HarnessError("pack tombstone must be an object")
+        unknown_keys = set(raw_spec) - {
+            "path",
+            "accepted_sha256",
+            "accepted_symlink_targets",
+        }
+        if unknown_keys:
+            raise HarnessError(
+                f"unsupported tombstone fields: {', '.join(sorted(unknown_keys))}"
+            )
+        relative = Path(str(raw_spec.get("path", "")))
+        if not relative.parts or relative.is_absolute() or ".." in relative.parts:
+            raise HarnessError(
+                f"tombstone path must stay repository-relative: {relative}"
+            )
+        rel = relative.as_posix()
+        if path_matches_any(rel, excludes):
+            raise HarnessError(f"tombstone cannot target an excluded path: {rel}")
+        if (root / relative).exists() or (root / relative).is_symlink():
+            raise HarnessError(f"tombstone still exists in source: {rel}")
+
+        scoped = False
+        for pack_path in pack_paths:
+            source_scope = root / pack_path
+            if (
+                source_scope.is_dir()
+                and not source_scope.is_symlink()
+                and relative.is_relative_to(pack_path)
+            ):
+                scoped = True
+                break
+            if relative == pack_path:
+                scoped = True
+                break
+        if not scoped:
+            raise HarnessError(f"tombstone is outside pack-owned paths: {rel}")
+
+        accepted_sha256 = raw_spec.get("accepted_sha256", [])
+        accepted_targets = raw_spec.get("accepted_symlink_targets", [])
+        if not isinstance(accepted_sha256, list) or not all(
+            isinstance(value, str)
+            and len(value) == 64
+            and all(character in "0123456789abcdef" for character in value)
+            for value in accepted_sha256
+        ):
+            raise HarnessError(f"invalid tombstone sha256 allowlist: {rel}")
+        if not isinstance(accepted_targets, list) or not all(
+            isinstance(value, str) and value for value in accepted_targets
+        ):
+            raise HarnessError(f"invalid tombstone symlink allowlist: {rel}")
+        if "accepted_sha256" in raw_spec and not accepted_sha256:
+            raise HarnessError(f"tombstone sha256 allowlist cannot be empty: {rel}")
+        if "accepted_symlink_targets" in raw_spec and not accepted_targets:
+            raise HarnessError(f"tombstone symlink allowlist cannot be empty: {rel}")
+        if len(set(accepted_sha256)) != len(accepted_sha256) or len(
+            set(accepted_targets)
+        ) != len(accepted_targets):
+            raise HarnessError(f"tombstone fingerprint allowlist has duplicates: {rel}")
+        if not accepted_sha256 and not accepted_targets:
+            raise HarnessError(f"tombstone requires an accepted fingerprint: {rel}")
+
+        desired = {
+            "path": rel,
+            "kind": "absent",
+            "accepted_sha256": sorted(set(accepted_sha256)),
+            "accepted_symlink_targets": sorted(set(accepted_targets)),
+            "pack_id": str(pack.get("id", "unknown")),
+        }
+        if rel in tombstones:
+            raise HarnessError(f"duplicate tombstone path: {rel}")
+        tombstones[rel] = desired
+    return [tombstones[key] for key in sorted(tombstones)]
+
+
 def load_profile_packs(root: Path, profile: dict[str, Any]) -> list[dict[str, Any]]:
     """Load the base pack followed by explicit project-pack overlays."""
     raw_paths = [profile["pack"], *profile.get("pack_overlays", [])]
@@ -187,6 +532,29 @@ def combine_pack_assets(
                 )
             assets[asset["path"]] = asset
     return [assets[key] for key in sorted(assets)]
+
+
+def combine_pack_tombstones(
+    root: Path,
+    packs: list[dict[str, Any]],
+    assets: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    asset_paths = {asset["path"] for asset in assets}
+    tombstones: dict[str, dict[str, Any]] = {}
+    for pack in packs:
+        for tombstone in desired_tombstones(root, pack):
+            relative = tombstone["path"]
+            if relative in asset_paths:
+                raise HarnessError(
+                    f"path cannot be both an asset and a tombstone: {relative}"
+                )
+            existing = tombstones.get(relative)
+            if existing and {
+                key: value for key, value in existing.items() if key != "pack_id"
+            } != {key: value for key, value in tombstone.items() if key != "pack_id"}:
+                raise HarnessError(f"pack tombstone conflict for: {relative}")
+            tombstones[relative] = tombstone
+    return [tombstones[key] for key in sorted(tombstones)]
 
 
 def _ensure_list_path(document: dict[str, Any], path: list[str]) -> list[Any]:
@@ -380,19 +748,92 @@ def plan_project(
     return actions
 
 
+def plan_tombstones(
+    project: dict[str, Any],
+    tombstones: list[dict[str, Any]],
+    profile: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Plan deletion only when a target matches an explicitly owned fingerprint."""
+    target = Path(project["path"]).expanduser().resolve()
+    patterns = protected_patterns(profile, target)
+    actions: list[dict[str, Any]] = []
+    for tombstone in tombstones:
+        relative = tombstone["path"]
+        destination = safe_project_destination(target, relative)
+        before = fingerprint(destination)
+        action = {
+            "project_id": project["id"],
+            "project_path": str(target),
+            "path": relative,
+            "desired": dict(tombstone),
+            "before": before,
+            "operation": "unchanged-absent",
+            "applied": False,
+        }
+        if path_matches_any(relative, patterns):
+            action["operation"] = "skip-protected"
+        elif before["kind"] == "absent":
+            action["operation"] = "unchanged-absent"
+        elif before["kind"] == "file" and before.get("sha256") in tombstone.get(
+            "accepted_sha256", []
+        ):
+            action["operation"] = "delete"
+        elif before["kind"] == "symlink" and before.get("target") in tombstone.get(
+            "accepted_symlink_targets", []
+        ):
+            action["operation"] = "delete"
+        elif before["kind"] == "directory":
+            action["operation"] = "conflict-tombstone-directory"
+        else:
+            action["operation"] = "conflict-tombstone-unowned"
+        actions.append(action)
+    return actions
+
+
 def backup_existing(
-    destination: Path, backup_root: Path, action: dict[str, Any]
+    project_root: Path,
+    destination_parent_fd: int,
+    destination_name: str,
+    backup_relative: Path,
+    action: dict[str, Any],
 ) -> None:
     before = action["before"]
     if before["kind"] == "absent":
         return
-    backup = backup_root / action["path"]
-    backup.parent.mkdir(parents=True, exist_ok=True)
+    current = fingerprint_at(destination_parent_fd, destination_name)
+    if not fingerprints_match(before, current):
+        raise HarnessError(
+            f"destination changed before backup: {action['path']} "
+            f"before={before} current={current}"
+        )
     if before["kind"] == "file":
-        shutil.copy2(destination, backup)
-        action["backup"] = str(backup)
+        payload, mode = read_file_at(destination_parent_fd, destination_name)
+        observed = {
+            "kind": "file",
+            "sha256": sha256_bytes(payload),
+            "bytes": len(payload),
+            "mode": mode,
+        }
+        if not fingerprints_match(before, observed):
+            raise HarnessError(
+                f"destination changed while reading backup: {action['path']} "
+                f"before={before} observed={observed}"
+            )
+        backup_parent_fd, backup_name = open_project_parent(
+            project_root, backup_relative, create=True
+        )
+        try:
+            write_bytes_at(backup_parent_fd, backup_name, payload, mode)
+        finally:
+            os.close(backup_parent_fd)
+        action["backup"] = str(project_root / backup_relative)
     elif before["kind"] == "symlink":
-        action["backup_symlink_target"] = before["target"]
+        target = os.readlink(destination_name, dir_fd=destination_parent_fd)
+        if target != before["target"]:
+            raise HarnessError(
+                f"destination symlink changed before backup: {action['path']}"
+            )
+        action["backup_symlink_target"] = target
 
 
 def desired_matches_fingerprint(
@@ -415,15 +856,24 @@ def desired_matches_fingerprint(
             and actual.get("sha256") == desired.get("sha256")
             and actual.get("bytes") == desired.get("bytes")
         )
+    if kind == "absent":
+        return actual.get("kind") == "absent"
     return False
 
 
 def validate_source_precondition(root: Path, action: dict[str, Any]) -> None:
     desired = action["desired"]
+    if desired.get("kind") == "absent":
+        actual = secure_fingerprint(root, action["path"])
+        if actual.get("kind") != "absent":
+            raise HarnessError(
+                f"tombstone source changed after planning: {action['path']} "
+                f"actual={actual.get('kind')}"
+            )
+        return
     if desired.get("kind") != "file":
         return
-    source = root / action["path"]
-    actual = fingerprint(source)
+    actual = secure_fingerprint(root, action["path"])
     if not desired_matches_fingerprint(desired, actual):
         raise HarnessError(
             f"pack source changed after planning: {action['path']} "
@@ -438,88 +888,287 @@ def apply_actions(
     checkpoint: Callable[[], None] | None = None,
 ) -> None:
     for action in actions:
-        if action["operation"] not in {"create", "update", "create-json", "merge-json"}:
+        if action["operation"] not in {
+            "create",
+            "update",
+            "delete",
+            "create-json",
+            "merge-json",
+        }:
             continue
         project_root = Path(action["project_path"]).expanduser().resolve()
         destination = safe_project_destination(project_root, action["path"])
-        current = fingerprint(destination)
-        if current != action["before"]:
-            raise HarnessError(
-                f"destination changed after planning: {destination} "
-                f"before={action['before']} current={current}"
-            )
-        validate_source_precondition(root, action)
-        backup_root = safe_project_destination(
-            project_root, Path(".claude") / "harness-backups" / run_id / "payload"
-        )
-        backup_existing(destination, backup_root, action)
+        desired = action["desired"]
+        create_parent = desired["kind"] != "absent"
         try:
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            if destination.is_symlink() or destination.is_file():
-                destination.unlink()
-            desired = action["desired"]
+            destination_parent_fd, destination_name = open_project_parent(
+                project_root, action["path"], create=create_parent
+            )
+        except FileNotFoundError as exc:
+            raise HarnessError(
+                f"destination parent disappeared after planning: {destination}"
+            ) from exc
+        quarantine: str | None = None
+        try:
+            current = fingerprint_at(destination_parent_fd, destination_name)
+            if not fingerprints_match(action["before"], current):
+                raise HarnessError(
+                    f"destination changed after planning: {destination} "
+                    f"before={action['before']} current={current}"
+                )
+            validate_source_precondition(root, action)
+            backup_relative = (
+                Path(".claude")
+                / "harness-backups"
+                / run_id
+                / "payload"
+                / action["path"]
+            )
+            quarantine = quarantine_expected_at(
+                destination_parent_fd, destination_name, current
+            )
+            backup_existing(
+                project_root,
+                destination_parent_fd,
+                quarantine or destination_name,
+                backup_relative,
+                action,
+            )
             if desired["kind"] == "file":
-                source = root / action["path"]
-                shutil.copy2(source, destination)
+                source_parent_fd, source_name = open_project_parent(
+                    root, action["path"], create=False
+                )
+                try:
+                    payload, mode = read_file_at(source_parent_fd, source_name)
+                finally:
+                    os.close(source_parent_fd)
+                observed = {
+                    "kind": "file",
+                    "sha256": sha256_bytes(payload),
+                    "bytes": len(payload),
+                }
+                if not desired_matches_fingerprint(desired, observed):
+                    raise HarnessError(
+                        f"pack source changed while applying: {action['path']}"
+                    )
+                write_bytes_at(
+                    destination_parent_fd,
+                    destination_name,
+                    payload,
+                    mode,
+                    replace=False,
+                )
             elif desired["kind"] == "symlink":
-                destination.symlink_to(desired["target"])
+                os.symlink(
+                    desired["target"], destination_name, dir_fd=destination_parent_fd
+                )
             elif desired["kind"] == "json-merge":
-                write_json(destination, desired["content"])
+                payload = (
+                    json.dumps(
+                        desired["content"],
+                        ensure_ascii=False,
+                        indent=2,
+                        sort_keys=True,
+                    ).encode()
+                    + b"\n"
+                )
+                write_bytes_at(
+                    destination_parent_fd,
+                    destination_name,
+                    payload,
+                    int(current.get("mode", 0o644)),
+                    replace=False,
+                )
+            elif desired["kind"] == "absent":
+                pass
             else:
                 raise HarnessError(f"unsupported desired asset kind: {desired['kind']}")
-            action["after"] = fingerprint(destination)
+            action["after"] = fingerprint_at(destination_parent_fd, destination_name)
             if not desired_matches_fingerprint(desired, action["after"]):
                 raise HarnessError(
                     f"sync postcondition failed for {destination}: "
                     f"desired={desired} actual={action['after']}"
                 )
+            discard_quarantine_at(destination_parent_fd, quarantine, action["before"])
+            quarantine = None
             action["applied"] = True
             if checkpoint:
                 checkpoint()
         except (HarnessError, OSError):
-            restore_action(action, require_after_match=False)
+            if (
+                quarantine is not None
+                and fingerprint_at(destination_parent_fd, quarantine).get("kind")
+                != "absent"
+            ):
+                current_after_error = fingerprint_at(
+                    destination_parent_fd, destination_name
+                )
+                if current_after_error.get(
+                    "kind"
+                ) == "absent" or desired_matches_fingerprint(
+                    desired, current_after_error
+                ):
+                    try:
+                        restore_quarantine_at(
+                            destination_parent_fd,
+                            destination_name,
+                            quarantine,
+                            action["before"],
+                            current_after_error,
+                        )
+                    except (HarnessError, OSError):
+                        action["rollback_incomplete"] = True
+                else:
+                    action["rollback_incomplete"] = True
+                if action.get("rollback_incomplete"):
+                    action["recovery_quarantine"] = str(
+                        Path(action["path"]).parent / quarantine
+                    )
+            else:
+                if not restore_action(action, require_after_match=False):
+                    action["rollback_incomplete"] = True
             action["applied"] = False
             raise
+        finally:
+            os.close(destination_parent_fd)
 
 
 def restore_action(action: dict[str, Any], *, require_after_match: bool) -> bool:
     project_root = Path(action["project_path"]).expanduser().resolve()
-    destination = safe_project_destination(project_root, action["path"])
-    if require_after_match and fingerprint(destination) != action.get("after"):
-        return False
     before = action["before"]
-    backup: Path | None = None
+    try:
+        destination_parent_fd, destination_name = open_project_parent(
+            project_root, action["path"], create=before["kind"] != "absent"
+        )
+    except (FileNotFoundError, HarnessError):
+        return before["kind"] == "absent"
+    current = fingerprint_at(destination_parent_fd, destination_name)
+    if require_after_match:
+        after = action.get("after")
+        if not isinstance(after, dict) or not fingerprints_match(after, current):
+            os.close(destination_parent_fd)
+            return False
+        expected_current = after
+    elif isinstance(action.get("after"), dict) and fingerprints_match(
+        action["after"], current
+    ):
+        expected_current = action["after"]
+    elif desired_matches_fingerprint(action.get("desired", {}), current):
+        expected_current = current
+    else:
+        os.close(destination_parent_fd)
+        return False
+    backup_payload: bytes | None = None
+    backup_mode = int(before.get("mode", 0o644))
     if before["kind"] == "file":
-        backup = Path(action.get("backup", ""))
-        backup_fingerprint = fingerprint(backup)
+        backup = Path(str(action.get("backup", ""))).expanduser().resolve()
+        try:
+            backup_relative = backup.relative_to(project_root)
+            backup_parent_fd, backup_name = open_project_parent(
+                project_root, backup_relative, create=False
+            )
+            try:
+                backup_fingerprint = fingerprint_at(backup_parent_fd, backup_name)
+                if backup_fingerprint.get("kind") == "file":
+                    backup_payload, backup_mode = read_file_at(
+                        backup_parent_fd, backup_name
+                    )
+            finally:
+                os.close(backup_parent_fd)
+        except (FileNotFoundError, HarnessError, ValueError):
+            os.close(destination_parent_fd)
+            return False
+        if backup_payload is not None:
+            observed_backup = {
+                "kind": "file",
+                "sha256": sha256_bytes(backup_payload),
+                "bytes": len(backup_payload),
+                "mode": backup_mode,
+            }
+            if not fingerprints_match(before, observed_backup):
+                os.close(destination_parent_fd)
+                return False
         if (
-            backup.is_symlink()
-            or not backup.is_file()
-            or backup_fingerprint.get("sha256") != before.get("sha256")
+            backup_fingerprint.get("sha256") != before.get("sha256")
             or backup_fingerprint.get("bytes") != before.get("bytes")
+            or backup_payload is None
         ):
+            os.close(destination_parent_fd)
             return False
     elif before["kind"] == "symlink":
         if action.get("backup_symlink_target") != before.get("target"):
+            os.close(destination_parent_fd)
             return False
     elif before["kind"] != "absent":
+        os.close(destination_parent_fd)
         return False
-    if destination.is_symlink() or destination.is_file():
-        destination.unlink()
-    if before["kind"] == "file":
-        assert backup is not None
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(backup, destination)
-    elif before["kind"] == "symlink":
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.symlink_to(action["backup_symlink_target"])
-    return True
+    displaced: str | None = None
+    try:
+        displaced = quarantine_expected_at(
+            destination_parent_fd, destination_name, expected_current
+        )
+        if before["kind"] == "file":
+            assert backup_payload is not None
+            write_bytes_at(
+                destination_parent_fd,
+                destination_name,
+                backup_payload,
+                backup_mode,
+                replace=False,
+            )
+        elif before["kind"] == "symlink":
+            os.symlink(
+                action["backup_symlink_target"],
+                destination_name,
+                dir_fd=destination_parent_fd,
+            )
+        restored = fingerprint_at(destination_parent_fd, destination_name)
+        if not fingerprints_match(before, restored):
+            raise HarnessError(
+                f"rollback postcondition failed: {action['path']} "
+                f"before={before} restored={restored}"
+            )
+        discard_quarantine_at(destination_parent_fd, displaced, expected_current)
+        displaced = None
+        return True
+    except (HarnessError, OSError):
+        if (
+            displaced is not None
+            and fingerprint_at(destination_parent_fd, displaced).get("kind") != "absent"
+        ):
+            current_after_error = fingerprint_at(
+                destination_parent_fd, destination_name
+            )
+            if current_after_error.get("kind") == "absent" or fingerprints_match(
+                before, current_after_error
+            ):
+                try:
+                    restore_quarantine_at(
+                        destination_parent_fd,
+                        destination_name,
+                        displaced,
+                        expected_current,
+                        current_after_error,
+                    )
+                except (HarnessError, OSError):
+                    pass
+        return False
+    finally:
+        os.close(destination_parent_fd)
 
 
 def rollback_actions(actions: list[dict[str, Any]]) -> tuple[int, int]:
     restored = 0
     skipped = 0
     for action in reversed(actions):
+        if action.get("rollback_incomplete"):
+            print(
+                f"SKIP rollback-incomplete recovery required: "
+                f"{action['project_path']}/{action['path']}",
+                file=sys.stderr,
+            )
+            skipped += 1
+            continue
         if not action.get("applied"):
             continue
         destination = safe_project_destination(
@@ -719,7 +1368,9 @@ def main() -> int:
             packs = load_profile_packs(root, profile)
             used_pack_ids.update(str(pack.get("id", "unknown")) for pack in packs)
             assets = combine_pack_assets(root, packs)
+            tombstones = combine_pack_tombstones(root, packs, assets)
             all_actions.extend(plan_project(root, project, assets, profile))
+            all_actions.extend(plan_tombstones(project, tombstones, profile))
             all_actions.extend(plan_settings_merges(project, packs))
     except (HarnessError, KeyError, OSError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

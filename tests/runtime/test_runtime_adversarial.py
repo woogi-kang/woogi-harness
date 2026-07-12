@@ -357,6 +357,91 @@ class SyncAdversarialTests(unittest.TestCase):
                 SYNC.apply_actions(source, [action], "run")
             self.assertFalse((target / "payload.txt").exists())
 
+    def test_tombstone_cannot_cross_pack_exclude_or_use_empty_allowlist(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary)
+            (source / "owned").mkdir()
+            excluded = {
+                "schema_version": "harness.project-pack.v1",
+                "id": "test",
+                "paths": ["owned"],
+                "exclude": ["owned/**"],
+                "tombstones": [
+                    {
+                        "path": "owned/retired.txt",
+                        "accepted_sha256": ["0" * 64],
+                    }
+                ],
+            }
+            with self.assertRaisesRegex(HarnessError, "excluded path"):
+                SYNC.desired_tombstones(source, excluded)
+
+            empty = {
+                "schema_version": "harness.project-pack.v1",
+                "id": "test",
+                "paths": ["owned"],
+                "tombstones": [
+                    {
+                        "path": "owned/retired.txt",
+                        "accepted_sha256": [],
+                        "accepted_symlink_targets": ["legacy-target"],
+                    }
+                ],
+            }
+            with self.assertRaisesRegex(HarnessError, "cannot be empty"):
+                SYNC.desired_tombstones(source, empty)
+
+            duplicate = {
+                "schema_version": "harness.project-pack.v1",
+                "id": "test",
+                "paths": ["owned"],
+                "tombstones": [
+                    {
+                        "path": "owned/retired.txt",
+                        "accepted_sha256": ["0" * 64, "0" * 64],
+                    }
+                ],
+            }
+            with self.assertRaisesRegex(HarnessError, "has duplicates"):
+                SYNC.desired_tombstones(source, duplicate)
+
+            unknown = {
+                "schema_version": "harness.project-pack.v1",
+                "id": "test",
+                "paths": ["owned"],
+                "tombstones": [
+                    {
+                        "path": "owned/retired.txt",
+                        "accepted_sha256": ["0" * 64],
+                        "force": True,
+                    }
+                ],
+            }
+            with self.assertRaisesRegex(HarnessError, "unsupported tombstone fields"):
+                SYNC.desired_tombstones(source, unknown)
+
+    def test_tombstone_scope_cannot_be_owned_through_a_source_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            outside = root / "outside"
+            source.mkdir()
+            outside.mkdir()
+            (source / "owned").symlink_to(outside, target_is_directory=True)
+            pack = {
+                "schema_version": "harness.project-pack.v1",
+                "id": "test",
+                "paths": ["owned"],
+                "tombstones": [
+                    {
+                        "path": "owned/retired.txt",
+                        "accepted_sha256": ["0" * 64],
+                    }
+                ],
+            }
+            with self.assertRaisesRegex(HarnessError, "outside pack-owned paths"):
+                SYNC.desired_tombstones(source, pack)
+
     def test_copy_postcondition_mismatch_is_rolled_back(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -368,18 +453,229 @@ class SyncAdversarialTests(unittest.TestCase):
             payload.write_text("planned", encoding="utf-8")
             action = self.make_action(source, target, before={"kind": "absent"})
 
-            original_copy = SYNC.shutil.copy2
+            original_write = SYNC.write_bytes_at
 
-            def corrupt_copy(src, dst, *args, **kwargs):
-                if Path(src) == payload:
-                    Path(dst).write_text("corrupt", encoding="utf-8")
-                    return str(dst)
-                return original_copy(src, dst, *args, **kwargs)
+            def corrupt_write(parent_fd, name, content, mode, *, replace=True):
+                return original_write(
+                    parent_fd,
+                    name,
+                    b"corrupt",
+                    mode,
+                    replace=replace,
+                )
 
-            with mock.patch.object(SYNC.shutil, "copy2", side_effect=corrupt_copy):
+            with mock.patch.object(SYNC, "write_bytes_at", side_effect=corrupt_write):
                 with self.assertRaisesRegex(HarnessError, "sync postcondition failed"):
                     SYNC.apply_actions(source, [action], "run")
             self.assertFalse((target / "payload.txt").exists())
+            self.assertFalse(action.get("rollback_incomplete", False))
+
+    def test_tombstone_preserves_final_entry_swapped_after_backup(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            target = root / "target"
+            source.mkdir()
+            target.mkdir()
+            destination = target / "retired.txt"
+            destination.write_text("legacy", encoding="utf-8")
+            action = {
+                "project_id": "target",
+                "project_path": str(target.resolve()),
+                "path": "retired.txt",
+                "desired": {
+                    "path": "retired.txt",
+                    "kind": "absent",
+                    "accepted_sha256": [sha256_file(destination)],
+                    "accepted_symlink_targets": [],
+                    "pack_id": "test",
+                },
+                "before": SYNC.fingerprint(destination),
+                "operation": "delete",
+                "applied": False,
+            }
+            original_backup = SYNC.backup_existing
+
+            def swap_after_backup(*args, **kwargs):
+                result = original_backup(*args, **kwargs)
+                parent_fd = args[1]
+                self.assertIn(".quarantine", args[2])
+                SYNC.write_bytes_at(
+                    parent_fd,
+                    "retired.txt",
+                    b"project customization",
+                    0o644,
+                    replace=True,
+                )
+                return result
+
+            with mock.patch.object(
+                SYNC, "backup_existing", side_effect=swap_after_backup
+            ):
+                with self.assertRaisesRegex(HarnessError, "sync postcondition failed"):
+                    SYNC.apply_actions(source, [action], "run")
+            self.assertEqual(
+                destination.read_text(encoding="utf-8"), "project customization"
+            )
+            self.assertFalse(action["applied"])
+            self.assertTrue(action["rollback_incomplete"])
+            self.assertTrue((target / action["recovery_quarantine"]).is_file())
+
+    def test_legacy_manifest_fingerprint_without_mode_can_rollback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "target"
+            target.mkdir(parents=True)
+            destination = target / "payload.txt"
+            destination.write_text("new", encoding="utf-8")
+            backup = (
+                target
+                / ".claude"
+                / "harness-backups"
+                / "run"
+                / "payload"
+                / "payload.txt"
+            )
+            backup.parent.mkdir(parents=True)
+            backup.write_text("old", encoding="utf-8")
+            before = SYNC.fingerprint(backup)
+            after = SYNC.fingerprint(destination)
+            before.pop("mode")
+            after.pop("mode")
+            action = {
+                "project_id": "target",
+                "project_path": str(target.resolve()),
+                "path": "payload.txt",
+                "desired": {"kind": "file"},
+                "before": before,
+                "after": after,
+                "operation": "update",
+                "applied": True,
+                "backup": str(backup),
+            }
+            self.assertTrue(SYNC.restore_action(action, require_after_match=True))
+            self.assertEqual(destination.read_text(encoding="utf-8"), "old")
+
+    def test_rollback_rejects_backup_payload_drift_before_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "target"
+            target.mkdir(parents=True)
+            destination = target / "payload.txt"
+            destination.write_text("new", encoding="utf-8")
+            backup = (
+                target
+                / ".claude"
+                / "harness-backups"
+                / "run"
+                / "payload"
+                / "payload.txt"
+            )
+            backup.parent.mkdir(parents=True)
+            backup.write_text("old", encoding="utf-8")
+            action = {
+                "project_id": "target",
+                "project_path": str(target.resolve()),
+                "path": "payload.txt",
+                "desired": {"kind": "file"},
+                "before": SYNC.fingerprint(backup),
+                "after": SYNC.fingerprint(destination),
+                "operation": "update",
+                "applied": True,
+                "backup": str(backup),
+            }
+            original_read = SYNC.read_file_at
+            reads = 0
+
+            def drift_third_read(parent_fd, name):
+                nonlocal reads
+                payload, mode = original_read(parent_fd, name)
+                reads += 1
+                if reads == 3:
+                    return b"malicious", mode
+                return payload, mode
+
+            with mock.patch.object(SYNC, "read_file_at", side_effect=drift_third_read):
+                self.assertFalse(SYNC.restore_action(action, require_after_match=True))
+            self.assertEqual(destination.read_text(encoding="utf-8"), "new")
+            self.assertEqual(backup.read_text(encoding="utf-8"), "old")
+
+    def test_tombstone_source_revived_after_plan_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            target = root / "target"
+            source.mkdir()
+            target.mkdir()
+            destination = target / "retired.txt"
+            destination.write_text("legacy", encoding="utf-8")
+            action = {
+                "project_id": "target",
+                "project_path": str(target.resolve()),
+                "path": "retired.txt",
+                "desired": {
+                    "path": "retired.txt",
+                    "kind": "absent",
+                    "accepted_sha256": [sha256_file(destination)],
+                    "accepted_symlink_targets": [],
+                    "pack_id": "test",
+                },
+                "before": SYNC.fingerprint(destination),
+                "operation": "delete",
+                "applied": False,
+            }
+            (source / "retired.txt").write_text("revived", encoding="utf-8")
+            with self.assertRaisesRegex(
+                HarnessError, "tombstone source changed after planning"
+            ):
+                SYNC.apply_actions(source, [action], "run")
+            self.assertEqual(destination.read_text(encoding="utf-8"), "legacy")
+
+    def test_tombstone_rejects_backup_payload_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            target = root / "target"
+            source.mkdir()
+            target.mkdir()
+            destination = target / "retired.txt"
+            destination.write_text("legacy", encoding="utf-8")
+            action = {
+                "project_id": "target",
+                "project_path": str(target.resolve()),
+                "path": "retired.txt",
+                "desired": {
+                    "path": "retired.txt",
+                    "kind": "absent",
+                    "accepted_sha256": [sha256_file(destination)],
+                    "accepted_symlink_targets": [],
+                    "pack_id": "test",
+                },
+                "before": SYNC.fingerprint(destination),
+                "operation": "delete",
+                "applied": False,
+            }
+            original_read = SYNC.read_file_at
+            quarantine_reads = 0
+
+            def drift_quarantine_read(parent_fd, name):
+                nonlocal quarantine_reads
+                payload, mode = original_read(parent_fd, name)
+                if ".quarantine" in name:
+                    quarantine_reads += 1
+                    if quarantine_reads == 3:
+                        return b"project customization", mode
+                return payload, mode
+
+            with mock.patch.object(
+                SYNC, "read_file_at", side_effect=drift_quarantine_read
+            ):
+                with self.assertRaisesRegex(
+                    HarnessError, "destination changed while reading backup"
+                ):
+                    SYNC.apply_actions(source, [action], "run")
+            self.assertEqual(destination.read_text(encoding="utf-8"), "legacy")
+            self.assertFalse(action.get("rollback_incomplete", False))
 
     def test_missing_backup_does_not_delete_applied_destination(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
