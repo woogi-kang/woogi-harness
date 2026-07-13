@@ -367,7 +367,7 @@ function toSarif() {
     runs: [{
       tool: {
         driver: {
-          name: 'Claude Craft Design Slop Detector',
+          name: 'Woogi Harness Design Slop Detector',
           version: '3.0.0',
           rules: [...ruleMap.values()].map(rule => ({
             id: rule.id,

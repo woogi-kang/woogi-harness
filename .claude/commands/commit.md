@@ -113,7 +113,7 @@ git commit -m "$(cat <<'EOF'
 
 <body if needed>
 
-Co-Authored-By: Claude Craft <noreply@anthropic.com>
+Co-Authored-By: Woogi Harness <noreply@github.com>
 EOF
 )"
 ```

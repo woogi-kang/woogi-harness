@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run local health checks for the cross-provider Claude Craft harness."""
+"""Run local health checks for the cross-provider Woogi Harness runtime."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize, validate, and append Claude Craft telemetry JSONL."""
+"""Normalize, validate, and append Woogi Harness telemetry JSONL."""
 
 from __future__ import annotations
 

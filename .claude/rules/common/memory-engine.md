@@ -1,11 +1,11 @@
 # Memory Engine
 
-GBrain은 Claude Craft의 하부 장기 기억 엔진이다. Claude Craft의 에이전트, 스킬, 커맨드, DAG 오케스트레이션을 대체하지 않는다.
+GBrain은 Woogi Harness의 하부 장기 기억 엔진이다. Woogi Harness의 에이전트, 스킬, 커맨드, DAG 오케스트레이션을 대체하지 않는다.
 
 ## 원칙
 
 1. 운영 repo와 지식 repo를 분리한다.
-   - Claude Craft 운영 자산: `/Users/woogi/Development/claude-craft`
+   - Woogi Harness 운영 자산: `/Users/woogi/Development/claude-craft` (레거시 로컬 source root)
    - 장기 지식 repo: `/Users/woogi/brain-craft`
 2. `.claude/skills/`, `.claude/agents/`, secrets, env, logs, generated files는 bulk import하지 않는다.
 3. 작업 전에는 필요한 경우만 memory를 조회한다.

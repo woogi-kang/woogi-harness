@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve and enforce a provider-native Claude Craft quality-class binding."""
+"""Resolve and enforce a provider-native Woogi Harness quality-class binding."""
 
 from __future__ import annotations
 

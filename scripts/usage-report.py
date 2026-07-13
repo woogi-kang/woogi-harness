@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Craft Usage Report
+Woogi Harness Usage Report
 
 Reads .claude/logs/usage.jsonl and generates a summary:
   - Most used agents/skills
@@ -37,7 +37,7 @@ def load_entries(path: Path = LOG_FILE) -> list[dict]:
 def generate_report(entries: list[dict]) -> None:
     """Print a formatted usage report."""
     if not entries:
-        print("=== Claude Craft Usage Report ===")
+        print("=== Woogi Harness Usage Report ===")
         print()
         print("No usage data found.")
         print(f"Log file: {LOG_FILE}")
@@ -46,7 +46,7 @@ def generate_report(entries: list[dict]) -> None:
         print("Configured in: .claude/settings.json")
         return
 
-    print("=== Claude Craft Usage Report ===")
+    print("=== Woogi Harness Usage Report ===")
     print(f"Total entries: {len(entries)}")
 
     # Date range

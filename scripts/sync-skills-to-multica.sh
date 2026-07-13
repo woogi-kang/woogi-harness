@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sync claude-craft skills to Multica platform
+# Sync Woogi Harness skills to Multica platform
 # Usage: bash scripts/sync-skills-to-multica.sh [--dry-run] [--filter pattern]
 
 set -euo pipefail

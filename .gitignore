@@ -69,7 +69,7 @@ env/
 *.egg
 api-key-*
 # Python Cache & Bytecode
-# Claude Craft .gitignore
+# Woogi Harness .gitignore
 .directory
 .DocumentRevisions-V100
 *_token=*

@@ -1,4 +1,4 @@
-# Claude Craft Makefile
+# Woogi Harness Makefile
 
 .PHONY: install install-copy export uninstall status help clean publish
 
@@ -8,11 +8,11 @@ SCRIPT := ./scripts/install.sh
 CLAUDE_HOME := $(HOME)/.claude
 
 install:
-	@echo "Installing claude-craft..."
+	@echo "Installing Woogi Harness..."
 	@$(SCRIPT) --link
 
 install-copy:
-	@echo "Installing claude-craft..."
+	@echo "Installing Woogi Harness..."
 	@$(SCRIPT) --copy
 
 export:
@@ -20,13 +20,13 @@ export:
 	@$(SCRIPT) --export
 
 uninstall:
-	@echo "Uninstalling claude-craft components..."
+	@echo "Uninstalling Woogi Harness components..."
 	@rm -f "$(CLAUDE_HOME)/statusline.py"
 	@rm -rf "$(CLAUDE_HOME)/agents" "$(CLAUDE_HOME)/skills" "$(CLAUDE_HOME)/hooks" "$(CLAUDE_HOME)/commands"
 	@echo "Done. settings.json preserved."
 
 status:
-	@echo "Claude Craft Installation Status"
+	@echo "Woogi Harness Installation Status"
 	@echo "================================"
 	@if [ -f "$(CLAUDE_HOME)/statusline.py" ]; then echo "statusline.py: installed"; else echo "statusline.py: not installed"; fi
 	@if [ -d "$(CLAUDE_HOME)/agents" ]; then echo "agents/: installed"; else echo "agents/: not installed"; fi
@@ -35,7 +35,7 @@ status:
 	@if [ -d "$(CLAUDE_HOME)/commands" ]; then echo "commands/: installed"; else echo "commands/: not installed"; fi
 
 help:
-	@echo "Claude Craft Commands"
+	@echo "Woogi Harness Commands"
 	@echo "====================="
 	@echo "install       심볼릭 링크로 설치"
 	@echo "install-copy  파일 복사로 설치"

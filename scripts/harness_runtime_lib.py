@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared, dependency-free primitives for the Claude Craft runtime harness."""
+"""Shared, dependency-free primitives for the Woogi Harness runtime."""
 
 from __future__ import annotations
 

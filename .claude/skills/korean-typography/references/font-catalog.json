@@ -1,6 +1,6 @@
 {
   "updated_on": "2026-06-13",
-  "status": "Claude Craft compact Korean typography catalog",
+  "status": "Woogi Harness compact Korean typography catalog",
   "source_note": "Built from official font/source URLs and inspired by the public Korean Vibe Fonts package. The upstream package had no LICENSE file visible when this catalog was created, so this is a compact rewrite rather than a vendored copy.",
   "license_note": "commercial_status is a practical screening field, not legal advice. Verify the official license_url before client launch, redistribution, or self-hosting.",
   "fonts": [

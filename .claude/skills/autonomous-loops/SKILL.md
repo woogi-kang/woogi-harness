@@ -12,7 +12,7 @@ metadata:
 
 자율 에이전트 루프 설계를 위한 8가지 패턴, 실행 계약, Loop Doctor, 의사결정 가이드.
 
-외부 Loop Library는 레퍼런스로만 사용한다. published loop를 찾거나 비교해야 하면 라이브 카탈로그를 확인하고, 실행은 claude-craft의 권한/검증/중단 규칙에 맞게 변환한다. 통째로 vendoring하지 않는다.
+외부 Loop Library는 레퍼런스로만 사용한다. published loop를 찾거나 비교해야 하면 라이브 카탈로그를 확인하고, 실행은 Woogi Harness의 권한/검증/중단 규칙에 맞게 변환한다. 통째로 vendoring하지 않는다.
 
 추가 레퍼런스:
 - `references/loop-library-adaptations.md` — Loop Library에서 우리 하네스에 맞게 선별한 로컬 적용 패턴
@@ -74,7 +74,7 @@ python scripts/orchestrate-worktrees.py plan.json --execute
 - git worktree로 격리된 작업 디렉토리
 - tmux로 병렬 Claude 인스턴스
 - 파일 기반 조율 (task.md → handoff.md)
-- **우리 claude-craft의 기본 병렬 패턴**
+- **Woogi Harness의 기본 병렬 패턴**
 
 ### 4. Continuous PR Loop
 ```

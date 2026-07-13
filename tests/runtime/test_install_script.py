@@ -334,7 +334,7 @@ class InstallScriptTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
 
-            archive = dist / "claude-craft-fixture.zip"
+            archive = dist / "woogi-harness-fixture.zip"
             self.assertTrue(archive.is_file())
             with zipfile.ZipFile(archive) as package:
                 names = set(package.namelist())

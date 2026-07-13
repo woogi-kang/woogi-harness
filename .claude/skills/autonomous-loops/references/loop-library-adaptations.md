@@ -1,6 +1,6 @@
 # Loop Library Adaptations
 
-Forward Future Loop Library는 published loop를 찾는 레퍼런스다. claude-craft는 외부 skill이나 웹사이트 코드를 vendoring하지 않고, 아래 패턴만 로컬 실행 계약으로 변환해 사용한다.
+Forward Future Loop Library는 published loop를 찾는 레퍼런스다. Woogi Harness는 외부 skill이나 웹사이트 코드를 vendoring하지 않고, 아래 패턴만 로컬 실행 계약으로 변환해 사용한다.
 
 확인 기준:
 - Live catalog: `https://signals.forwardfuture.ai/loop-library/`

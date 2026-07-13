@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Non-destructive Claude Craft harness sync with manifest, backup, canary, and rollback."""
+"""Non-destructive Woogi Harness sync with manifest, backup, canary, and rollback."""
 
 from __future__ import annotations
 

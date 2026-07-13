@@ -23,7 +23,7 @@ metadata:
   version: "1.0.0"
   tags: "marketing, ads, competitor-research, creative-analysis"
   source: "https://github.com/ComposioHQ/awesome-claude-skills/tree/master/competitive-ads-extractor"
-  license_note: "Inspired by an Apache-2.0 repository skill; rewritten for Claude Craft harness conventions."
+  license_note: "Inspired by an Apache-2.0 repository skill; rewritten for Woogi Harness conventions."
 ---
 
 # Competitive Ads Research

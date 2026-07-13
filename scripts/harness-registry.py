@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect and validate the canonical Claude Craft capability registry."""
+"""Inspect and validate the canonical Woogi Harness capability registry."""
 
 from __future__ import annotations
 

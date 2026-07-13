@@ -113,7 +113,7 @@ main() {
   assert_route "design-harness 마이그레이션 이유" lookup
   assert_route "전에 실패한 접근 뭐였지?" lookup
   assert_route "이 프로젝트 다음 액션 정리해줘" lookup
-  assert_route "지난번 Claude Craft 결정 다시 보여줘" lookup
+  assert_route "지난번 Woogi Harness 결정 다시 보여줘" lookup
   assert_route "관련 문서 찾아서 이어서 작성해줘" lookup
   assert_route "previous decision on memory engine" lookup
   assert_route "README 오타 하나 고쳐줘" skip

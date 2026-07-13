@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://claude-craft.local/schemas/tech-stack-registry-v1.json",
-  "title": "Claude Craft tech stack registry",
+  "title": "Woogi Harness tech stack registry",
   "type": "object",
   "additionalProperties": false,
   "required": [

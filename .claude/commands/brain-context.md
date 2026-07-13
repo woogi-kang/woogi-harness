@@ -6,7 +6,7 @@ allowed-tools: ["Bash", "Read", "Grep"]
 
 $ARGUMENTS
 
-GBrain memory engine에서 관련 맥락을 검색하고 Claude Craft 작업에 넣을 context pack을 생성합니다.
+GBrain memory engine에서 관련 맥락을 검색하고 Woogi Harness 작업에 넣을 context pack을 생성합니다.
 
 ## 절차
 

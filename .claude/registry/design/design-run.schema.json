@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://claude-craft.local/schemas/design-run-v3.json",
-  "title": "Claude Craft Design Runtime v3 Run",
+  "title": "Woogi Harness Design Runtime v3 Run",
   "type": "object",
   "additionalProperties": false,
   "required": [

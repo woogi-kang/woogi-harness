@@ -7,7 +7,7 @@ description: Korean-first typography and webfont system design for Korean produc
 
 ## Overview
 
-Choose Korean typography by product mood and text role, then turn it into stable implementation tokens. This skill is inspired by the public Korean Vibe Fonts package, but the bundled catalog and recommender are rewritten for Claude Craft rather than vendored from upstream.
+Choose Korean typography by product mood and text role, then turn it into stable implementation tokens. This skill is inspired by the public Korean Vibe Fonts package, but the bundled catalog and recommender are rewritten for Woogi Harness rather than vendored from upstream.
 
 Use this as the typography layer under `design-harness`: design-harness decides the product or brand register, this skill chooses and applies Hangul font roles.
 

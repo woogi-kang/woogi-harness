@@ -37,7 +37,7 @@ usage() {
 print_banner() {
     echo ""
     echo -e "${CYAN}╔═══════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}  ${BOLD}Claude Craft Runtime Installer${NC}                         ${CYAN}║${NC}"
+    echo -e "${CYAN}║${NC}  ${BOLD}Woogi Harness Runtime Installer${NC}                        ${CYAN}║${NC}"
     echo -e "${CYAN}║${NC}     Registry, packs, rules, evals, tools, providers    ${CYAN}║${NC}"
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
     echo ""
@@ -820,7 +820,7 @@ install_runtime() {
 }
 
 export_package() {
-    local package_name="claude-craft-${CLAUDE_CRAFT_PACKAGE_DATE:-$(date +%Y%m%d)}.zip"
+    local package_name="woogi-harness-${WOOGI_HARNESS_PACKAGE_DATE:-${CLAUDE_CRAFT_PACKAGE_DATE:-$(date +%Y%m%d)}}.zip"
     local package_path="$DIST_DIR/$package_name"
     local files=("${PACK_PATHS[@]}" "${EXTRA_EXPORT_PATHS[@]}" "AGENTS.md" "GEMINI.md" ".agents/skills")
 

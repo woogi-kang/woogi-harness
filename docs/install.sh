@@ -2,8 +2,17 @@
 
 set -e
 
-REPO_URL="https://github.com/woogi-kang/claude-craft.git"
-INSTALL_DIR="${INSTALL_DIR:-$HOME/.claude-craft}"
+REPO_URL="https://github.com/woogi-kang/woogi-harness.git"
+if [ -z "${INSTALL_DIR:-}" ]; then
+    if [ -d "$HOME/.woogi-harness/.git" ]; then
+        INSTALL_DIR="$HOME/.woogi-harness"
+    elif [ -d "$HOME/.claude-craft/.git" ]; then
+        # Preserve existing installations created before the public rename.
+        INSTALL_DIR="$HOME/.claude-craft"
+    else
+        INSTALL_DIR="$HOME/.woogi-harness"
+    fi
+fi
 INSTALL_MODE="${INSTALL_MODE:-link}"
 
 RED='\033[0;31m'
@@ -15,7 +24,7 @@ BOLD='\033[1m'
 
 echo ""
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${NC}  ${BOLD}Claude Craft Remote Installer${NC}                          ${CYAN}║${NC}"
+echo -e "${CYAN}║${NC}  ${BOLD}Woogi Harness Remote Installer${NC}                         ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}     Domain agents, skills, commands, status line         ${CYAN}║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
 echo ""

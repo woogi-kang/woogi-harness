@@ -1,7 +1,7 @@
 {
   "schema_version": "harness.project-pack.v1",
   "id": "default",
-  "description": "Shared Claude Craft assets. Target-only files are preserved; only hash-bound, explicitly retired harness files are removed.",
+  "description": "Shared Woogi Harness assets. Target-only files are preserved; only hash-bound, explicitly retired harness files are removed.",
   "paths": [
     "CLAUDE.md",
     "contexts",

@@ -1,4 +1,4 @@
-# Claude Craft
+# Woogi Harness
 
 AI 에이전트(25+)와 활성 스킬 entrypoint 385개(내부 원본 384개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 도메인 워크스페이스.
 Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬 자산을 공유합니다.

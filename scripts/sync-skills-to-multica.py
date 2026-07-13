@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync claude-craft skills to Multica platform."""
+"""Sync Woogi Harness skills to Multica platform."""
 
 import json
 import re

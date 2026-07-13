@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Craft Integrity Check
+Woogi Harness Integrity Check
 
 Verifies the entire agent -> skill -> references chain:
   1. Agent -> Skill references
@@ -431,7 +431,7 @@ def check_unreferenced_skills() -> CheckResult:
 
 def print_report(checks: list[CheckResult]) -> int:
     """Print the report and return exit code."""
-    print("=== Claude Craft Integrity Check ===")
+    print("=== Woogi Harness Integrity Check ===")
     print()
 
     total_checks = len(checks)

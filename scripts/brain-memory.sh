@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# brain-memory.sh - Claude Craft wrapper for the local GBrain memory engine.
+# brain-memory.sh - Woogi Harness wrapper for the local GBrain memory engine.
 
 set -euo pipefail
 
