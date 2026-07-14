@@ -1,17 +1,14 @@
 {
   "$schema": "../contracts/project-profile.schema.json",
   "schema_version": "harness.project-profile.v1",
-  "id": "check-your-hospital-design-runtime",
-  "pack": ".claude/project-packs/design-runtime/pack.json",
-  "pack_overlays": [
-    ".claude/project-packs/image-generation/pack.json",
-    ".claude/project-packs/korean-natural-writing/pack.json"
-  ],
+  "id": "korean-natural-writing-rollout",
+  "pack": ".claude/project-packs/korean-natural-writing/pack.json",
+  "pack_overlays": [],
   "providers": ["claude", "codex", "gemini", "opencode"],
   "selected_provider": "claude",
   "default_quality_tier": "implementation",
   "capabilities": [
-    "runtime.provider"
+    "quality.korean-natural-writing"
   ],
   "context_budget_bytes": 131072,
   "protected_paths": [

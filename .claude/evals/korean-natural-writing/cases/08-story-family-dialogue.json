@@ -1,0 +1,22 @@
+{
+  "id": "story-family-dialogue",
+  "genre": "storytelling",
+  "task": "오랜만에 찾아온 손주와 할머니의 관계가 자연스럽게 들리도록 대화와 주변 문장을 윤문하라. 지우가 도착했고, 할머니가 먼 길을 걱정하며 맞이하고, 지우가 어색하게 방으로 들어가는 흐름은 보존하라.",
+  "input": "“할머니, 저 왔습니다.” 지우가 말했다. “그래, 먼 길 오느라 수고하셨습니다.” 할머니가 대답했다. 지우는 어색한 웃음을 지으며 방으로 들어갔다.",
+  "required_meaning": [
+    "지우가 할머니를 찾아왔다",
+    "할머니는 먼 길 온 지우를 맞이한다",
+    "지우는 어색한 상태로 방에 들어간다"
+  ],
+  "constraints": {
+    "reader": "현대 가족소설 독자",
+    "register": "handa",
+    "min_chars": 45,
+    "max_chars": 150,
+    "required_tokens": ["지우", "할머니", "방"],
+    "exact_tokens": [],
+    "mutable_fixed_categories": ["quotation"],
+    "forbidden_tokens": ["할아버지", "서울", "십 년"]
+  },
+  "advisory_focus": ["relationship_register", "dialogue_naturalness", "editing_restraint"]
+}

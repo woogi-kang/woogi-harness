@@ -1,0 +1,21 @@
+{
+  "id": "copy-product-microcopy",
+  "genre": "microcopy-social",
+  "task": "파일 업로드 직후 보여 주는 제품 안내 문구로 간결하게 윤문하라. 업로드 완료, AI 분석 가능, '분석 시작' 버튼을 눌러야 한다는 의미를 보존하라.",
+  "input": "파일 업로드가 성공적으로 완료되었습니다. 이제 강력한 AI 분석 기능을 통해 데이터에서 놀라운 인사이트를 발견할 수 있습니다. 분석을 시작하려면 아래의 '분석 시작' 버튼을 클릭해 주세요.",
+  "required_meaning": [
+    "파일 업로드가 완료됐다",
+    "AI 분석을 실행할 수 있다",
+    "분석 시작 버튼을 누르면 된다"
+  ],
+  "constraints": {
+    "reader": "파일을 방금 올린 제품 사용자",
+    "register": "haeyo",
+    "min_chars": 35,
+    "max_chars": 120,
+    "required_tokens": ["AI", "분석 시작"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["100%", "즉시 완료", "자동 분석 완료"]
+  },
+  "advisory_focus": ["microcopy_action", "inflated_abstraction", "editing_restraint"]
+}

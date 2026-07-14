@@ -1,0 +1,20 @@
+{
+  "id": "essay-generic-opening",
+  "genre": "essay-blog",
+  "task": "범용적인 시대 진단을 걷어내고 담백한 칼럼 도입으로 윤문하라. 변화에서 가능성을 찾고 성장할 수 있다는 핵심은 보존하되 원문에 없는 개인 경험은 만들지 마라.",
+  "input": "오늘날 빠르게 변화하는 디지털 시대에 우리는 끊임없는 변화의 여정 속에 있습니다. 이러한 환경에서 중요한 것은 새로운 가능성을 발견하고, 이를 통해 한 단계 더 성장하는 것입니다. 결국 변화는 두려움의 대상이 아니라 우리 모두가 함께 만들어 가야 할 기회라고 할 수 있습니다.",
+  "required_meaning": [
+    "변화는 두려움의 대상이 아니라 모두가 함께 만들어 가야 할 기회다",
+    "가능성을 발견하고 성장할 수 있다"
+  ],
+  "constraints": {
+    "reader": "일반 독자",
+    "register": "handa",
+    "min_chars": 55,
+    "max_chars": 220,
+    "required_tokens": [],
+    "exact_tokens": [],
+    "forbidden_tokens": ["개인적으로", "제가 겪은"]
+  },
+  "advisory_focus": ["generic_opening", "inflated_abstraction", "connector_scaffold"]
+}

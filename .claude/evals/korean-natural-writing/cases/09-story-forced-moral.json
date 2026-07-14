@@ -1,0 +1,21 @@
+{
+  "id": "story-forced-moral",
+  "genre": "storytelling",
+  "task": "마지막의 강제 교훈을 걷어내고 수아의 행동과 말이 의미를 남기도록 윤문하라. 화분에 물을 준 행동과 '목이 말라 보였다'는 이유는 보존하라.",
+  "input": "수아는 매일 같은 시간에 골목의 화분에 물을 주었다. 어느 날 화분 주인이 누구냐고 묻자, 수아는 그냥 목이 말라 보였다고 말했다. 이 작은 행동은 우리에게 배려의 진정한 가치와 공동체의 중요성을 일깨워 준다.",
+  "required_meaning": [
+    "수아는 매일 골목 화분에 물을 준다",
+    "수아는 화분이 목말라 보여서 물을 줬다고 말한다"
+  ],
+  "constraints": {
+    "reader": "짧은 생활 서사 독자",
+    "register": "handa",
+    "min_chars": 50,
+    "max_chars": 170,
+    "required_tokens": ["수아", "화분", "목이 말라"],
+    "exact_tokens": [],
+    "mutable_fixed_categories": ["quotation"],
+    "forbidden_tokens": ["봉사상", "이웃", "감동했다"]
+  },
+  "advisory_focus": ["forced_moral", "show_not_label", "no_fabrication"]
+}

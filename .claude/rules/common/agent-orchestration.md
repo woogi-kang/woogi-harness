@@ -59,7 +59,8 @@ python3 scripts/harness-context.py \
 | 반복/장기/자율 작업 | `execution-contract.md` + 필요 시 `goal-prep-pack`/`autonomous-loops` |
 | UI/UX/Web/Flutter visual 변경·audit·AI Slop | `design-harness` Design Runtime v3 |
 | 생성형 raster image/편집 | exact-vendored `image-prompt` → validator → Codex `$imagegen`/`gpt-image-2` only |
-| 한국어 기술/제출 문서 | path-scoped `korean-writing-style.md` + `copy-editing` |
+| 한국어 기술/실무 문서의 용어·직역 표현 | path-scoped `korean-writing-style.md`; 공개·제출용 최종 품질이면 `korean-natural-writing` 추가 |
+| 한국어 산문·카피·스토리의 AI 티·번역투·윤문 | `korean-natural-writing`; 마케팅 전략·메시지는 해당 owner가 먼저 확정 |
 | PPT/PDF/slide | `presentation-quality-gate.md` + presentation capability |
 
 ### Image invariant
@@ -157,6 +158,12 @@ fingerprint/baseline → design contract → platform capture
 Generated image:
 asset context → image-prompt → check_prompt.mjs
 → $imagegen/gpt-image-2 → artifact QA
+
+Korean natural writing:
+message/facts owner → genre and voice contract → korean-natural-writing
+basic: one draft → invariant check
+deep/high-stakes only: two isolated editors → invariant gate
+→ blind critic → verified patch merge → max-two repair
 
 External review:
 context-pack PASS → explicit approval → external review

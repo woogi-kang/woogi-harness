@@ -1,0 +1,22 @@
+{
+  "id": "copy-deadline-offer",
+  "genre": "copy",
+  "task": "혜택 조건이 한 번에 읽히는 신청 카피로 윤문하라. 기한, 인원, 가격, 무료 기간, 링크를 정확히 보존하고 조건에 없는 할인이나 긴급성을 만들지 마라.",
+  "input": "7월 20일까지 사전 신청한 100명에게 월 9,900원 플랜을 3개월 무료로 제공합니다. 이 놀라운 기회를 놓치지 마세요! 지금 바로 https://example.com/apply 에서 신청하고 특별한 혜택의 주인공이 되어보세요.",
+  "required_meaning": [
+    "7월 20일까지 사전 신청해야 한다",
+    "대상은 100명이다",
+    "월 9,900원 플랜을 3개월 무료로 제공한다",
+    "링크에서 신청한다"
+  ],
+  "constraints": {
+    "reader": "서비스 가입을 검토하는 잠재 고객",
+    "register": "hamnida",
+    "min_chars": 65,
+    "max_chars": 170,
+    "required_tokens": ["7월 20일", "100명", "9,900원", "3개월", "https://example.com/apply"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["50%", "오늘 마감", "평생", "선착순 50명"]
+  },
+  "advisory_focus": ["generic_cta", "condition_clarity", "truth_preservation"]
+}

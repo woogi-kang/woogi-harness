@@ -1,6 +1,6 @@
 # Woogi Harness
 
-AI 에이전트(25+)와 활성 스킬 entrypoint 385개(내부 원본 384개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 도메인 워크스페이스.
+AI 에이전트(25+)와 활성 스킬 entrypoint 386개(내부 원본 385개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 도메인 워크스페이스.
 Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬 자산을 공유합니다.
 
 ## 프로젝트 구조
@@ -8,7 +8,7 @@ Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬
 ```
 .claude/
 ├── agents/      # 전문 에이전트 (9개 최상위 그룹)
-├── skills/      # 내부 스킬 원본 384개 + exact-vendored image-prompt link 1개
+├── skills/      # 내부 스킬 원본 385개 + exact-vendored image-prompt link 1개
 │   ├── {카테고리}/_shared/  # 공유 스킬 (에이전트 간 중복 제거)
 │   │                        # 💻 개발: project-setup, architecture, unit-test, e2e-test, cicd, performance
 │   │                        # 📝 콘텐츠: research, validation
@@ -110,6 +110,7 @@ Sync v2는 target-only 파일을 삭제하지 않고 manifest/backup/overlay/set
 - 모든 생성형 raster prompt는 exact-vendored Gongnyang `image-prompt`가 단독 소유하며 Codex `$imagegen` host contract의 required model `gpt-image-2`만 사용합니다. 대체 model fallback은 없습니다. Codex host schema가 model identity를 노출하지 않으므로 일반 실행은 `generated_under_trusted_host_contract`로 기록하고, model attestation이 필수면 `blocked_imagegen_model_unverifiable`로 중단합니다.
 - 기술 버전은 `.claude/registry/tech-stacks/`의 `latest_observed`, `recommended`, `compatibility_floor`, `prerelease`를 구분하고 migration gate 없이 숫자만 치환하지 않습니다.
 - 한국어 기술/제출 문서는 영어 직역투와 현업 비사용어를 별도 패스로 점검하고, 코드 식별자는 보존하되 설명문은 자연스러운 실무 용어로 풀어씁니다.
+- 한국어 산문·카피·스토리텔링의 AI 티 제거와 공개·제출용 깊은 윤문은 `korean-natural-writing`으로 장르/문체 계약, 의미 보존, 독립 비평을 거칩니다.
 - 보안 민감 정보(API 키, 시크릿)는 절대 커밋하지 않습니다.
 
 ## Rules

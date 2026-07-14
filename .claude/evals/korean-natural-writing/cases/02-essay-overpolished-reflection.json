@@ -1,0 +1,21 @@
+{
+  "id": "essay-overpolished-reflection",
+  "genre": "essay-blog",
+  "task": "감정을 과장하지 않는 1인칭 회고 문장으로 윤문하라. 실패가 두려웠고 그 경험이 성장에 영향을 주었다는 의미는 보존하되 구체적 사건을 새로 만들지 마라.",
+  "input": "처음에는 실패가 두려웠다. 하지만 그 실패는 단순히 좌절을 넘어 나를 성장시키는 소중한 자산이 되었다. 돌이켜보면 모든 순간이 지금의 나를 만든 여정이었고, 그 경험은 앞으로도 내 안에 깊은 울림으로 남을 것이다.",
+  "required_meaning": [
+    "처음에는 실패가 두려웠다",
+    "실패 경험은 성장에 영향을 주었다",
+    "그 경험의 영향은 앞으로도 남는다"
+  ],
+  "constraints": {
+    "reader": "회고 글 독자",
+    "register": "handa",
+    "min_chars": 55,
+    "max_chars": 190,
+    "required_tokens": [],
+    "exact_tokens": [],
+    "forbidden_tokens": ["프로젝트", "창업", "면접"]
+  },
+  "advisory_focus": ["formulaic_contrast", "forced_emotion", "editing_restraint"]
+}

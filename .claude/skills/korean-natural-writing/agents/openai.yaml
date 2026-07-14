@@ -1,0 +1,4 @@
+interface:
+  display_name: "Korean Natural Writing"
+  short_description: "한국어 산문·카피·스토리를 자연스럽게 윤문합니다."
+  default_prompt: "Use $korean-natural-writing to rewrite this Korean draft in an idiomatic, genre-appropriate voice while preserving its meaning."

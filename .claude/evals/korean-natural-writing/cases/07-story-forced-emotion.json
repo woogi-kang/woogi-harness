@@ -1,0 +1,21 @@
+{
+  "id": "story-forced-emotion",
+  "genre": "storytelling",
+  "task": "감정을 직접 지시하는 표현을 줄이고 장면이 먼저 보이는 짧은 서사로 윤문하라. 민수가 빈 교실에서 창밖을 보고 과거 선택의 의미를 깨닫는 사건은 보존하되 선택의 내용을 새로 만들지 마라.",
+  "input": "민수는 빈 교실에 홀로 남아 창밖을 바라보았다. 석양은 그의 마음처럼 붉게 타오르고 있었고, 그는 지난날의 선택이 지닌 진정한 의미를 깨달았다. 그 순간, 가슴 깊은 곳에서 따뜻한 여운이 피어올랐다.",
+  "required_meaning": [
+    "민수는 빈 교실에 혼자 남았다",
+    "민수는 창밖을 보았다",
+    "과거 선택의 의미를 깨달았다"
+  ],
+  "constraints": {
+    "reader": "짧은 소설 독자",
+    "register": "handa",
+    "min_chars": 45,
+    "max_chars": 180,
+    "required_tokens": ["민수", "교실"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["친구", "입학", "졸업", "편지"]
+  },
+  "advisory_focus": ["forced_emotion", "scene_before_explanation", "no_fabrication"]
+}

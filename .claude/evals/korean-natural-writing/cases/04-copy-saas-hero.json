@@ -1,0 +1,21 @@
+{
+  "id": "copy-saas-hero",
+  "genre": "copy",
+  "task": "일정 관리 서비스의 랜딩 페이지 히어로 카피로 윤문하라. 제품명, AI 일정 관리, 한곳에서 일정 관리, 중요한 일정을 놓치지 않도록 돕는다는 정보만 사용하고 근거 없는 성과는 만들지 마라.",
+  "input": "혁신적인 AI 일정 관리 솔루션 모아는 사용자의 일상을 더욱 스마트하게 만들어 줍니다. 복잡한 일정을 한 곳에서 관리하고, 중요한 순간을 놓치지 마세요. 지금 바로 모아와 함께 새로운 생산성의 여정을 시작하세요.",
+  "required_meaning": [
+    "모아는 AI 일정 관리 서비스다",
+    "일정을 한곳에서 관리한다",
+    "중요한 일정을 놓치지 않도록 돕는다"
+  ],
+  "constraints": {
+    "reader": "일정이 복잡한 직장인",
+    "register": "hamnida",
+    "min_chars": 45,
+    "max_chars": 150,
+    "required_tokens": ["모아", "AI"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["1위", "무료", "500개", "80%"]
+  },
+  "advisory_focus": ["generic_cta", "inflated_abstraction", "specificity"]
+}

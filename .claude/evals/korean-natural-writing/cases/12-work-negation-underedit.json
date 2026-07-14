@@ -1,0 +1,23 @@
+{
+  "id": "work-negation-underedit",
+  "genre": "work-technical",
+  "task": "고객 요금 안내문을 최소 윤문하라. 종료되지 않음, 자동 청구되지 않음, 별도 조치가 필요 없음이라는 세 부정을 모두 보존하고 새로운 조건을 추가하지 마라.",
+  "input": "7월 31일까지 기존 플랜은 종료되지 않습니다. 8월 1일부터 새 요금제가 적용되지만, 현재 고객에게는 자동으로 청구되지 않습니다. 변경을 원하지 않는 경우 별도의 조치를 취할 필요가 없습니다. 자세한 내용은 https://example.com/pricing 에서 확인할 수 있습니다.",
+  "required_meaning": [
+    "7월 31일까지 기존 플랜은 종료되지 않는다",
+    "8월 1일부터 새 요금제가 적용된다",
+    "현재 고객에게 자동 청구되지 않는다",
+    "변경을 원하지 않으면 별도 조치가 필요 없다",
+    "링크에서 자세한 내용을 확인할 수 있다"
+  ],
+  "constraints": {
+    "reader": "기존 유료 고객",
+    "register": "hamnida",
+    "min_chars": 105,
+    "max_chars": 240,
+    "required_tokens": ["7월 31일", "8월 1일", "https://example.com/pricing"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["해지", "환불", "동의", "자동 전환"]
+  },
+  "advisory_focus": ["negation_preservation", "condition_clarity", "underediting"]
+}

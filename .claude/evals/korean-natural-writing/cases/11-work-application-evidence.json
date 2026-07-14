@@ -1,0 +1,23 @@
+{
+  "id": "work-application-evidence",
+  "genre": "submission-presentation",
+  "task": "지원서의 성과 문단으로 윤문하라. 기간, 역할, 팀 규모, 본인 기여, 장애 대응 시간 개선을 정확히 보존하고 팀 전체 성과를 혼자 이룬 것처럼 과장하지 마라.",
+  "input": "2025년 3월부터 6월까지 4개월간 프로젝트 리드를 맡아 5명의 팀원과 서비스를 개발했습니다. 저는 백엔드 아키텍처를 설계하고 배포 자동화를 구축했으며, 출시 후 장애 대응 시간을 30분에서 10분으로 단축하는 데 기여했습니다. 이 경험을 통해 단순히 기술적 문제 해결을 넘어 팀의 성장을 이끄는 리더십의 중요성을 배웠습니다.",
+  "required_meaning": [
+    "2025년 3월부터 6월까지 4개월간 프로젝트 리드를 맡았다",
+    "5명의 팀원과 개발했다",
+    "백엔드 아키텍처와 배포 자동화를 담당했다",
+    "장애 대응 시간을 30분에서 10분으로 줄이는 데 기여했다",
+    "리더십에 대해 배웠다"
+  ],
+  "constraints": {
+    "reader": "채용 담당자와 현업 면접관",
+    "register": "hamnida",
+    "min_chars": 125,
+    "max_chars": 280,
+    "required_tokens": ["백엔드 아키텍처", "배포 자동화"],
+    "exact_tokens": [],
+    "forbidden_tokens": ["혼자", "전사", "100%", "매출"]
+  },
+  "advisory_focus": ["formulaic_contrast", "evidence_ownership", "editing_restraint"]
+}
