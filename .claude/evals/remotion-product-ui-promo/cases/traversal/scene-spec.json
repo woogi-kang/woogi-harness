@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "composition": "ProductPromo",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 60,
+  "scenes": [
+    {
+      "preset": "brandTitle",
+      "durationInFrames": 60,
+      "params": {"title": "Product"},
+      "transition": {"type": "cut", "durationInFrames": 0},
+      "camera": {"x": 0, "y": 0, "scale": 1, "rotateX": 0, "rotateY": 0}
+    }
+  ]
+}

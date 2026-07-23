@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "composition": "ProductPromo",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 150,
+  "scenes": [
+    {
+      "preset": "brandTitle",
+      "durationInFrames": 60,
+      "params": {"title": "Product"},
+      "transition": {"type": "cut", "durationInFrames": 0},
+      "camera": {"x": 0, "y": 0, "scale": 1, "rotateX": 0, "rotateY": 0}
+    },
+    {
+      "preset": "uiZoom",
+      "durationInFrames": 90,
+      "params": {"captureId": "home"},
+      "transition": {"type": "fade", "durationInFrames": 12},
+      "camera": {"x": 0, "y": 0, "scale": 1.08, "rotateX": 4, "rotateY": -8}
+    }
+  ]
+}

@@ -17,6 +17,12 @@ Use the local Remotion path when the request is an explainer, pitch, tutorial,
 data story, status report, product walkthrough, or Korean/English narrated
 short where structured scenes matter more than photoreal generated motion.
 
+When the request is primarily a real product UI showcase, app promo, or
+interaction demo, route to
+[`product-ui-promotion.md`](product-ui-promotion.md) instead. That workflow
+separates deterministic product capture from Remotion compositing and forbids
+redrawing the product UI.
+
 Do not promise cinematic AI video generation, stock footage, premium voice,
 music, or word-level subtitles until the relevant provider keys and tools are
 available. State the provider envelope before producing assets.

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "reference": {
+    "status": "not_provided",
+    "reason": "The request defines a product thesis but does not include a reference video."
+  },
+  "motionGrammar": {
+    "shotLengthFrames": [60, 120],
+    "camera": "slow readable push",
+    "revealOrder": ["editorial_text", "product_ui", "pointer"]
+  },
+  "shots": []
+}

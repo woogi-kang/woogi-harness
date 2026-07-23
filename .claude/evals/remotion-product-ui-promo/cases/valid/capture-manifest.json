@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "source": {
+    "kind": "product_golden_renderer",
+    "repo": "/workspace/product",
+    "revision": "0123456789abcdef",
+    "dirtyWorktree": false
+  },
+  "runtime": {
+    "viewport": {"width": 390, "height": 844},
+    "devicePixelRatio": 1,
+    "locale": "ko_KR",
+    "timezone": "Asia/Seoul",
+    "clock": "2026-07-23T12:00:00+09:00",
+    "readiness": "golden assertion completed"
+  },
+  "frames": [
+    {
+      "id": "home",
+      "path": "capture/home.png",
+      "state": "home:ready",
+      "frame": 0,
+      "width": 390,
+      "height": 844,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

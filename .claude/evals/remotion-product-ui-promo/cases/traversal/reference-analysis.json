@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "reference": {
+    "status": "not_provided",
+    "reason": "No reference video was supplied."
+  },
+  "motionGrammar": {
+    "camera": "slow readable push"
+  },
+  "shots": []
+}

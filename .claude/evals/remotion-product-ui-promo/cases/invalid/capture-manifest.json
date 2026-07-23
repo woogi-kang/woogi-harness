@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "source": {
+    "kind": "redrawn_mock",
+    "repo": "",
+    "revision": ""
+  },
+  "runtime": {},
+  "frames": [
+    {
+      "id": "fake",
+      "path": "capture/fake.png",
+      "state": "fake",
+      "frame": 0,
+      "width": 0,
+      "height": 0,
+      "sha256": "not-a-hash"
+    }
+  ]
+}

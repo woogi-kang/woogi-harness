@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "remotion.product-ui-promo.v1",
+  "composition": "BadPromo",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 90,
+  "scenes": [
+    {
+      "preset": "oneOffFancyThing",
+      "durationInFrames": 60,
+      "params": {},
+      "transition": {"type": "morph", "durationInFrames": -1}
+    }
+  ]
+}
