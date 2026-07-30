@@ -61,6 +61,7 @@ python3 scripts/harness-context.py \
 | 생성형 raster image/편집 | exact-vendored `image-prompt` → validator → Codex `$imagegen`/`gpt-image-2` only |
 | 한국어 기술/실무 문서의 용어·직역 표현 | path-scoped `korean-writing-style.md`; 공개·제출용 최종 품질이면 `korean-natural-writing` 추가 |
 | 한국어 산문·카피·스토리의 AI 티·번역투·윤문 | `korean-natural-writing`; 마케팅 전략·메시지는 해당 owner가 먼저 확정 |
+| 한국어 원고의 글자·줄·byte 제한 | `korean-character-count`; 제출처 계약이 없으면 grapheme + UTF-8 기본값 |
 | PPT/PDF/slide | `presentation-quality-gate.md` + presentation capability |
 
 ### Image invariant
@@ -163,6 +164,8 @@ Korean natural writing:
 message/facts owner → genre and voice contract → korean-natural-writing
 basic: one draft → invariant check
 deep/high-stakes only: two isolated editors → invariant gate
+→ deterministic character/byte constraint check when requested
+→ optional low-volume spell check when external transmission is allowed
 → blind critic → verified patch merge → max-two repair
 
 External review:

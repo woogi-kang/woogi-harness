@@ -1,11 +1,14 @@
 {
   "schema_version": "harness.project-pack.v1",
   "id": "korean-natural-writing",
-  "description": "Narrow distribution pack for the Korean natural-writing skill, executable eval, shared terminology rule, and registry entry.",
+  "description": "Narrow distribution pack for Korean natural writing, advisory signal analysis, deterministic character counts, executable evals, shared terminology, and registry entry.",
   "paths": [
     ".claude/project-packs/korean-natural-writing/pack.json",
     ".claude/skills/korean-natural-writing",
+    ".claude/skills/🇰🇷 k-skill/korean-character-count",
     ".claude/evals/korean-natural-writing",
+    ".claude/evals/korean-character-count",
+    ".claude/rules/common/agent-orchestration.md",
     ".claude/rules/common/korean-writing-style.md",
     ".claude/registry/skills/core.json"
   ],

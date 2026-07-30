@@ -3,7 +3,7 @@ name: korean-natural-writing
 description: "한국어 산문, 카피, 스토리텔링, 에세이, 블로그, 지원서, 소개문, 발표 대본의 AI 티·번역투·상투적 표현·문체 획일화를 진단하고, 의미·사실·저자 목소리를 보존하면서 장르와 독자에 맞는 자연스러운 한국어로 작성·윤문한다. 사용자가 'AI가 쓴 티', '번역투', '윤문', '자연스럽게', '사람이 쓴 것처럼'을 언급하거나 공개·제출용 한국어 원고의 최종 품질이 중요한 경우 반드시 사용한다. 단순 맞춤법 검사나 기술 용어 정리만 필요한 작업에는 사용하지 않는다."
 metadata:
   category: "standalone"
-  version: "1.3.0"
+  version: "1.4.0"
   tags: "korean, writing, copy, storytelling, editing, anti-slop"
   author: "woogi"
 ---
@@ -24,6 +24,7 @@ metadata:
 
 - 장르를 정한 뒤 [genre-contracts.md](references/genre-contracts.md)에서 해당 계약만 읽는다.
 - AI 티나 번역투를 진단할 때 [slop-signatures.md](references/slop-signatures.md)를 읽는다. 표현 목록을 금칙어로 쓰지 않는다.
+- 반복 패턴을 span·강도·장르 적합성으로 분류할 때 [ai-tell-catalog.md](references/ai-tell-catalog.md)를 읽는다. 이 카탈로그로 AI 작성 여부를 판정하지 않는다.
 - 깊은 윤문 또는 후보 비교를 할 때 [evaluation-rubric.md](references/evaluation-rubric.md)를 읽는다.
 - 프로젝트 문체 프로필을 만들 때 [korean-writing-profile.template.md](assets/korean-writing-profile.template.md)를 `.claude/korean-writing-profile.md`로 복사해 채운다.
 - 평가표나 말뭉치 연동을 바꿀 때만 [research-basis.md](references/research-basis.md)를 읽는다.
@@ -112,7 +113,7 @@ metadata:
 python3 .claude/skills/korean-natural-writing/scripts/analyze_korean_style.py <draft>
 ```
 
-스크립트 결과는 수정 후보를 찾는 신호다. 플래그 수를 자연스러움 점수로 취급하지 않는다.
+장르를 알면 `--genre copy|story|essay|submission|work-technical|microcopy-social`을 함께 준다. 스크립트 결과는 수정 후보를 찾는 신호다. 플래그 수를 자연스러움 점수나 AI 작성 확률로 취급하지 않는다.
 
 ### 3. 두 편집 관점으로 독립 초안 만들기
 
@@ -146,6 +147,8 @@ python3 .claude/skills/korean-natural-writing/scripts/analyze_korean_style.py \
 - 고유명사, 수치, 날짜, 링크, 인용, 코드 식별자의 누락·추가
 - 근거 없는 성과, 통계, 추천사, 감정, 장면의 창작
 - 요청한 형식, 분량, CTA의 훼손
+
+목표 글자 수가 있으면 `korean-character-count`로 공백 포함 grapheme 수와 제출처별 byte 계약을 실제 계산한다. 눈대중이나 모델 추정으로 분량 통과를 선언하지 않는다.
 
 자동 대조 전에 변경마다 `semantic_delta`를 내부 기록한다.
 
