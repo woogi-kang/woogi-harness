@@ -12,6 +12,8 @@
 각 사례는 `input`, `task`, `required_meaning`, `constraints`, `advisory_focus`를 가진다. 출력 형식은 모든 사례에 공통으로 `## 완성본`, `## 다듬은 기준`을 사용하며 정답 문장 하나를 저장하지 않는다.
 최소 글자 수는 핵심 내용이 통째로 빠진 출력을 찾는 안전장치일 뿐이다. 자연스러운 삭제를 막거나 문장을 채우도록 강요하는 기준으로 쓰지 않는다.
 
+12개 생성·비평 calibration과 별도로 `fixtures/analyzer-signals.json`은 deterministic advisory detector 회귀를 담당한다. 연결어미 뒤 쉼표, 겹조사, 챗봇 잔재, 서식 신호, 단일 줄표 false positive, 장르 적합성 라벨을 검사한다. 이 fixture 통과는 문체 품질이나 AI 작성 여부의 증거가 아니다.
+
 ## 실행
 
 후보를 파일로 저장한 뒤 deterministic gate를 실행한다.
@@ -21,6 +23,12 @@ python3 .claude/evals/korean-natural-writing/grader.py \
   --case .claude/evals/korean-natural-writing/cases/01-essay-generic-opening.json \
   --candidate /path/to/candidate.md \
   --output /tmp/korean-writing-eval.json
+```
+
+분석기 fixture도 실행한다.
+
+```bash
+python3 .claude/evals/korean-natural-writing/test_analyzer_signals.py
 ```
 
 비평자 JSON이 있으면 함께 집계한다.
@@ -57,6 +65,7 @@ CLI 종료 코드는 `pass=0`, `fail=1`, `needs_review=2`다. 검토 대기 결�
 
 첫 12개 결과는 calibration 결과다. 사용자 블라인드 검토 전에는 capability 상태를 `experimental`로 유지한다.
 같은 사례를 보고 구조를 고친 뒤 다시 실행한 결과는 회귀 점검이지 새 holdout이 아니다. `stable` 승격에는 작성 과정에서 사용하지 않은 사례와 실제 사용자 원고의 블라인드 검토가 모두 필요하다.
+`.orchestration/korean-natural-writing-eval/iteration-1/benchmark.json`은 v1.3 시점의 provenance를 고정한 과거 결과다. 분석기와 스킬이 v1.4로 바뀐 뒤에는 현재 품질의 근거로 재사용하지 않으며, v1.4는 새 후보·새 비평·새 사람 검토를 거쳐야 한다.
 
 12개 결과와 순서 교환 비교를 한 번에 집계한다.
 

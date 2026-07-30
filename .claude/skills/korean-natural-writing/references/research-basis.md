@@ -18,6 +18,8 @@
 - 최희경, [영한 번역문의 번역투 연구](https://journal.kci.go.kr/kats/archive/articleView?artiId=ART002094440)
 - 국립국어원, [번역투에는 공식 판정 기준이 없다는 답변](https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=307425)
 
+공개 humanizer 자산의 패턴 목록은 회귀 후보를 넓히는 자료로만 사용한다. `NomaDamas/k-skill`의 `korean-humanizer`, `epoko77-ai/im-not-ai`, `blader/humanizer`에서 한국어 특화 관찰을 선별했지만, 원본의 심각도와 횟수 기준을 보편적인 AI 판정 기준으로 승격하지 않는다. 흡수한 신호와 제외한 기준은 [ai-tell-catalog.md](ai-tell-catalog.md)에 기록한다.
+
 ### 문체 개선과 내용 보존을 분리한다
 
 텍스트 스타일 변환 평가는 목표 문체, 의미 보존, 자연스러움을 독립적으로 봐야 한다. 이 스킬은 수치·인용·부정·주체 변화 등을 먼저 탈락시키고 문체를 나중에 평가한다.

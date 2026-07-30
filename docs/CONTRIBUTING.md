@@ -18,11 +18,11 @@ Woogi Harness 프로젝트에 스킬, 에이전트, 커맨드를 추가하는 �
 │   ├── ⚖️ 법무/      # 계약, 법인 운영
 │   ├── 💰 재무/      # 결제, 재무 보고
 │   └── 🔍 리뷰/      # 멀티 리뷰 오케스트레이션
-├── skills/           # 스킬 원본 (9개 도메인, Single Source of Truth, 385개)
+├── skills/           # 스킬 원본 (9개 도메인, Single Source of Truth, 386개)
 │   ├── _template/    # 새 스킬 템플릿
 │   ├── 💻 개발/      # 카테고리별 스킬 디렉토리
 │   ├── 🎯 기획/
-│   ├── 🇰🇷 k-skill/  # 한국생활 스킬 31개
+│   ├── 🇰🇷 k-skill/  # 한국생활 스킬 32개
 │   └── ...           # standalone 스킬 (brand, design, social-content 등)
 ├── commands/         # 슬래시 커맨드 (25개)
 ├── templates/        # 팀 오케스트레이션 TOML 템플릿 (5개)

@@ -1,0 +1,55 @@
+{
+  "schema": "korean-natural-writing.analyzer-fixtures.v1",
+  "cases": [
+    {
+      "id": "connective-comma-cluster",
+      "genre": "work-technical",
+      "text": "회의를 마치고, 결과를 정리했지만, 배포 여부는 결정하지 않았다.",
+      "required_flags": ["connective_comma"],
+      "forbidden_flags": []
+    },
+    {
+      "id": "stacked-particle",
+      "genre": "work-technical",
+      "text": "조직에서의 변화와 미래로의 이동을 문서에 정리한다.",
+      "required_flags": ["stacked_particle"],
+      "forbidden_flags": []
+    },
+    {
+      "id": "chatbot-residue",
+      "genre": "essay",
+      "text": "좋은 질문이에요! 아래는 이번 회고입니다. 도움이 되었으면 좋겠습니다.",
+      "required_flags": ["chatbot_residue"],
+      "forbidden_flags": []
+    },
+    {
+      "id": "format-only-cluster",
+      "genre": "submission",
+      "text": "🚀 — 첫 설명 —\n💡 — 둘째 설명 —\n✅ — 셋째 설명 —\n- **속도:** 빠르다.\n- **품질:** 안정적이다.\n- **보안:** 별도로 검토한다.",
+      "required_flags": [
+        "decorative_dash_cluster",
+        "emoji_decoration_cluster",
+        "bold_label_list"
+      ],
+      "forbidden_flags": []
+    },
+    {
+      "id": "single-dash-false-positive",
+      "genre": "essay",
+      "text": "그 결정은 — 적어도 당시에는 — 내가 할 수 있는 최선이었다.",
+      "required_flags": [],
+      "forbidden_flags": ["decorative_dash_cluster"]
+    },
+    {
+      "id": "genre-applicability-label",
+      "genre": "work-technical",
+      "text": "지금 바로 시작하고 놀라운 결과를 놓치지 마세요.",
+      "required_flags": ["generic_cta"],
+      "forbidden_flags": [],
+      "expected_status": "pass",
+      "expected_applicability": {
+        "generic_cta": false
+      }
+    }
+  ]
+}

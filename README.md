@@ -1,6 +1,6 @@
 # Woogi Harness
 
-AI 에이전트(25+)와 활성 스킬 entrypoint 386개(내부 원본 385개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 런타임 에이전트 하네스입니다.
+AI 에이전트(25+)와 활성 스킬 entrypoint 387개(내부 원본 386개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 런타임 에이전트 하네스입니다.
 Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬 자산을 공유합니다.
 
 > 이름은 특정 모델보다 만든 사람과 운영 철학을 드러내도록 `Claude Craft`에서 `Woogi Harness`로 변경했습니다. `.claude/`, `CLAUDE.md`, 기존 설치 manifest와 schema ID는 런타임 호환성을 위해 유지합니다.
@@ -10,7 +10,7 @@ Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬
 | 자산 | 수량 | 설명 |
 |------|------|------|
 | 도메인 에이전트 | 25+ | 9개 최상위 에이전트 그룹 |
-| 스킬 | 386 | 내부 원본 385개 + exact-vendored `image-prompt` 1개 |
+| 스킬 | 387 | 내부 원본 386개 + exact-vendored `image-prompt` 1개 |
 | 슬래시 커맨드 | 25 | `/commit`, `/review`, `/team`, `/today`, `/brain-search` 등 |
 | 팀 템플릿 | 5 | fullstack-dev, content-pipeline 등 |
 | 훅 | 4 | push guard, image guard, quality gate, usage tracker |
@@ -34,11 +34,11 @@ Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬
 │   ├── ⚖️ 법무/      # 계약 검토, 법인 운영
 │   ├── 💰 재무/      # 결제 자동화, 재무 보고
 │   └── 🔍 리뷰/      # 멀티 리뷰 오케스트레이션
-├── skills/           # 내부 원본 385개 + exact-vendored image-prompt link 1개
+├── skills/           # 내부 원본 386개 + exact-vendored image-prompt link 1개
 │   ├── _template/    # 새 스킬 템플릿
 │   ├── 💻 개발/      # 카테고리별 에이전트 스킬
 │   ├── 🎯 기획/
-│   ├── 🇰🇷 k-skill/  # 한국생활 스킬 31개
+│   ├── 🇰🇷 k-skill/  # 한국생활 스킬 32개
 │   └── ...           # 독립 스킬 (design, brand, social-content, korean-natural-writing 등)
 ├── commands/         # 슬래시 커맨드 (25개)
 ├── templates/        # 팀 오케스트레이션 TOML 템플릿 (5개)
@@ -131,7 +131,7 @@ third_party/          # SHA 고정 upstream runtime (Gongnyang 등, 로컬 patch
 
 ### 🇰🇷 한국생활
 
-SRT/KTX, 날씨, 지하철, 법률, 주식, 배송 추적, 쿠팡, 맞춤법 등 31개 `k-skill`을 제공합니다.
+SRT/KTX, 날씨, 지하철, 법률, 주식, 배송 추적, 쿠팡, 맞춤법, 글자 수 계산 등 32개 `k-skill`을 제공합니다.
 
 ---
 

@@ -1,6 +1,6 @@
 # Woogi Harness
 
-AI 에이전트(25+)와 활성 스킬 entrypoint 386개(내부 원본 385개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 도메인 워크스페이스.
+AI 에이전트(25+)와 활성 스킬 entrypoint 387개(내부 원본 386개 + exact-vendored `image-prompt` 1개)를 체계적으로 관리하는 멀티 도메인 워크스페이스.
 Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬 자산을 공유합니다.
 
 ## 프로젝트 구조
@@ -8,7 +8,7 @@ Claude Code, Gemini CLI, Codex CLI, OpenCode에서 동일한 에이전트/스킬
 ```
 .claude/
 ├── agents/      # 전문 에이전트 (9개 최상위 그룹)
-├── skills/      # 내부 스킬 원본 385개 + exact-vendored image-prompt link 1개
+├── skills/      # 내부 스킬 원본 386개 + exact-vendored image-prompt link 1개
 │   ├── {카테고리}/_shared/  # 공유 스킬 (에이전트 간 중복 제거)
 │   │                        # 💻 개발: project-setup, architecture, unit-test, e2e-test, cicd, performance
 │   │                        # 📝 콘텐츠: research, validation
@@ -40,7 +40,7 @@ third_party/     # SHA 고정 upstream runtime (로컬 patch 금지)
 | ⚖️ 법무 | 계약 검토, 법인 운영 |
 | 💰 재무 | 결제 자동화, 재무 보고 |
 | 🔍 리뷰 | 코드/아키텍처/보안/콘텐츠/디자인 멀티 리뷰 |
-| 🇰🇷 한국생활 | SRT/KTX, 날씨, 지하철, 법률, 주식, 배송추적, 쿠팡, 맞춤법 등 31개 (k-skill) |
+| 🇰🇷 한국생활 | SRT/KTX, 날씨, 지하철, 법률, 주식, 배송추적, 쿠팡, 맞춤법, 글자 수 계산 등 32개 (k-skill) |
 
 ## 오케스트레이션
 
