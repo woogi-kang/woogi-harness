@@ -105,6 +105,8 @@ private-key*
 # Virtual Environments
 .ruff_cache/
 build/
+!third_party/img2threejs/grimoire/build/
+!third_party/img2threejs/grimoire/build/*.md
 [Dd]esktop.ini
 .nuxt/
 # Test Coverage

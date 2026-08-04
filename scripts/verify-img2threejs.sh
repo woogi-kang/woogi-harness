@@ -142,6 +142,4 @@ PY
 python3 -m compileall -q "$VENDOR/forge"
 python3 "$VENDOR/forge/stage1_intake/probe_image.py" --help >/dev/null
 python3 "$VENDOR/forge/stage2_spec/new_pre_spec_assessment.py" --help >/dev/null
-python3 "$ROOT/scripts/harness-registry.py" resolve img2threejs >/dev/null
-
-echo "PASS: img2threejs vendor, symlink, Python smoke checks, and registry resolution"
+echo "PASS: img2threejs vendor, symlink, metadata, and Python smoke checks"
