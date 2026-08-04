@@ -1,0 +1,20 @@
+{
+  "schema_version": "harness.project-pack.v1",
+  "id": "img2threejs",
+  "description": "Pinned img2threejs procedural image-to-Three.js skill and verification assets.",
+  "paths": [
+    ".claude/project-packs/img2threejs/pack.json",
+    "third_party/img2threejs",
+    ".claude/skills/img2threejs",
+    "scripts/verify-img2threejs.sh",
+    "scripts/update-img2threejs.sh"
+  ],
+  "exclude": [
+    "**/.git/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    ".claude/settings*.json",
+    ".mcp.json",
+    ".env*"
+  ]
+}

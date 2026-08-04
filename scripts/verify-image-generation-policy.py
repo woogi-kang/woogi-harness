@@ -511,6 +511,23 @@ def required_surfaces_for_installation(errors: list[str]) -> tuple[str, ...]:
         if not DEFAULT_PACK.is_file():
             errors.append("full installation scope is missing the default pack")
             return ()
+        try:
+            default_pack = read_json(DEFAULT_PACK)
+        except ValueError as exc:
+            errors.append(str(exc))
+            return ()
+        declared = default_pack.get("image_policy_required_surfaces")
+        if isinstance(declared, list) and declared:
+            if any(not isinstance(path, str) for path in declared):
+                errors.append("lean default image-policy routes must be strings")
+                return ()
+            unknown = sorted(set(declared) - set(REQUIRED_SURFACES))
+            if unknown:
+                errors.append(
+                    "lean default pack declares unknown image-policy routes: "
+                    + ", ".join(unknown)
+                )
+            return tuple(dict.fromkeys(declared))
         return REQUIRED_SURFACES
     if not selective:
         errors.append(

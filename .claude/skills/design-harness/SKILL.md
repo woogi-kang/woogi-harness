@@ -1,6 +1,6 @@
 ---
 name: design-harness
-description: "증거 기반 Design Runtime v3. UI/UX 설계·구현·리디자인·감사·폴리시 작업에서 project fingerprint, design contract, 5개 control dial, platform adapter, route/state/viewport evidence, anti-slop detector, 독립 critic, 최대 2회 repair, executable eval을 강제한다. 웹과 Flutter 디자인 변경 또는 AI Slop 위험이 있는 모든 작업에 사용한다."
+description: "A/B 비교를 위한 opt-in legacy Design Runtime v3. 일반 UI 작업에는 자동 사용하지 않으며 사용자가 명시적으로 $design-harness baseline을 요청한 경우에만 연다."
 license: MIT
 metadata:
   category: "🎨 디자인"
@@ -9,6 +9,8 @@ metadata:
 ---
 
 # Design Harness — Runtime v3
+
+> **Opt-in comparison baseline:** lean default에서는 비활성화되어 있다. 일반 UI/UX 작업에 자동 적용하지 않는다. 사용자가 `$design-harness` 또는 legacy Design Runtime 비교를 명시했을 때만 아래 계약을 사용한다.
 
 좋은 취향을 주장하는 대신, 제품 맥락을 고정하고 실제 화면으로 증명한다.
 

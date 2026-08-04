@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/img2threejs/img2threejs",
+  "ref": "main",
+  "commit": "5d0eeac46373b9b293c495e794e6dec3e1cce205",
+  "skill_version": "1.4.1",
+  "license": "Apache-2.0",
+  "runtime_paths": [
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "ROADMAP.md",
+    "SKILL.md",
+    "docs",
+    "forge",
+    "grimoire",
+    "skills"
+  ],
+  "archive_sha256": "b33eff492fcf11f68fe498de5431fca75e978301b7f05e63dc67a1a03c8462db",
+  "local_patches": []
+}

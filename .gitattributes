@@ -1,0 +1,2 @@
+# Preserve exact-vendored upstream bytes; local source remains subject to whitespace checks.
+third_party/img2threejs/** -whitespace
