@@ -81,23 +81,23 @@ class InstallScriptTests(unittest.TestCase):
                 runtime_root
                 / ".claude"
                 / "registry"
-                / "design"
-                / "design-run.schema.json",
+                / "providers"
+                / "image-generation.yaml",
                 runtime_root / ".claude" / "project-packs" / "default" / "pack.json",
                 runtime_root
                 / ".claude"
                 / "rules"
                 / "common"
-                / "agent-orchestration.md",
+                / "imagegen-marketing-assets.md",
                 runtime_root / ".claude" / "evals" / "ui-design" / "grader.py",
                 runtime_root / "scripts" / "harness-doctor.py",
-                runtime_root / "scripts" / "harness-registry.py",
+                runtime_root / "scripts" / "harness-provider.py",
                 runtime_root
                 / ".claude"
                 / "skills"
                 / "design-harness"
                 / "scripts"
-                / "design-runtime.py",
+                / "detect-design-slop.mjs",
                 runtime_root
                 / "third_party"
                 / "gongnyang-prompt-kit"
@@ -141,7 +141,18 @@ class InstallScriptTests(unittest.TestCase):
                 "claude-craft.install-ownership.v1",
             )
             self.assertEqual(ownership["runtime_root"], str(runtime_root))
-            self.assertIn(".claude/skills", ownership["owned_paths"]["runtime"])
+            self.assertIn(
+                ".claude/skills/image-prompt",
+                ownership["owned_paths"]["runtime"],
+            )
+            self.assertIn(
+                ".claude/skills/img2threejs",
+                ownership["owned_paths"]["runtime"],
+            )
+            self.assertNotIn(
+                ".claude/skills",
+                ownership["owned_paths"]["runtime"],
+            )
             self.assertIn("skills", ownership["owned_paths"]["runtime"])
             self.assertIn(
                 str(home / ".agents" / "skills"),
@@ -165,18 +176,10 @@ class InstallScriptTests(unittest.TestCase):
             checks = json.loads(doctor.stdout)["checks"]
             self.assertTrue(all(check["status"] == "pass" for check in checks), checks)
 
-            registry = subprocess.run(
-                [
-                    sys.executable,
-                    str(runtime_root / "scripts" / "harness-registry.py"),
-                    "validate",
-                ],
-                cwd=runtime_root,
-                check=False,
-                capture_output=True,
-                text=True,
+            self.assertFalse(
+                (runtime_root / "scripts" / "harness-registry.py").exists()
             )
-            self.assertEqual(registry.returncode, 0, registry.stderr or registry.stdout)
+            self.assertFalse((runtime_root / "scripts" / "harness-context.py").exists())
 
     def test_apply_refuses_unowned_skill_paths_without_deleting_keep_files(
         self,
@@ -205,7 +208,7 @@ class InstallScriptTests(unittest.TestCase):
                 ).exists()
             )
 
-    def test_update_fails_closed_when_owned_skill_tree_contains_user_content(
+    def test_update_preserves_target_only_content_outside_owned_skill_paths(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -219,8 +222,7 @@ class InstallScriptTests(unittest.TestCase):
 
             result = self.run_installer(home, "--copy", "--apply")
 
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("owned path changed since installation", result.stderr)
+            self.assertEqual(result.returncode, 0, result.stderr)
             aliases = (
                 runtime_root / "skills" / "keep.txt",
                 canonical_keep,
@@ -291,12 +293,12 @@ class InstallScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
 
             runtime_root = home / ".claude"
-            registry_link = runtime_root / ".claude" / "registry"
+            registry_link = runtime_root / ".claude" / "registry" / "providers"
             scripts_link = runtime_root / "scripts" / "harness-doctor.py"
             self.assertTrue(registry_link.is_symlink())
             self.assertEqual(
                 registry_link.resolve(strict=True),
-                (ROOT / ".claude" / "registry").resolve(),
+                (ROOT / ".claude" / "registry" / "providers").resolve(),
             )
             self.assertTrue(scripts_link.is_symlink())
             self.assertEqual(
@@ -313,7 +315,7 @@ class InstallScriptTests(unittest.TestCase):
             self.assertEqual(update.returncode, 0, update.stderr)
             self.assertEqual(
                 registry_link.resolve(strict=True),
-                (ROOT / ".claude" / "registry").resolve(),
+                (ROOT / ".claude" / "registry" / "providers").resolve(),
             )
 
     @unittest.skipUnless(shutil.which("zip"), "zip is required for package export")
@@ -339,7 +341,9 @@ class InstallScriptTests(unittest.TestCase):
             with zipfile.ZipFile(archive) as package:
                 names = set(package.namelist())
                 self.assertIn("scripts/harness-doctor.py", names)
-                self.assertIn(".claude/registry/design/design-run.schema.json", names)
+                self.assertIn(".claude/registry/providers/core.yaml", names)
+                self.assertNotIn(".claude/skills/design-harness/SKILL.md", names)
+                self.assertNotIn("scripts/orchestrate-worktrees.py", names)
                 self.assertIn(
                     "third_party/gongnyang-prompt-kit/skills/image-prompt/SKILL.md",
                     names,

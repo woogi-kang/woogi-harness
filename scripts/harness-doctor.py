@@ -123,32 +123,44 @@ def run_checks(
         )
     )
 
-    try:
-        capabilities, issues = validate_registry(root, root / ".claude" / "registry")
-        inventory = build_asset_inventory(root)
-        effective = merge_effective_capabilities(capabilities, inventory)
-        errors = [issue for issue in issues if issue.severity == "error"]
-        warnings = [issue for issue in issues if issue.severity == "warning"]
-        classified_legacy = warnings and all(
-            issue.code == "frontmatter_collision" for issue in warnings
-        )
-        warning_label = (
-            f"{len(warnings)} qualified legacy duplicate groups"
-            if classified_legacy
-            else f"{len(warnings)} registry warnings"
-        )
+    capability_registry = root / ".claude" / "registry" / "capabilities"
+    if not capability_registry.is_dir():
         checks.append(
             Check(
                 "registry",
-                "error" if errors else "pass",
-                f"{len(capabilities)} static + {inventory['asset_count']} inventoried = "
-                f"{len(effective)} resolvable, {len(errors)} errors, {warning_label}",
+                "pass",
+                "optional capability registry omitted from lean default",
             )
         )
-    except HarnessError as exc:
-        checks.append(Check("registry", "error", str(exc)))
+    else:
+        try:
+            capabilities, issues = validate_registry(
+                root, root / ".claude" / "registry"
+            )
+            inventory = build_asset_inventory(root)
+            effective = merge_effective_capabilities(capabilities, inventory)
+            errors = [issue for issue in issues if issue.severity == "error"]
+            warnings = [issue for issue in issues if issue.severity == "warning"]
+            classified_legacy = warnings and all(
+                issue.code == "frontmatter_collision" for issue in warnings
+            )
+            warning_label = (
+                f"{len(warnings)} qualified legacy duplicate groups"
+                if classified_legacy
+                else f"{len(warnings)} registry warnings"
+            )
+            checks.append(
+                Check(
+                    "registry",
+                    "error" if errors else "pass",
+                    f"{len(capabilities)} static + {inventory['asset_count']} inventoried = "
+                    f"{len(effective)} resolvable, {len(errors)} errors, {warning_label}",
+                )
+            )
+        except HarnessError as exc:
+            checks.append(Check("registry", "error", str(exc)))
 
-    hook_names = ("usage-tracker.sh", "quality-gate.sh", "git-push-guard.sh")
+    hook_names = ("quality-gate.sh", "git-push-guard.sh")
     missing_hooks = []
     non_executable = []
     for name in hook_names:
@@ -176,7 +188,7 @@ def run_checks(
             Check(
                 "hooks",
                 "pass",
-                "required hooks exist, are executable, and are configured",
+                "safety and read-only quality hooks exist, are executable, and are configured",
             )
         )
 
@@ -446,9 +458,10 @@ def run_checks(
 
     stack_verifier = root / "scripts" / "verify-stack-registry.py"
     stack_registry = root / ".claude" / "registry" / "tech-stacks"
-    stack_valid = stack_verifier.is_file() and stack_registry.is_dir()
+    stack_present = stack_verifier.is_file() and stack_registry.is_dir()
+    stack_valid = True
     stack_output = ""
-    if stack_valid:
+    if stack_present:
         stack_valid, stack_output = bounded_process(
             [sys.executable, str(stack_verifier), "--all"], cwd=root, timeout=90
         )
@@ -457,20 +470,17 @@ def run_checks(
             "tech-stack-registry",
             "pass" if stack_valid else "error",
             "version channels, source lock, generated defaults, and inline pins verified"
+            if stack_present and stack_valid
+            else "optional tech-stack registry omitted from lean default"
             if stack_valid
             else stack_output or "technology stack registry or verifier missing",
         )
     )
 
     required_pack_runtime = {
-        "scripts/brain-memory.sh",
-        "scripts/brain-memory-qa.sh",
-        "scripts/brain-pilot.sh",
         "scripts/context-pack-gate.py",
         "scripts/harness-provider.py",
-        "scripts/orchestrate-worktrees.py",
-        "scripts/sprint-reset-loop.sh",
-        "scripts/verify-stack-registry.py",
+        "scripts/harness-sync.py",
     }
     try:
         default_pack = load_data(
@@ -493,7 +503,7 @@ def run_checks(
                 "missing shared runtime dependencies: "
                 + ", ".join(missing_pack_runtime)
                 if missing_pack_runtime
-                else "shared command, memory, provider, orchestration, and verifier dependencies are packed",
+                else "lean provider, sync, and external-context safety dependencies are packed",
             )
         )
     except HarnessError as exc:
@@ -524,7 +534,11 @@ def run_checks(
     )
     if not orchestrator.is_file():
         checks.append(
-            Check("permission-default", "error", "orchestrator runtime missing")
+            Check(
+                "permission-default",
+                "pass",
+                "optional orchestrator omitted from lean default",
+            )
         )
     elif "--dangerously-skip-permissions -p -" in orchestrator_text:
         checks.append(

@@ -1,6 +1,8 @@
-# Execution Contract — Runtime v1
+# Execution Contract — Explicit Opt-in Runtime v1
 
-반복·장기·병렬·자율 작업과 배포/외부 전송/비용/파괴 위험이 있는 작업은 실행 전에 성공과 중단 조건을 typed record로 고정한다.
+이 계약은 기본 작업 경로가 아니다. 사용자가 명시적으로 요청했거나, 장기·반복 실행 또는 배포/외부 전송/비용/파괴 위험 때문에 재개 가능한 상태 기록이 실제로 필요할 때만 사용한다.
+
+단일 조사, 일반 문서 작성, 작은 코드 수정, routine 테스트에는 outcome JSON을 만들지 않는다. 이런 작업은 요청 범위, 실제 검증, 남은 위험을 최종 응답에 직접 기록한다.
 
 ## Required fields
 

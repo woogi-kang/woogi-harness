@@ -48,15 +48,6 @@ class StrictDoctorTest(unittest.TestCase):
                 text=True,
             )
 
-            verifier = target / "scripts" / "verify-stack-registry.py"
-            verifier_source = verifier.read_text(encoding="utf-8")
-            verifier.write_text("raise SystemExit(97)\n", encoding="utf-8")
-            process, payload = self.run_doctor(target)
-            self.assertNotEqual(process.returncode, 0)
-            checks = {item["name"]: item for item in payload["checks"]}
-            self.assertEqual(checks["tech-stack-registry"]["status"], "error")
-            verifier.write_text(verifier_source, encoding="utf-8")
-
             ui_grader = target / ".claude" / "evals" / "ui-design" / "grader.py"
             ui_source = ui_grader.read_text(encoding="utf-8")
             ui_grader.write_text("raise SystemExit(98)\n", encoding="utf-8")

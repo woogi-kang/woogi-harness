@@ -337,7 +337,9 @@ class ContextTests(unittest.TestCase):
         )
         manifest = json.loads(result.stdout)
         self.assertEqual(manifest["profile"], "default")
-        self.assertGreater(len(manifest["selected"]), 0)
+        self.assertEqual(manifest["capabilities"], [])
+        self.assertEqual(manifest["selected"], [])
+        self.assertEqual(manifest["total_bytes"], 0)
         self.assertLessEqual(manifest["total_bytes"], manifest["budget_bytes"])
 
     def test_optional_context_is_skipped_at_budget(self) -> None:
@@ -665,14 +667,23 @@ class SyncTests(unittest.TestCase):
             )
             for required in (
                 "scripts/context-pack-gate.py",
-                "scripts/orchestrate-worktrees.py",
-                "scripts/verify-stack-registry.py",
-                "scripts/brain-memory.sh",
-                "scripts/brain-memory-qa.sh",
-                "scripts/brain-pilot.sh",
-                "scripts/sprint-reset-loop.sh",
+                "scripts/harness-provider.py",
+                "scripts/harness-sync.py",
+                ".claude/skills/image-prompt/SKILL.md",
+                ".claude/skills/img2threejs/SKILL.md",
+                ".claude/skills/design-harness/scripts/detect-design-slop.mjs",
             ):
                 self.assertTrue((target / required).is_file(), required)
+            for removed_default in (
+                ".claude/agents",
+                ".claude/commands",
+                ".claude/skills/design-harness/SKILL.md",
+                "scripts/orchestrate-worktrees.py",
+                "scripts/brain-memory.sh",
+                "scripts/harness-execution.py",
+                "scripts/harness-telemetry.py",
+            ):
+                self.assertFalse((target / removed_default).exists(), removed_default)
             doctor = subprocess.run(
                 [
                     sys.executable,

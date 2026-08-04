@@ -1,7 +1,7 @@
 {
   "schema_version": "harness.project-pack.v1",
   "id": "design-runtime",
-  "description": "Selective Design Runtime v3 distribution for projects that consume only the shared visual-quality harness.",
+  "description": "Opt-in legacy Design Runtime v3 comparison baseline. Never included by the lean default pack.",
   "image_policy_required_surfaces": [
     ".claude/rules/common/imagegen-marketing-assets.md",
     ".claude/skills/design-harness/SKILL.md"

@@ -1,39 +1,30 @@
 {
   "schema_version": "harness.project-pack.v1",
   "id": "default",
-  "description": "Shared Woogi Harness assets. Target-only files are preserved; only hash-bound, explicitly retired harness files are removed.",
+  "description": "Lean default runtime: native model instructions, deterministic QA, safe sync, and image overlays without bulk agents, skills, commands, rules, or orchestration.",
+  "image_policy_required_surfaces": [
+    ".claude/rules/common/imagegen-marketing-assets.md"
+  ],
   "paths": [
     "CLAUDE.md",
-    "contexts",
-    ".claude/agents",
-    ".claude/commands",
     ".claude/hooks",
-    ".claude/rules",
-    ".claude/skills",
-    ".claude/templates",
     ".claude/evals",
-    ".claude/registry",
+    ".claude/registry/contracts",
+    ".claude/registry/design/source-policy.json",
+    ".claude/registry/projects",
+    ".claude/registry/providers",
     ".claude/project-packs/default",
     ".claude/project-packs/default.scope.json",
-    ".claude/project-packs/design-runtime",
     ".claude/project-packs/image-generation",
+    ".claude/project-packs/img2threejs",
+    ".claude/skills/design-harness/scripts/detect-design-slop.mjs",
+    ".claude/skills/korean-typography-quality/scripts/validate_korean_typography.py",
     ".claude/statusline.py",
     "scripts/harness_runtime_lib.py",
-    "scripts/harness-registry.py",
-    "scripts/harness-context.py",
     "scripts/harness-provider.py",
-    "scripts/harness-execution.py",
-    "scripts/harness-telemetry.py",
     "scripts/harness-doctor.py",
     "scripts/harness-sync.py",
-    "scripts/brain-memory.sh",
-    "scripts/brain-memory-qa.sh",
-    "scripts/brain-pilot.sh",
     "scripts/context-pack-gate.py",
-    "scripts/orchestrate-worktrees.py",
-    "scripts/sprint-reset-loop.sh",
-    "scripts/verify-stack-registry.py",
-    "scripts/usage-report.py",
     "scripts/sync-to-projects.sh"
   ],
   "links": {
@@ -41,72 +32,6 @@
     "GEMINI.md": "CLAUDE.md",
     ".agents/skills": "../.claude/skills"
   },
-  "tombstones": [
-    {
-      "path": ".claude/skills/ui-styling/scripts/tests/coverage-ui.json",
-      "accepted_sha256": ["33bdc1f5998db9a38cac8e6128a82711f8f8b65fbb3dcb0c1680ae260441cbce"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/auth/middleware.ts.template",
-      "accepted_sha256": ["0c56b409480b0d0416fbbdb60f4587a29b79e8c52d20c1954118944e506176f2"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/base/.eslintrc.json.template",
-      "accepted_sha256": ["62da80528c690ee6e2b0bc6897069a08ba9692a96c6814c1d6ccb7507fc24661"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/base/postcss.config.js.template",
-      "accepted_sha256": ["251ecddd4672c9cf467547e3dc535de00ad2129df26e7e7ae728fa4e5ac45fc5"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/base/tailwind.config.ts.template",
-      "accepted_sha256": ["48660ace4581c868e0a6554bd0d3e756a2e71041f5d17b06d41b97880d610f2f"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/supabase/src/lib/supabase/middleware.ts.template",
-      "accepted_sha256": ["9d9b8caa2601e90e54cf43a9803a38dfacc8a7ec423e5e576238baa449f0313d"]
-    },
-    {
-      "path": ".claude/skills/💻 개발/nextjs-boilerplate-skill/templates/supabase/src/middleware.ts.template",
-      "accepted_sha256": ["51b7f2b9c50e043c741f20853d2e6212fd8a95d899199455b9124c600d4e823e"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/README.ko.md",
-      "accepted_sha256": ["4ee43a18f377ee85db4a7e99a796cbf8a45b16a6dca8778e73a3c8a094eeb727"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/README.md",
-      "accepted_sha256": ["31402e2538dc7dbcfbd43ecbb24004d7066e5676c13179c34f0c081dd77a16f0"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/gpt-image-slide-plan/VENDOR_SKILL.md",
-      "accepted_sha256": ["6688d27f565b6e3865e944c4d802fc3c8c264cd0695b5a7958c8615d2e3e1cd5"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/gpt-image-slide-prompt/VENDOR_SKILL.md",
-      "accepted_sha256": ["160014353e9e069c18cbc5c63acf5058fad28816d69e896d44d01627324a5047"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/gpt-image-slide-render/VENDOR_SKILL.md",
-      "accepted_sha256": ["904cb2957d4cbb20011d0c483dd4cbbb30920a66752a6e53c88e834656bb1ab0"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/gpt-image-slide/VENDOR_SKILL.md",
-      "accepted_sha256": ["ff6b7bfb06bad329eab8ebcfb4506393f17d586799bc6c9d0b210dc26414ee6d"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/slide-design/VENDOR_SKILL.md",
-      "accepted_sha256": ["6fbb9616a1c634b4250c2bd332664099bf03d6e2ef5768a28ff7bcf33fc9f6b5"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/future-slide-skills/_vendor/future-slide-skill/skills/tightened-slide/references/image-prompts.md",
-      "accepted_sha256": ["c4402fcc840ba339e7f97febc349cc16e017e41858875fd5170046903b915886"]
-    },
-    {
-      "path": ".claude/skills/📝 콘텐츠/presentation-agent-skills/7-image-gen/THEME-PROMPTS.md",
-      "accepted_sha256": ["5a920e3f07c086b8d2b8f5d3ce54b059072ae5568b264970b044a9e601330f46"]
-    }
-  ],
   "settings_merges": [
     {
       "target": ".claude/settings.json",
@@ -118,18 +43,6 @@
       "value": {
         "type": "command",
         "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/git-push-guard.sh"
-      }
-    },
-    {
-      "target": ".claude/settings.json",
-      "format": "json",
-      "operation": "append-if-missing",
-      "path": ["hooks", "PostToolUse"],
-      "match": {"matcher": "Agent|Skill"},
-      "append_path": ["hooks"],
-      "value": {
-        "type": "command",
-        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/usage-tracker.sh"
       }
     },
     {
